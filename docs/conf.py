@@ -2,13 +2,15 @@
 
 # -- Project information
 
-project = 'Lumache'
-copyright = '2021, Graziella'
-author = 'Graziella'
+project = 'lmfit-additional-models'
+copyright = '2023, Julian Hochhaus'
+author = 'Julian Hochhaus'
 
 release = '0.1'
-version = '0.1.0'
+version = '1.0.3'
+import sys, os
 
+sys.path.append(os.path.abspath('../lmfit-additional-models/'))
 # -- General configuration
 
 extensions = [
