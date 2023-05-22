@@ -369,20 +369,10 @@ class TougaardBG(lmfit.model.Model):
     """ + lmfit.models.COMMON_INIT_DOC
 
     def __init__(self, *args, **kwargs):
-        """
-        Initializes the TougaardBG model instance.
-
-        """
         super().__init__(tougaard, *args, **kwargs)
         self._set_paramhints_prefix()
 
     def _set_paramhints_prefix(self):
-        """
-        Sets parameter hints for the model.
-
-        The method sets initial values and constraints for the parameters 'B', 'C', 'C_d', 'D', and 'extend'.
-
-        """
         self.set_param_hint('B', value=2886, min=0)
         self.set_param_hint('C', value=1643, min=0)
         self.set_param_hint('C_d', value=1, min=0)
@@ -390,20 +380,6 @@ class TougaardBG(lmfit.model.Model):
         self.set_param_hint('extend', value=30, vary=False)
 
     def guess(self, data, x=None, **kwargs):
-        """
-        Generates initial parameter values for the model based on the provided data and optional arguments.
-
-        Parameters:
-            data (array-like): Array containing the data (=intensities) to fit.
-            x (array-like): Array containing the independent variable values.
-            **kwargs: Arbitrary keyword arguments.
-
-        Returns:
-            Parameters: Initial parameter values for the model.
-
-        Note:
-            The method requires the 'x' parameter to be provided.
-        """
         if x is None:
             return
         params = self.make_params(B=2886, C=1643, C_d=1, D=1)
@@ -462,38 +438,14 @@ class ShirleyBG(lmfit.model.Model):
     """ + lmfit.models.COMMON_INIT_DOC
 
     def __init__(self, *args, **kwargs):
-        """
-        Initializes the ShirleyBG model instance.
-
-        """
         super().__init__(shirley, *args, **kwargs)
         self._set_paramhints_prefix()
 
     def _set_paramhints_prefix(self):
-        """
-        Sets parameter hints for the model.
-
-        The method sets initial values and constraints for the parameters 'k' and 'const'.
-
-        """
         self.set_param_hint('k', value=0.03, min=0)
         self.set_param_hint('const', value=1000, min=0)
 
     def guess(self, data, x=None, **kwargs):
-        """
-        Generates initial parameter values for the model based on the provided data and optional arguments.
-
-        Parameters:
-            data (array-like): Array containing the data to fit.
-            x (array-like): Array containing the independent variable values.
-            **kwargs: Arbitrary keyword arguments.
-
-        Returns:
-            Parameters: Initial parameter values for the model.
-
-        Note:
-            The method requires the 'x' parameter to be provided.
-        """
         if x is None:
             return
         params = self.make_params(k=0.03, const=1000)
@@ -536,12 +488,12 @@ def slope(y, k):
 
 
 class SlopeBG(lmfit.model.Model):
-    __doc__ = """
+    __doc__ = r"""
     Model of the Slope background for X-ray photoelectron spectroscopy (XPS) spectra.
-    Slope Background implemented as suggested by A. Herrera-Gomez et al in [DOI: 10.1016/j.elspec.2013.07.006].
+    Slope Background implemented as suggested by A. Herrera-Gomez et al in https://doi.org/10.1016/j.elspec.2013.07.006.
 
     Attributes:
-        All attributes are inherited from the lmfit.model.Model class.
+        All attributes are inherited from the `lmfit.model.Model`_. class.
 
     Methods:
         __init__(*args, **kwargs):
@@ -560,36 +512,13 @@ class SlopeBG(lmfit.model.Model):
     """ + lmfit.models.COMMON_INIT_DOC
 
     def __init__(self, *args, **kwargs):
-        """
-        Initializes the SlopeBG model instance.
-        """
         super().__init__(slope, *args, **kwargs)
         self._set_paramhints_prefix()
 
     def _set_paramhints_prefix(self):
-        """
-        Sets parameter hints for the model.
-
-        The method sets an initial value for the parameter 'k'.
-
-        """
         self.set_param_hint('k', value=0.01)
 
     def guess(self, data, x=None, **kwargs):
-        """
-        Generates initial parameter values for the model based on the provided data and optional arguments.
-
-        Parameters:
-            data (array-like): Array containing the data to fit.
-            x (array-like): Array containing the independent variable values.
-            **kwargs: Arbitrary keyword arguments.
-
-        Returns:
-            Parameters: Initial parameter values for the model.
-
-        Note:
-            The method requires the 'x' parameter to be provided.
-        """
         if x is None:
             return
         params = self.make_params(k=0.01)
