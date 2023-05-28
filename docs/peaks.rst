@@ -1,5 +1,7 @@
 Peak Models
 =================
+.. include:: note.rst
+
 
 .. autoclass:: models.FermiEdgeModel
     :members:

@@ -1,5 +1,6 @@
 Background models
 =================
+.. include:: note.rst
 .. autoclass:: models.ShirleyBG
     :members:
     :member-order: bysource

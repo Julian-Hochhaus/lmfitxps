@@ -2,7 +2,7 @@
 
 Contents
 --------
-
+.. include:: note.rst
 .. toctree::
     introduction
     usage

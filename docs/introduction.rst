@@ -36,7 +36,7 @@ Getting Started
 For a quick start guide and examples, please refer to the `Getting Started`_-section as well as the `lmfit`_ -documentation.
 
 .. _lmfit: https://lmfit.github.io/lmfit-py/intro.html
-.. _Getting Started: https://lmfit-additional-models.readthedocs.io/en/latest/usage.html
+.. _Getting Started: https://lmfit-additional-models.readthedocs.io/en/gh-pages/usage.html
 
 
 .. note::
