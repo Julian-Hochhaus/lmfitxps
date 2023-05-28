@@ -269,7 +269,8 @@ def tougaard(x, y, B, C, C_d, D, extend=30, only_vary_B=True):
     """
     Calculates the Tougaard background of an X-ray photoelectron spectroscopy (XPS) spectrum.
 
-    The following implementation is based on the four-parameter loss function (4-PIESCS) as suggested by R.Hesse (
+    The following implementation is based on the four-parameter loss function (4-PIESCS)
+    as suggested by [R.Hesse](
     https://doi.org/10.1002/sia.3746). In contrast to R.Hesse, the Tougaard background is not leveled with the data
     using a constant, but the background on the high-energy side is extended. This approach was found to lead to
     great convergence empirically, however, the length of the data extension remains arbitrary.
