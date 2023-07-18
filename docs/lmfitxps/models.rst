@@ -1,6 +1,6 @@
-lmfit-additional models
+lmfitxps
 ======================
-.. automodule:: lmfit-additional-models
+.. automodule:: lmfitxps
    :members:
    :undoc-members:
    :show-inheritance:

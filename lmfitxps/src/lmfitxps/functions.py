@@ -2,6 +2,14 @@ import numpy as np
 
 import numpy as np
 
+__author__ = "Julian Andreas Hochhaus"
+__copyright__ = "Copyright 2023"
+__credits__ = ["Julian Andreas Hochhaus"]
+__license__ = "MIT"
+__version__ = "1.1.0"
+__maintainer__ = "Julian Andreas Hochhaus"
+__email__ = "julian.hochhaus@tu-dortmund.de"
+
 def shirley_calculate(x, y, tol=1e-5, maxit=10):
     """
     Calculate the Shirley background for a given set of x and y data.

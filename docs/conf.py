@@ -18,12 +18,12 @@ sys.path.insert(0, os.path.abspath('..'))
 
 # -- Project information -----------------------------------------------------
 
-project = 'lmfit-additional-models'
+project = 'lmfitxps'
 copyright = '2023, Julian A. Hochhaus'
 author = 'Julian A. Hochhaus'
 
 # The full version, including alpha/beta/rc tags
-release = '1.0.2'
+release = "1.1.0"
 
 
 # -- General configuration ---------------------------------------------------

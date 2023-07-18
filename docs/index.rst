@@ -3,14 +3,14 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to lmfit-additional-models's documentation!
+Welcome to the lmfitxps documentation!
 ===================================================
 
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
 
-   lmfit-additional-models/models
+   lmfitxps/models
 
 
 

@@ -1,0 +1,16 @@
+[tool.bumpver]
+current_version = "1.1.0"
+version_pattern = 'MAJOR.MINOR.PATCH[PYTAGNUM]'
+commit_message = "bump version {old_version} -> {new_version}"
+commit = true
+tag = true
+push = true
+
+
+[tool.bumpver.file_patterns]
+"bumpver.toml" = ['current_version = "{version}"']
+"pyproject.toml" = ['version = "{version}"']
+"src/lmfitxps/models.py" = ['__version__ = "{version}"']
+"src/lmfitxps/functions.py" = ['__version__ = "{version}"']
+
+"../docs/conf.py" = [ 'release = "{version}"' ]

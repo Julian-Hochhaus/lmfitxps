@@ -1,0 +1,20 @@
+# pyproject.toml
+
+[build-system]
+requires = ["setuptools>=61.0.0", "wheel", 'scipy', 'numpy', 'lmfit']
+build-backend = "setuptools.build_meta"
+
+[project]
+name='lmfitxps'
+readme='README.md'
+version = "1.1.0"
+authors=[{name='Julian Hochhaus', email='julian.hochhaus@tu-dortmund.de'}]
+license={file='LICENSE', name='MIT'}
+description='This package contains additional models for the lmfit package for fitting XPS spectra.'
+copyright = "Copyright {year} Julian Hochhaus"
+
+[project.urls]
+homepage='https://github.com/Julian-Hochhaus/lmfit-additional-models'
+documentation='https://lmfit-additional-models.readthedocs.io/en/latest/#'
+
+
