@@ -18,7 +18,7 @@
 # You can create any custom variable you would like, and they will be accessible
 # in the templates via {{ site.myvariable }}.
 
-title: Additional Models for the lmfit-package
+title: lmfitxps: Additional Models for the lmfit-package
 author: Julian Hochhaus
 email: julian.hochhaus@tu-dortmund.de
 description: >- # this means to ignore newlines until "baseurl:"
@@ -32,7 +32,7 @@ github_username:  Julian-Hochhaus
 
 
 # The keywords to associate with your website, for SEO purposes
-keywords: "XPS,lmfit, curve fitting, X-ray photoemission spectroscopy, XPS curve fitting, fitting procedure, data analysis, lmfit models, Tougaard, Shirley, Doniach-Sunjic, Convolution, Voigt-Profile, Doniach,  Julian Hochhaus"
+keywords: "XPS,lmfit,lmfitxps, curve fitting, X-ray photoemission spectroscopy, XPS curve fitting, fitting procedure, data analysis, lmfit models, Tougaard, Shirley, Doniach-Sunjic, Convolution, Voigt-Profile, Doniach,  Julian Hochhaus"
 
 # Build settings
 # Theme
