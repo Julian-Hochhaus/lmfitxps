@@ -13,4 +13,6 @@ To install lmfitxps, simply use pip:
  `pip install lmfitxps`
 
  ## How to cite
+ [![DOI](https://zenodo.org/badge/642726930.svg)](https://zenodo.org/badge/latestdoi/642726930)
+
 
