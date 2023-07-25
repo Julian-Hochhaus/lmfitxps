@@ -2,7 +2,7 @@
 
 # -- Project information
 
-project = 'lmfit-additional-models'
+project = 'lmfitxps'
 copyright = '2023, Julian Hochhaus'
 author = 'Julian Hochhaus'
 
@@ -10,7 +10,7 @@ release = '0.1'
 version = '1.0.3'
 import sys, os
 
-sys.path.append(os.path.abspath('../lmfit-additional-models/'))
+sys.path.append(os.path.abspath('../lmfitxps/'))
 # -- General configuration
 
 extensions = [
