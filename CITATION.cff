@@ -1,0 +1,17 @@
+# This CITATION.cff file was generated with cffinit.
+# Visit https://bit.ly/cffinit to generate yours today!
+
+cff-version: 1.2.0
+title: lmfitxps
+message: >-
+  If you use this software, please cite it using the
+  metadata from this file.
+type: software
+authors:
+  - given-names: Julian Andreas
+    family-names: Hochhaus
+    email: julian.hochhaus@tu-dortmund.de
+    affiliation: TU Dortmund University
+    orcid: '0000-0002-8328-607X'
+repository-code: 'https://github.com/Julian-Hochhaus/lmfitxps'
+license: MIT
