@@ -10,7 +10,8 @@ push = true
 [tool.bumpver.file_patterns]
 "bumpver.toml" = ['current_version = "{version}"']
 "pyproject.toml" = ['version = "{version}"']
-"src/lmfitxps/models.py" = ['__version__ = "{version}"']
-"src/lmfitxps/functions.py" = ['__version__ = "{version}"']
+"lmfitxps/models.py" = ['__version__ = "{version}"']
+"lmfitxps/backgrounds.py" = ['__version__ = "{version}"']
+"lmfitxps/lineshapes.py" = ['__version__ = "{version}"']
 
-"../docs/conf.py" = [ 'release = "{version}"' ]
+"docs/conf.py" = [ 'release = "{version}"' ]

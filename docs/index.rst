@@ -10,7 +10,9 @@ Welcome to the lmfitxps documentation!
    :maxdepth: 2
    :caption: Contents:
 
-   lmfitxps/models
+   introduction
+   backgrounds
+
 
 
 

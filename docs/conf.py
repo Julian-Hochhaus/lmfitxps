@@ -12,8 +12,11 @@
 #
 import os
 import sys
-print(sys.executable)
-sys.path.insert(0, os.path.abspath('..'))
+current_dir = os.path.dirname(__file__)
+target_dir = os.path.abspath(os.path.join(current_dir, "../lmfitxps/src/lmfitxps/"))
+sys.path.insert(0, target_dir)
+
+print(target_dir)
 
 
 # -- Project information -----------------------------------------------------

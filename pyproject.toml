@@ -13,7 +13,7 @@ license={file='LICENSE', name='MIT'}
 description='This package contains additional models for the lmfit package for fitting XPS spectra.'
 
 [project.urls]
-homepage='https://github.com/Julian-Hochhaus/lmfit-additional-models'
-documentation='https://lmfit-additional-models.readthedocs.io/en/latest/#'
+homepage='https://github.com/Julian-Hochhaus/lmfitxps'
+documentation='https://lmfitxps.readthedocs.io/en/latest/'
 
 
