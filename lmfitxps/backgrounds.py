@@ -9,7 +9,7 @@ __email__ = "julian.hochhaus@tu-dortmund.de"
 
 def tougaard_closure():
     bgrnd = [[], [], []]  # This will act as the closure to store the precalculated data
-    def tougaard(x, y, B, C, C_d, D, extend=30, only_vary_B=True):
+    def tougaard(x, y, B, C, C_d, D, extend=30):
         """
                 Calculates the Tougaard background of an X-ray photoelectron spectroscopy (XPS) spectrum.
 
@@ -61,7 +61,7 @@ def tougaard_closure():
                 """
         nonlocal bgrnd
 
-        if np.array_equal(bgrnd[0], y) and only_vary_B and bgrnd[2][0] == extend:
+        if np.array_equal(bgrnd[0], y) and bgrnd[2][0] == extend:
             # Check if loss function was already calculated
             return [B * elem for elem in bgrnd[1]]
         else:
@@ -82,7 +82,6 @@ def tougaard_closure():
                 bg.append(bg_temp)
             bgrnd[1] = bg
             return np.asarray([B * elem for elem in bgrnd[1]])
-
     return tougaard
 
 # Create the tougaard function with the closure
@@ -164,14 +163,13 @@ def shirley_calculate(x, y, tol=1e-5, maxit=10):
     Returns:
         array: The Shirley background calculated from the input data.
     """
-    # Make sure we've been passed arrays and not lists.
-    x = np.array(x)
-    y = np.array(y)
 
+    n = len(y)
     # Sanity check: Do we actually have data to process here?
-    if not (np.any(x) and np.any(y)):
+    # print(any(x), any(y), (any(x) and any(y)))
+    if not (any(x) and any(y)):
         print("One of the arrays x or y is empty. Returning zero background.")
-        return np.asarray(x * 0)
+        return x * 0
 
     # Next ensure the energy values are *decreasing* in the array,
     # if not, reverse them.
@@ -182,50 +180,32 @@ def shirley_calculate(x, y, tol=1e-5, maxit=10):
     else:
         is_reversed = False
 
-    # Locate the biggest peak.
-    maxidx = np.abs(y - y.max()).argmin()
-
-    # It's possible that maxidx will be 0 or -1. If that is the case,
-    # we can't use this algorithm, we return a zero background.
-    if maxidx == 0 or maxidx >= len(y) - 1:
-        print("Boundaries too high for algorithm: returning a zero background.")
-        return np.asarray(x * 0)
-
-    # Locate the minima either side of maxidx.
-    lmidx = np.abs(y[0:maxidx] - y[0:maxidx].min()).argmin()
-    rmidx = np.abs(y[maxidx:] - y[maxidx:].min()).argmin() + maxidx
-
-    xl = x[lmidx]
-    yl = y[lmidx]
-    xr = x[rmidx]
-    yr = y[rmidx]
-
-    # Max integration index
-    imax = rmidx - 1
+    yl = y[0]
+    yr = y[-1]
 
     # Initial value of the background shape B. The total background S = yr + B,
     # and B is equal to (yl - yr) below lmidx and initially zero above.
     B = y * 0
-    B[:lmidx] = yl - yr
+
     Bnew = B.copy()
 
     it = 0
     while it < maxit:
         # Calculate new k = (yl - yr) / (int_(xl)^(xr) J(x') - yr - B(x') dx')
         ksum = 0.0
-        for i in range(lmidx, imax):
+        for i in range(n - 1):
             ksum += (x[i] - x[i + 1]) * 0.5 * (y[i] + y[i + 1] - 2 * yr - B[i] - B[i + 1])
         k = (yl - yr) / ksum
-
         # Calculate new B
-        for i in range(lmidx, rmidx):
+        for i in range(n):
             ysum = 0.0
-            for j in range(i, imax):
+            for j in range(i, n - 1):
                 ysum += (x[j] - x[j + 1]) * 0.5 * (y[j] + y[j + 1] - 2 * yr - B[j] - B[j + 1])
             Bnew[i] = k * ysum
-
         # If Bnew is close to B, exit.
+        # if norm(Bnew - B) < tol:
         B = Bnew - B
+        # print(it, (B**2).sum(), tol**2)
         if (B ** 2).sum() < tol ** 2:
             B = Bnew.copy()
             break
@@ -235,12 +215,12 @@ def shirley_calculate(x, y, tol=1e-5, maxit=10):
 
     if it >= maxit:
         print("Max iterations exceeded before convergence.")
-
     if is_reversed:
-        return np.asarray((yr + B)[::-1])
+        # print("Shirley BG: tol (ini = ", tol, ") , iteration (max = ", maxit, "): ", it)
+        return (yr + B)[::-1]
     else:
-        return np.asarray(yr + B)
-
+        # print("Shirley BG: tol (ini = ", tol, ") , iteration (max = ", maxit, "): ", it)
+        return yr + B
 
 
 def tougaard_calculate(x, y, tb=2866, tc=1643, tcd=1, td=1, maxit=100):

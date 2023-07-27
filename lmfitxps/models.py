@@ -1,8 +1,9 @@
 import numpy as np
 from lmfit.lineshapes import doniach, gaussian, thermal_distribution
-from lineshapes import singlett, dublett, fermi_edge, convolve, fft_convolve
-from backgrounds import tougaard, slope, shirley
+from .lineshapes import singlett, dublett, fermi_edge, convolve, fft_convolve
+from .backgrounds import tougaard, slope, shirley
 from lmfit import Model
+import lmfit
 from lmfit.models import guess_from_peak
 from scipy.signal import convolve as sc_convolve
 
