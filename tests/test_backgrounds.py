@@ -155,7 +155,7 @@ def test_slope_same_output(slope_func):
 
 @pytest.fixture()
 def slope_model():
-    """Return a Tougaard model."""
+    """Return a Slope background model."""
     return lmfit.Model(backgrounds.slope, independent_vars=["y"])
 
 def test_fit_slope(slope_model):
