@@ -12,8 +12,11 @@
 #
 import os
 import sys
-print(sys.executable)
-sys.path.insert(0, os.path.abspath('..'))
+current_dir = os.path.dirname(__file__)
+target_dir = os.path.abspath(os.path.join(current_dir, "../lmfitxps/src/lmfitxps/"))
+sys.path.insert(0, target_dir)
+
+print(target_dir)
 
 
 # -- Project information -----------------------------------------------------
@@ -23,7 +26,7 @@ copyright = '2023, Julian A. Hochhaus'
 author = 'Julian A. Hochhaus'
 
 # The full version, including alpha/beta/rc tags
-release = "1.1.0"
+release = "1.3.0"
 
 
 # -- General configuration ---------------------------------------------------

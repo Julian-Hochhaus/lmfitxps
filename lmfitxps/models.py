@@ -1,188 +1,19 @@
 import numpy as np
 from lmfit.lineshapes import doniach, gaussian, thermal_distribution
-import lmfit
+from .lineshapes import singlett, dublett, fermi_edge, convolve, fft_convolve
+from .backgrounds import tougaard, slope, shirley
 from lmfit import Model
+import lmfit
 from lmfit.models import guess_from_peak
 from scipy.signal import convolve as sc_convolve
+
 __author__ = "Julian Andreas Hochhaus"
 __copyright__ = "Copyright 2023"
 __credits__ = ["Julian Andreas Hochhaus"]
 __license__ = "MIT"
-__version__ = "1.1.0"
+__version__ = "1.3.0"
 __maintainer__ = "Julian Andreas Hochhaus"
 __email__ = "julian.hochhaus@tu-dortmund.de"
-
-def dublett(x, amplitude, sigma, gamma, gaussian_sigma, center, soc, height_ratio, fct_coster_kronig):
-    """
-    Calculates the convolution of a Doniach-Sunjic Dublett with a Gaussian. Thereby, the Gaussian acts as the
-    convolution kernel.
-
-    Parameters
-    ----------
-    x: array-like
-        Array containing the energy of the spectrum to fit
-    amplitude: float
-        factor used to scale the calculated convolution to the measured spectrum. This factor is used as the amplitude
-        of the Doniach profile.
-    sigma: float
-        Sigma of the Doniach profile
-    gamma: float
-        asymmetry factor gamma of the Doniach profile
-    gaussian_sigma: float
-        sigma of the gaussian profile which is used as the convolution kernel
-    center: float
-        position of the maximum of the measured spectrum
-    soc: float
-        distance of the second-highest peak (higher-bound-orbital) of the spectrum in relation to the maximum of the
-        spectrum (the lower-bound orbital)
-    height_ratio: float
-        height ratio of the second-highest peak (higher-bound-orbital) of the spectrum in relation to the maximum of
-        the spectrum (the lower-bound orbital)
-    fct_coster_kronig: float
-        ratio of the lorentzian-sigma of the second-highest peak (higher-bound-orbital) of the spectrum in relation to
-        the maximum of the spectrum (the lower-bound orbital)
-    Returns
-    ---------
-    array-type
-        convolution of a doniach dublett and a gaussian profile
-    """
-    conv_temp = fft_convolve(
-        doniach(x, amplitude=1, center=center, sigma=sigma, gamma=gamma) + doniach(x, height_ratio, center - soc,
-                                                                                   fct_coster_kronig * sigma, gamma),
-        1 / (np.sqrt(2 * np.pi) * gaussian_sigma) * gaussian(x, amplitude=1, center=np.mean(x), sigma=gaussian_sigma))
-    return amplitude * conv_temp / max(conv_temp)
-
-
-def singlett(x, amplitude, sigma, gamma, gaussian_sigma, center):
-    """
-    Calculates the convolution of a Doniach-Sunjic with a Gaussian.
-    Thereby, the Gaussian acts as the convolution kernel.
-
-    Parameters
-    ----------
-    x: array-like
-        Array containing the energy of the spectrum to fit
-    amplitude: float
-        factor used to scale the calculated convolution to the measured spectrum. This factor is used as
-        the amplitude of the Doniach profile.
-    sigma: float
-        Sigma of the Doniach profile
-    gamma: float
-        asymmetry factor gamma of the Doniach profile
-    gaussian_sigma: float
-        sigma of the gaussian profile which is used as the convolution kernel
-    center: float
-        position of the maximum of the measured spectrum
-
-    Returns
-    ---------
-    array-type
-        convolution of a doniach profile and a gaussian profile
-    """
-    conv_temp = fft_convolve(doniach(x, amplitude=1, center=center, sigma=sigma, gamma=gamma),
-                             1 / (np.sqrt(2 * np.pi) * gaussian_sigma) * gaussian(x, amplitude=1, center=np.mean(x),
-                                                                                  sigma=gaussian_sigma))
-    return amplitude * conv_temp / max(conv_temp)
-
-
-kb = 8.6173e-5  # Boltzmann k in eV/K
-
-
-def fermi_edge(x, amplitude, center, kt, sigma):
-    """
-    Calculates the convolution of a Thermal Distribution (Fermi-Dirac Distribution) with a Gaussian.
-    Thereby, the Gaussian acts as the convolution kernel.
-
-    Parameters
-    ----------
-    x: array-like
-        Array containing the energy of the spectrum to fit
-    amplitude: float
-        factor used to scale the calculated convolution to the measured spectrum. This factor is used
-        as the amplitude of the Gaussian Kernel.
-    center: float
-        position of the step of the fermi edge
-    kt: float
-        boltzmann constant in eV multiplied with the temperature T in kelvin
-        (i.e. for room temperature kt=kb*T=8.6173e-5 eV/K*300K=0.02585 eV)
-    sigma: float
-        Sigma of the gaussian profile which is used as the convolution kernel
-
-
-
-    Returns
-    ---------
-    array-type
-        convolution of a fermi dirac distribution and a gaussian profile
-    """
-    conv_temp = fft_convolve(thermal_distribution(x, amplitude=1, center=center, kt=kt, form='fermi'),
-                             1 / (np.sqrt(2 * np.pi) * sigma) * gaussian(x, amplitude=1, center=np.mean(x),
-                                                                         sigma=sigma))
-    return amplitude * conv_temp / max(conv_temp)
-
-
-def convolve(data, kernel):
-    """
-    Calculates the convolution of a data array with a kernel by using numpy convolve function.
-    To suppress edge effects and generate a valid convolution on the full data range, the input dataset is extended
-    at the edges.
-
-    Parameters
-    ----------
-    data: array-like
-        1D-array containing the data to convolve
-    kernel: array-like
-        1D-array which defines the kernel used for convolution
-
-    Returns
-    ---------
-    array-type
-        convolution of a data array with a kernel array
-
-    See Also
-    ---------
-    numpy.convolve()
-    """
-
-    min_num_pts = min(len(data), len(kernel))
-    padding = np.ones(min_num_pts)
-    padded_data = np.concatenate((padding * data[0], data, padding * data[-1]))
-    out = np.convolve(padded_data, kernel, mode='valid')
-    n_start_data = int((len(out) - min_num_pts) / 2)
-    return (out[n_start_data:])[:min_num_pts]
-
-
-def fft_convolve(data, kernel):
-    """
-    Calculates the convolution of a data array with a kernel by using the convolution theorem and thereby
-    transforming the time-consuming convolution operation into a multiplication of FFTs.
-    For the FFT and inverse FFT, numpy implementation (which is basically the implementation used in scipy)
-    of fft and ifft is used.
-    To suppress edge effects and generate a valid convolution on the full data range, the input dataset is
-    extended at the edges.
-
-    Parameters
-    ----------
-    data: array-like
-        1D-array containing the data to convolve
-    kernel: array-like
-        1D-array which defines the kernel used for convolution
-
-    Returns
-    ---------
-    array-type
-        convolution of a data array with a kernel array
-
-    See Also
-    ---------
-    scipy.signal.convolve()
-    """
-    min_num_pts = min(len(data), len(kernel))
-    padding = np.ones(min_num_pts)
-    padded_data = np.concatenate((padding * data[0], data, padding * data[-1]))
-    out = sc_convolve(padded_data, kernel, mode='valid', method="fft")
-    n_start_data = int((len(out) - min_num_pts) / 2)
-    return (out[n_start_data:])[:min_num_pts]
 
 
 class ConvGaussianDoniachSinglett(lmfit.model.Model):
@@ -278,83 +109,6 @@ class FermiEdgeModel(lmfit.model.Model):
         return lmfit.models.update_param_vals(params, self.prefix, **kwargs)
 
 
-bgrnd = [[], [], []]
-
-
-def tougaard(x, y, B, C, C_d, D, extend=30, only_vary_B=True):
-    """
-    Calculates the Tougaard background of an X-ray photoelectron spectroscopy (XPS) spectrum.
-
-    The following implementation is based on the four-parameter loss function (4-PIESCS)
-    as suggested by [R.Hesse](
-    https://doi.org/10.1002/sia.3746). In contrast to R.Hesse, the Tougaard background is not leveled with the data
-    using a constant, but the background on the high-energy side is extended. This approach was found to lead to
-    great convergence empirically, however, the length of the data extension remains arbitrary.
-
-    To reduce computing time, as long as only B should be variate (which makes sense in most cases), if the loss
-    function was already calculated, only B is further optimized.
-
-    The 2-PIESCS loss function is created by using C_d=1 and D=0. Using C_d=-1 and D!=0 leads to the 3-PIESCS loss
-    function.
-
-    For further details on the 2-PIESCS loss function, see https://doi.org/10.1016/0038-1098(87)90166-9, and for the
-    3-PIESCS loss function, see https://doi.org/10.1002/(SICI)1096-9918(199703)25:3<137::AID-SIA230>3.0.CO;2-L
-
-    Parameters
-    ----------
-    x : array-like
-        1D-array containing the x-values (energies) of the spectrum.
-    y : array-like
-        1D-array containing the y-values (intensities) of the spectrum.
-    B : float
-        B parameter of the 4-PIESCS loss function as introduced by R.Hesse (https://doi.org/10.1002/sia.3746).
-        Acts as scaling factor of the Tougaard background model.
-    C : float
-        C parameter of the 4-PIESCS loss function as introduced by R.Hesse (https://doi.org/10.1002/sia.3746).
-    C_d : float
-        C' parameter of the 4-PIESCS loss function as introduced by R.Hesse (https://doi.org/10.1002/sia.3746).
-        Set to 1 for the 2-PIESCS loss function. (and D to 0). Set to -1 for the 3-PIESCS loss function (D!=0).
-    D : float
-        D parameter of the 4-PIESCS loss function as introduced by R.Hesse (https://doi.org/10.1002/sia.3746).
-        Set to 0 for the 2-PIESCS loss function (and C_d to 1). Set to !=0 for the 3-PIESCS loss function (C_d=-1).
-    extend : float, optional
-        Length of the data extension on the high-kinetic-energy side. Defaults to 30.
-    only_vary_B : bool, optional
-        Whether to only vary the scaling factor `B` when calculating the background. Defaults to True.
-        Varying all parameters of Tougaard background leads to instabilities and weird shaped backgrounds.
-
-    Returns
-    -------
-    array-like
-        The Tougaard background of the XPS spectrum.
-
-    See Also ------- The following implementation is based on the four-parameter loss function as suggested by
-    R.Hesse [https://doi.org/10.1002/sia.3746].
-    """
-    global bgrnd
-    if np.array_equal(bgrnd[0], y) and only_vary_B and bgrnd[2][0] == extend:
-        # check if loss function was already calculated
-        return [B * elem for elem in bgrnd[1]]
-    else:
-        bgrnd[0] = y
-        bgrnd[2] = [extend]
-        bg = []
-        delta_x = abs((x[-1] - x[0]) / len(x))
-        len_padded = int(extend / delta_x)  # sets expansion length, values between 15 and 50 work great
-        padded_x = np.concatenate((x, np.linspace(x[-1] + delta_x, x[-1] + delta_x * len_padded, len_padded)))
-        padded_y = np.concatenate((y, np.mean(y[-10:]) * np.ones(len_padded)))
-        for k in range(len(x)):
-            x_k = x[k]
-            bg_temp = 0
-            for j in range(len(padded_y[k:])):
-                padded_x_kj = padded_x[k + j]
-                bg_temp += (padded_x_kj - x_k) / ((C + C_d * (padded_x_kj - x_k) ** 2) ** 2
-                                                  + D * (padded_x_kj - x_k) ** 2) * padded_y[k + j] * delta_x
-            bg.append(bg_temp)
-        bgrnd[1] = bg
-        return np.asarray([B * elem for elem in bgrnd[1]])
-
-
 class TougaardBG(lmfit.model.Model):
     __doc__ = """
     Model of the 4 parameter loss function Tougaard.
@@ -427,34 +181,6 @@ class TougaardBG(lmfit.model.Model):
         return lmfit.models.update_param_vals(params, self.prefix, **kwargs)
 
 
-def shirley(y, k, const):
-    """
-    Calculates the Shirley background of an X-ray photoelectron spectroscopy (XPS) spectrum.
-    This implementation calculates the Shirley background by integrating the step characteristic of the spectrum.
-
-    Parameters
-    ----------
-    y : array-like
-        1D-array containing the y-values (intensities) of the spectrum.
-    k : float
-        Slope of the step characteristic.
-    const : float
-        Constant offset of the step characteristic.
-
-    Returns
-    -------
-    array-like
-        The Shirley background of the XPS spectrum.
-    """
-    n = len(y)
-    y_right = const
-    y_temp = y - y_right  # step characteristic is better approximated if only the step without background is integrated
-    bg = []
-    for i in range(n):
-        bg.append(np.sum(y_temp[i:]))
-    return np.asarray([k * elem + y_right for elem in bg])
-
-
 class ShirleyBG(lmfit.model.Model):
     __doc__ = """
     Model of the Shirley background for X-ray photoelectron spectroscopy (XPS) spectra. 
@@ -515,41 +241,6 @@ class ShirleyBG(lmfit.model.Model):
             return
         params = self.make_params(k=0.03, const=1000)
         return lmfit.models.update_param_vals(params, self.prefix, **kwargs)
-
-
-def slope(y, k):
-    """
-    Calculates the slope background of an X-ray photoelectron spectroscopy (XPS) spectrum.
-    The slope background has some similarities to the Shirley background, e.g. the slope background is calculated
-    by integrating the Shirley background from each data point to the end.
-    Afterwards, a slope parameter k is used to scale the slope accordingly to the measured data.
-
-    Parameters
-    ----------
-    y : array-like
-        1D-array containing the y-values (intensities) of the spectrum.
-    k : float
-        Slope of the linear function for determining the background.
-
-    Returns
-    -------
-    array-like
-        The slope background of the XPS spectrum.
-
-    See Also
-    --------
-    Slope Background implemented as suggested by A. Herrera-Gomez et al in [DOI: 10.1016/j.elspec.2013.07.006].
-    """
-    n = len(y)
-    y_right = np.min(y)
-    y_temp = y - y_right
-    temp = []
-    bg = []
-    for i in range(n):
-        temp.append(np.sum(y_temp[i:]))
-    for j in range(n):
-        bg.append(np.sum(temp[j:]))
-    return np.asarray([-k * elem for elem in bg])
 
 
 class SlopeBG(lmfit.model.Model):
