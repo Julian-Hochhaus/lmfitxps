@@ -3,13 +3,13 @@ Peak Models
 .. include:: note.rst
 
 
-.. autoclass:: models.FermiEdgeModel
+.. autoclass:: lmfitxps.models.FermiEdgeModel
     :members:
     :member-order: bysource
-.. autoclass:: models.ConvGaussianDoniachSinglett
+.. autoclass:: lmfitxps.models.ConvGaussianDoniachSinglett
     :members:
     :member-order: bysource
-.. autoclass:: models.ConvGaussianDoniachDublett
+.. autoclass:: lmfitxps.models.ConvGaussianDoniachDublett
     :members:
     :member-order: bysource
 .. _lmfit.model.Model: https://lmfit.github.io/lmfit-py/model.html#

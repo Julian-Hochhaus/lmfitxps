@@ -1,18 +1,12 @@
-Background models
-=================
+Static backgrounds
+==================
 .. include:: note.rst
-.. autoclass:: lmfitxps.models.ShirleyBG
+.. autoclass:: lmfitxps.backgrounds.shirley_calculate
     :members:
     :noindex:
     :member-order: bysource
     :show-inheritance:
-.. autoclass:: lmfitxps.models.TougaardBG
-    :members:
-    :noindex:
-    :member-order: bysource
-    :show-inheritance:
-
-.. autoclass:: lmfitxps.models.SlopeBG
+.. autoclass:: lmfitxps.backgrounds.tougaard_calculate
     :members:
     :noindex:
     :member-order: bysource

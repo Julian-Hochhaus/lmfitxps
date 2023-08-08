@@ -17,8 +17,11 @@ __email__ = "julian.hochhaus@tu-dortmund.de"
 
 
 class ConvGaussianDoniachSinglett(lmfit.model.Model):
-    __doc__ = "Model of a Doniach dublett profile convoluted with a gaussian. " \
-              "See also lmfit->lineshape.gaussian and lmfit->lineshape.doniach." + lmfit.models.COMMON_INIT_DOC
+    """
+    Model of a Doniach dublett profile convoluted with a gaussian.
+    See also lmfit->lineshape.gaussian and lmfit->lineshape.doniach.
+
+    """ + lmfit.models.COMMON_INIT_DOC
 
     def __init__(self, *args, **kwargs):
         super().__init__(singlett, *args, **kwargs)
@@ -47,8 +50,10 @@ class ConvGaussianDoniachSinglett(lmfit.model.Model):
 
 
 class ConvGaussianDoniachDublett(lmfit.model.Model):
-    __doc__ = "Model of a Doniach profile convoluted with a gaussian. " \
-              "See also lmfit->lineshape.gaussian and lmfit->lineshape.doniach." + lmfit.models.COMMON_INIT_DOC
+    """
+    Model of a Doniach profile convoluted with a gaussian.
+    See also lmfit->lineshape.gaussian and lmfit->lineshape.doniach.
+    """ + lmfit.models.COMMON_INIT_DOC
 
     def __init__(self, *args, **kwargs):
         super().__init__(dublett, *args, **kwargs)
@@ -83,9 +88,10 @@ class ConvGaussianDoniachDublett(lmfit.model.Model):
 
 
 class FermiEdgeModel(lmfit.model.Model):
-    __doc__ = "Model of a ThermalDistribution convoluted with a gaussian. " \
-              "See also lmfit->lineshape.gaussian and lmfit->lineshape.thermal_distribution." \
-              + lmfit.models.COMMON_INIT_DOC
+    """
+    Model of a ThermalDistribution convoluted with a gaussian.
+    See also lmfit->lineshape.gaussian and lmfit->lineshape.thermal_distribution.
+    """ + lmfit.models.COMMON_INIT_DOC
 
     def __init__(self, *args, **kwargs):
         super().__init__(fermi_edge, *args, **kwargs)

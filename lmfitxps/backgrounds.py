@@ -8,57 +8,52 @@ __maintainer__ = "Julian Andreas Hochhaus"
 __email__ = "julian.hochhaus@tu-dortmund.de"
 
 def tougaard_closure():
+    """
+    Calculates the Tougaard background of an X-ray photoelectron spectroscopy (XPS) spectrum.
+    The following implementation is based on the four-parameter loss function (4-PIESCS)
+    as suggested by [R.Hesse](https://doi.org/10.1002/sia.3746). In contrast to R.Hesse, the Tougaard background is not leveled with the data
+    using a constant, but the background on the high-energy side is extended. This approach was found to lead to
+    great convergence empirically, however, the length of the data extension remains arbitrary.
+    To reduce computing time, as long as only B should be variate (which makes sense in most cases), if the loss
+    function was already calculated, only B is further optimized.
+    The 2-PIESCS loss function is created by using C_d=1 and D=0. Using C_d=-1 and D!=0 leads to the 3-PIESCS loss
+    function.
+    For further details on the 2-PIESCS loss function, see https://doi.org/10.1016/0038-1098(87)90166-9, and for the
+    3-PIESCS loss function, see https://doi.org/10.1002/(SICI)1096-9918(199703)25:3<137::AID-SIA230>3.0.CO;2-L
+
+    Parameters
+    ----------
+    x : array-like
+        1D-array containing the x-values (energies) of the spectrum.
+    y : array-like
+        1D-array containing the y-values (intensities) of the spectrum.
+    B : float
+        B parameter of the 4-PIESCS loss function as introduced by R.Hesse (https://doi.org/10.1002/sia.3746).
+        Acts as scaling factor of the Tougaard background model.
+    C : float
+        C parameter of the 4-PIESCS loss function as introduced by R.Hesse (https://doi.org/10.1002/sia.3746).
+    C_d : float
+        C' parameter of the 4-PIESCS loss function as introduced by R.Hesse (https://doi.org/10.1002/sia.3746).
+        Set to 1 for the 2-PIESCS loss function. (and D to 0). Set to -1 for the 3-PIESCS loss function (D!=0).
+    D : float
+        D parameter of the 4-PIESCS loss function as introduced by R.Hesse (https://doi.org/10.1002/sia.3746).
+        Set to 0 for the 2-PIESCS loss function (and C_d to 1). Set to !=0 for the 3-PIESCS loss function (C_d=-1).
+    extend : float, optional
+        Length of the data extension on the high-kinetic-energy side. Defaults to 30.
+    only_vary_B : bool, optional
+        Whether to only vary the scaling factor `B` when calculating the background. Defaults to True.
+        Varying all parameters of Tougaard background leads to instabilities and weird shaped backgrounds.
+
+    Returns
+    -------
+    array-like
+        The Tougaard background of the XPS spectrum.
+    See Also ------- The following implementation is based on the four-parameter loss function as suggested by
+    R.Hesse [https://doi.org/10.1002/sia.3746].
+    """
     bgrnd = [[], [], []]  # This will act as the closure to store the precalculated data
-    def tougaard(x, y, B, C, C_d, D, extend=30):
-        """
-                Calculates the Tougaard background of an X-ray photoelectron spectroscopy (XPS) spectrum.
+    def tougaard_helper(x, y, B, C, C_d, D, extend=30):
 
-                The following implementation is based on the four-parameter loss function (4-PIESCS)
-                as suggested by [R.Hesse](
-                https://doi.org/10.1002/sia.3746). In contrast to R.Hesse, the Tougaard background is not leveled with the data
-                using a constant, but the background on the high-energy side is extended. This approach was found to lead to
-                great convergence empirically, however, the length of the data extension remains arbitrary.
-
-                To reduce computing time, as long as only B should be variate (which makes sense in most cases), if the loss
-                function was already calculated, only B is further optimized.
-
-                The 2-PIESCS loss function is created by using C_d=1 and D=0. Using C_d=-1 and D!=0 leads to the 3-PIESCS loss
-                function.
-
-                For further details on the 2-PIESCS loss function, see https://doi.org/10.1016/0038-1098(87)90166-9, and for the
-                3-PIESCS loss function, see https://doi.org/10.1002/(SICI)1096-9918(199703)25:3<137::AID-SIA230>3.0.CO;2-L
-
-                Parameters
-                ----------
-                x : array-like
-                    1D-array containing the x-values (energies) of the spectrum.
-                y : array-like
-                    1D-array containing the y-values (intensities) of the spectrum.
-                B : float
-                    B parameter of the 4-PIESCS loss function as introduced by R.Hesse (https://doi.org/10.1002/sia.3746).
-                    Acts as scaling factor of the Tougaard background model.
-                C : float
-                    C parameter of the 4-PIESCS loss function as introduced by R.Hesse (https://doi.org/10.1002/sia.3746).
-                C_d : float
-                    C' parameter of the 4-PIESCS loss function as introduced by R.Hesse (https://doi.org/10.1002/sia.3746).
-                    Set to 1 for the 2-PIESCS loss function. (and D to 0). Set to -1 for the 3-PIESCS loss function (D!=0).
-                D : float
-                    D parameter of the 4-PIESCS loss function as introduced by R.Hesse (https://doi.org/10.1002/sia.3746).
-                    Set to 0 for the 2-PIESCS loss function (and C_d to 1). Set to !=0 for the 3-PIESCS loss function (C_d=-1).
-                extend : float, optional
-                    Length of the data extension on the high-kinetic-energy side. Defaults to 30.
-                only_vary_B : bool, optional
-                    Whether to only vary the scaling factor `B` when calculating the background. Defaults to True.
-                    Varying all parameters of Tougaard background leads to instabilities and weird shaped backgrounds.
-
-                Returns
-                -------
-                array-like
-                    The Tougaard background of the XPS spectrum.
-
-                See Also ------- The following implementation is based on the four-parameter loss function as suggested by
-                R.Hesse [https://doi.org/10.1002/sia.3746].
-                """
         nonlocal bgrnd
 
         if np.array_equal(bgrnd[0], y) and bgrnd[2][0] == extend:
@@ -82,7 +77,7 @@ def tougaard_closure():
                 bg.append(bg_temp)
             bgrnd[1] = bg
             return np.asarray([B * elem for elem in bgrnd[1]])
-    return tougaard
+    return tougaard_helper
 
 # Create the tougaard function with the closure
 tougaard = tougaard_closure()
