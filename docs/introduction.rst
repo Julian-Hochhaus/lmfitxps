@@ -1,8 +1,5 @@
-lmfitxps
-========
-
 Introduction
-____________
+============
 Welcome to ``lmfitxps``, a small Python package designed as an extension for the popular `lmfit package <https://lmfit.github.io/lmfit-py/intro.html#>`_
 , specifically tailored for X-ray Photoelectron Spectroscopy (XPS) data analysis.
 
@@ -75,14 +72,14 @@ The available background models are:
 In addition to the models discussed above, ``lmfitxps`` provides all the underlying functions that serve as the basis for these models. Furthermore, the package includes functions for removing the Tougaard and Shirley background components before performing data fitting.
 
 Installation
-____________
+============
 
 To install ``lmfitxps``, simply use pip::
 
     $ pip install lmfitxps
 
 Getting Started
-_______________
+===============
 
 For a quick start guide and examples, please refer to the `Getting Started`_-section as well as the `lmfit`_ -documentation.
 
