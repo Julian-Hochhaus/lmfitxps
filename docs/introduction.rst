@@ -1,14 +1,15 @@
+lmfitxps
+========
+
 Introduction
-============
-lmfitxps: An XPS Fitting Extension for lmfit
-___________________________________________________________
+____________
 Welcome to ``lmfitxps``, a small Python package designed as an extension for the popular `lmfit package <https://lmfit.github.io/lmfit-py/intro.html#>`_
 , specifically tailored for X-ray Photoelectron Spectroscopy (XPS) data analysis.
 
 While ``lmfit`` provides simple tools to build complex fitting models for non-linear least-squares problems and applies these models to real data, as well as introduces several built-in models, ``lmfitxps`` acts as an extension to ``lmfit`` designed for XPS data analysis.
 ``lmfitxps`` provides a comprehensive set of functions and models that facilitate the fitting of XPS spectra.
 
-While ``lmfit`` already provides several useful models for fitting XPS data, it often proves insufficient in adequately representing experimental XPS data out of the box. In the context of XPS experiments, the observed data is a convolution of both the sample's underlying physical properties and a Gaussian component arising from experimental broadening.
+Although ``lmfit`` already provides several useful models for fitting XPS data, it often proves insufficient in adequately representing experimental XPS data out of the box. In the context of XPS experiments, the observed data is a convolution of both the sample's underlying physical properties and a Gaussian component arising from experimental broadening.
 
 This Gaussian distribution serves as an effective approximation for the convolution of three distinct Gaussian broadening functions, each of which contributes to the complex interplay inherent in the photoemission process:
 
@@ -74,14 +75,14 @@ The available background models are:
 In addition to the models discussed above, ``lmfitxps`` provides all the underlying functions that serve as the basis for these models. Furthermore, the package includes functions for removing the Tougaard and Shirley background components before performing data fitting.
 
 Installation
-------------
+____________
 
 To install ``lmfitxps``, simply use pip::
 
     $ pip install lmfitxps
 
 Getting Started
----------------
+_______________
 
 For a quick start guide and examples, please refer to the `Getting Started`_-section as well as the `lmfit`_ -documentation.
 

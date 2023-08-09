@@ -18,7 +18,7 @@
 # You can create any custom variable you would like, and they will be accessible
 # in the templates via {{ site.myvariable }}.
 
-title: lmfitxps: Additional Models for the lmfit-package
+title: lmfitxps- Additional Models for the lmfit-package
 author: Julian Hochhaus
 email: julian.hochhaus@tu-dortmund.de
 description: >- # this means to ignore newlines until "baseurl:"
@@ -49,7 +49,7 @@ aux_links:
 
 nav_external_links:
   - title: See on Github
-    url: https://github.com/Julian-Hochhaus/lmfit-additional-models
+    url: https://github.com/Julian-Hochhaus/lmfitxps
     hide_icon: false # set to true to hide the external link icon - defaults to false
 
 header_pages:
