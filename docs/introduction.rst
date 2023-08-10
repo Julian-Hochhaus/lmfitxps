@@ -72,14 +72,26 @@ The available background models are:
 In addition to the models discussed above, ``lmfitxps`` provides all the underlying functions that serve as the basis for these models. Furthermore, the package includes functions for removing the Tougaard and Shirley background components before performing data fitting.
 
 Installation
-============
+------------
+Stable version
+______________
 
-To install ``lmfitxps``, simply use pip::
+To install the stable version of ``lmfitxps``, simply use pip::
 
     $ pip install lmfitxps
 
+Development version
+___________________
+
+To install the development version or to contribute to ``lmfitxps``, please clone the GitHub repository:
+
+.. code-block:: sh
+
+   $ git clone https://github.com/Julian-Hochhaus/lmfitxps.git
+
+
 Getting Started
-===============
+---------------
 
 For a quick start guide and examples, please refer to the `Getting Started`_-section as well as the `lmfit`_ -documentation.
 

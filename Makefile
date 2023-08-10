@@ -8,7 +8,7 @@ test_backgrounds:
 	py.test tests/test_backgrounds.py
 test_models:
 	py.test tests/test_models.py
-examples:
-	python3 examples/example_fitting.py
+logo:
+	python3 examples/logo.py
 
-.PHONY: init test examples
+.PHONY: init test logo

@@ -15,6 +15,8 @@
    usage
    static_backgrounds
    lineshapes
+   contribution
+   about
 
 
 
