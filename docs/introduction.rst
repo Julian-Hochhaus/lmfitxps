@@ -80,6 +80,14 @@ To install the stable version of ``lmfitxps``, simply use pip::
 
     $ pip install lmfitxps
 
+If the required packages were not automatically installed during pip installation or are not yet present on your system, please install the following requirements:
+
+    lmfit>=1.1.0
+    matplotlib>=3.6
+    numpy>=1.19
+    scipy>=1.6
+
+
 Development version
 ___________________
 
