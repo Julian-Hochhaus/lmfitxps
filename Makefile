@@ -10,5 +10,8 @@ test_models:
 	py.test tests/test_models.py
 logo:
 	python3 examples/logo.py
+examples: te
+te:
+	PYTHONPATH=$$PYTHONPATH:$$(pwd) python3 examples/tougaard_extend.py
 
 .PHONY: init test logo
