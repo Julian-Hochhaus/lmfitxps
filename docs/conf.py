@@ -28,6 +28,8 @@ author = 'Julian A. Hochhaus'
 release = "1.3.0"
 
 
+sys.path.append(os.path.abspath('exts'))
+numfig = True
 # -- General configuration ---------------------------------------------------
 
 # Add any Sphinx extension module names here, as strings. They can be
@@ -36,6 +38,7 @@ release = "1.3.0"
 extensions = [
     'sphinx.ext.autodoc',
     'sphinx.ext.viewcode',
+    'sphinx_toolbox.collapse',
     'sphinx.ext.napoleon'
 ]
 # shpinx.ext.napoleon settings

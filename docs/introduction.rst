@@ -82,6 +82,8 @@ To install the stable version of ``lmfitxps``, simply use pip::
 
 If the required packages were not automatically installed during pip installation or are not yet present on your system, please install the following requirements:
 
+.. code-block::
+
     lmfit>=1.1.0
     matplotlib>=3.6
     numpy>=1.19
@@ -101,11 +103,9 @@ To install the development version or to contribute to ``lmfitxps``, please clon
 Getting Started
 ---------------
 
-For a quick start guide and examples, please refer to the `Getting Started`_-section as well as the `lmfit`_ -documentation.
+For a quick start guide and examples, please refer to the `lmfit`_ -documentation.
 
 .. _lmfit: https://lmfit.github.io/lmfit-py/intro.html
-.. _Getting Started: https://lmfitxps.readthedocs.io/en/gh-pages/usage.html
-
 
 .. note::
     lmfitxps is still under active development, and we welcome your feedback and contributions on the `GitHub repository`_. In addition, we are currently working on the documentation. If you have any questions, please open an issue or discussion on our `GitHub repository`_ .

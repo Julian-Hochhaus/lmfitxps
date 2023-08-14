@@ -13,5 +13,6 @@ logo:
 examples: te
 te:
 	PYTHONPATH=$$PYTHONPATH:$$(pwd) python3 examples/tougaard_extend.py
-
+te2:
+	PYTHONPATH=$$PYTHONPATH:$$(pwd) python3 examples/tougaard_extend2.py
 .PHONY: init test logo

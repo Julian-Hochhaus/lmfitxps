@@ -116,16 +116,12 @@ class FermiEdgeModel(lmfit.model.Model):
 
 
 class TougaardBG(lmfit.model.Model):
-    __doc__ = """Model of the Tougaard Background
-================================
+    __doc__ = """
+The TougaardBG model is based on the four-parameter loss function (4-PIESCS) as suggested by R.Hesse [1]_.
 
-The `TougaardBG` model is based on the four-parameter loss function (4-PIESCS) as suggested by R.Hesse [1].
-
-In addition to R.Hesse's approach, this model introduces the `extend` parameter, which enhances the agreement between the data and the Tougaard background by extending the data on the high-kinetic energy side (low binding energy side) using the mean value of the rightmost ten intensity values (with regard to kinetic energy scale, binding energy scale vice versa).
-
-The `extend` parameter represents the length of the data extension on the high-kinetic-energy side in eV and defaults to 0.
-
-This approach was found to lead to great convergence empirically with the extend value being in the range of 25eV to 75eV; however, the length of the data extension remains arbitrary and depends on the dataset.
+| In addition to R.Hesse's approach, this model introduces the `extend` parameter, which enhances the agreement between the data and the Tougaard background by extending the data on the high-kinetic energy side (low binding energy side) using the mean value of the rightmost ten intensity values (with regard to kinetic energy scale, binding energy scale vice versa).
+| The `extend` parameter represents the length of the data extension on the high-kinetic-energy side in eV and defaults to 0. 
+| This approach was found to lead to great convergence empirically with the extend value being in the range of 25eV to 75eV; however, the length of the data extension remains arbitrary and depends on the dataset.
 
 For further details, please refer to the documentation.
 
@@ -133,24 +129,46 @@ The Tougaard background is calculated using:
 
 .. math::
 
-    B(E) = \\int_{E}^{\\infty} \\frac{B \\cdot T}{{(C + C_d^2)^2} + D \\cdot T^2} \\cdot y(E') \\, dE'
+    B_T(E) = \\int_{E}^{\\infty} \\frac{B \\cdot T}{{(C + C_d^2)^2} + D \\cdot T^2} \\cdot y(E') \\, dE'
 
 where:
 
-    - :math:`B(E)` represents the Tougaard background at energy :math:`E`,
-    - :math:`y` is the measured intensity
-    - :math:`T` is :math:`E' - E`.
-    - :math:`B` parameter of the 4-PIESCS loss function as introduced by R.Hesse [1]_. Acts as the scaling factor of the Tougaard background model.
+    - :math:`B_T(E)` represents the Tougaard background at energy :math:`E`,
+    - :math:`y(E')` is the measured intensity at :math:`E'`,
+    - :math:`T` is the energy difference :math:`E' - E`.
+    - :math:`B` parameter of the 4-PIESCS loss function as introduced by R.Hesse [1]_. Acts as the scaling factor for the Tougaard background model.
     - :math:`C` , :math:`C_d` and :math:`D` are parameter of the 4-PIESCS loss function as introduced by R.Hesse [1]_.
 
 To generate the 2-PIESCS loss function, set :math:`C_d` to 1 and :math:`D` to 0. 
-Set :math:`C_d=1` and :math:`D` :math:`\!=0` to get the 3-PIESCS loss function.
+Set :math:`C_d=1` and :math:`D !=`  :math:`0` to get the 3-PIESCS loss function.
 
 For further details on the 2-PIESCS loss function, please refer to S.Tougaard [2]_, and for the
 3-PIESCS loss function, see S. Tougaard [3]_.
 
-Notes
------
+.. table:: Model-specific available parameters
+   :widths: auto
+
+   +-----------+---------------+----------------------------------------------------------------------------------------+
+   | Parameters|  Type         | Description                                                                            |
+   +===========+===============+========================================================================================+
+   | x         | :obj:`array`  | 1D-array containing the x-values (energies) of the spectrum.                           |
+   +-----------+---------------+----------------------------------------------------------------------------------------+
+   | y         | :obj:`array`  | 1D-array containing the y-values (intensities) of the spectrum.                        |
+   +-----------+---------------+----------------------------------------------------------------------------------------+
+   | B         | :obj:`float`  | B parameter of the 4-PIESCS loss function [1]_.                                        |
+   +-----------+---------------+----------------------------------------------------------------------------------------+
+   | C         | :obj:`float`  | C parameter of the 4-PIESCS loss function [1]_.                                        |
+   +-----------+---------------+----------------------------------------------------------------------------------------+
+   | C_d       | :obj:`float`  | C' parameter of the 4-PIESCS loss function [1]_.                                       |
+   +-----------+---------------+----------------------------------------------------------------------------------------+
+   | D         | :obj:`float`  | D parameter of the 4-PIESCS loss function [1]_.                                        |
+   +-----------+---------------+----------------------------------------------------------------------------------------+
+   | extend    | :obj:`float`  | Determines, how far the spectrum is extended on the right (in eV).                     |
+   +-----------+---------------+----------------------------------------------------------------------------------------+
+
+
+Hint
+----
 
 The `TougaardBG` class inherits from `lmfit.model.Model` and extends it with specific behavior and functionality related to the Tougaard 4-parameter loss function.
     
@@ -159,14 +177,13 @@ Args
     `independent_vars` : :obj:`list` of :obj:`str`, optional
         Arguments to the model function that are independent variables
         default is ['x']).
-    `prefix` : str, optional
+    `prefix` : :obj:`str`, optional
         String to prepend to parameter names, needed to add two Models
         that have parameter names in common.
     `nan_policy` : {'raise', 'propagate', 'omit'}, optional
         How to handle NaN and missing values in data. See Notes below.
     `**kwargs` : optional
         Keyword arguments to pass to :class:`Model`.
-    
 Notes
 -----
     1. `nan_policy` sets what to do when a NaN or missing value is seen in
@@ -176,11 +193,6 @@ Notes
         - `'propagate'` : do nothing
         - `'omit'` : drop missing data
 
-References
-----------
-.. [1] R. Hesse; R. Denecke (2011). `Improved Tougaard background calculation by introduction of fittable parameters for the inelastic electron scattering cross-section in the peak fit of photoelectron spectra with UNIFIT 2011.`,` 43(12), 1514–1526. doi:10.1002/sia.3746 `
-.. [2] Tougaard, S. (1987). "Low energy inelastic electron scattering properties of noble and transition metals" Solid State Communications, 61(9), 547–549. https://doi.org/10.1016/0038-1098(87)90166-9
-.. [3] Tougaard, S. (1997), Universality Classes of Inelastic Electron Scattering Cross-sections. Surf. Interface Anal., 25: 137-154. https://doi.org/10.1002/(SICI)1096-9918(199703)25:3<137::AID-SIA230>3.0.CO;2-L
 """
 
     def __init__(self, *args, **kwargs):
@@ -206,18 +218,20 @@ References
 
     def guess(self, data, x=None, **kwargs):
         """
+
         Generates initial parameter values for the model based on the provided data and optional arguments.
 
-        Args
-        ----
-            `data (array-like)`: Array containing the data (=intensities) to fit.
-            `x` (array-like): Array containing the independent variable values.
-            `**kwargs`: Arbitrary keyword arguments.
+        :param data: Array containing the data (=intensities) to fit.
+        :type data: array-like
+        :param x: Array containing the independent variable values.
+        :type x: array-like
+        :param kwargs: Arbitrary keyword arguments.
 
-        Returns:
-            Args: Initial parameter values for the model.
+        :returns: Initial parameter values for the model.
+        :rtype: lmfit.Parameters
 
-        Note:
+
+        :note:
             The method requires the 'x' parameter to be provided.
         """
         if x is None:

@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 import lmfit
 import os
 from examples.context import models
+import matplotlib as mpl
 def guess_extend(x,y, B, C, C_d, D):
     y_end=np.mean(y[-10:])
     delta_x=(x[-1]-x[0])/len(x)
@@ -31,16 +32,15 @@ data = np.genfromtxt(exec_dir + '/examples/clean_Au_4f.csv', delimiter=',', skip
 x = data[:, 0]
 y = data[:, 1]
 guess_extend(x,y,156.969,144.506,0.281,268.598)
-output_dir = os.path.join(exec_dir, 'examples', 'plots')
+output_dir = os.path.join(exec_dir, 'docs/src/', 'plots')
 os.makedirs(output_dir, exist_ok=True)
 
-# Create a combined plot
 combined_fig, combined_ax = plt.subplots(figsize=(6, 4))
-
+combined_fig.patch.set_facecolor('#FCFCFC')
 residual_fig, residual_ax = plt.subplots(figsize=(6, 4))
-
-for j in [0]+[i for i in range(27,35,2)]:
-    print(j)
+residual_fig.patch.set_facecolor('#FCFCFC')
+tg_bgs=[]
+for j in [0]+[i for i in range(27,35,1)]:
     params = lmfit.Parameters()
     params.add('tougaard_B', value=148.969)
     params.add('tougaard_C', value=144.506, vary=False)
@@ -50,12 +50,12 @@ for j in [0]+[i for i in range(27,35,2)]:
     params.add('d1_amplitude', value=71980, vary=False)
     params.add('d1_sigma', value=0.2126, vary=False)
     params.add('d1_gamma', value=0.01, vary=False)
-    params.add('d1_gaussian_sigma', value=0.0892)
-    params.add('d1_center', value=92.2273)
-    params.add('d1_soc', value=3.67127)
-    params.add('d1_height_ratio', value=0.7)
+    params.add('d1_gaussian_sigma', value=0.0892, vary=False)
+    params.add('d1_center', value=92.2273, vary=False)
+    params.add('d1_soc', value=3.67127, vary=False)
+    params.add('d1_height_ratio', value=0.7, vary=False)
     params.add('d1_fct_coster_kronig', value=1.04, vary=False)
-    params.add('d2_amplitude', value=56000, min=0)
+    params.add('d2_amplitude', value=43966, vary=False)
     params.add('d2_sigma', value=0.2, expr='d1_sigma')
     params.add('d2_gamma', value=0.0, expr='d1_gamma')
     params.add('d2_gaussian_sigma', value=0.14, expr='d1_gaussian_sigma')
@@ -71,19 +71,29 @@ for j in [0]+[i for i in range(27,35,2)]:
     else:
         fit_model = tougaard_model + d1+d2
 
-    result = fit_model.fit(y, params, y=y, x=x)
+    result = fit_model.fit(y, params, y=y, x=x, weights=1 /(np.sqrt(y)))
     comps = result.eval_components(x=x, y=y)
     print(result.fit_report())
     fig, (ax1, ax2) = plt.subplots(nrows=2,gridspec_kw={'height_ratios': [4, 1]}, sharex=True)
-
+    fig.patch.set_facecolor('#FCFCFC')
     # Data plot
-    ax1.plot(x, result.best_fit, label='Best Fit')
-    ax1.plot(x, y, 'x', markersize=4, label='Data Points')
+    cmap = mpl.colormaps['tab20']
+    ax1.plot(x, result.best_fit, label='Best Fit', color=cmap(0))
+    ax1.plot(x, y, 'x', markersize=4, label='Data Points', color=cmap(2))
     if j == 0:
-        ax1.plot(x, comps['const_'] + comps['tougaard_'], label='Tougaard + Const')
-        combined_ax.plot(x, comps['const_']+comps['tougaard_'], label=f'j={j}')
+        ax1.plot(x, comps['const_'] + comps['tougaard_'], label='Tougaard + Const', color='black')
+        ax1.plot(x, comps['d1_'] + comps['const_'] + comps['tougaard_'], color=cmap(4), label="bulk")
+        ax1.plot(x, comps['d2_'] + comps['const_'] + comps['tougaard_'], color=cmap(6), label="surface")
+        ax1.fill_between(x, comps['d1_'] + comps['const_'] + comps['tougaard_'], comps['const_'] +comps['tougaard_'], alpha=0.5,color=cmap(5))
+        ax1.fill_between(x, comps['d2_'] + comps['const_'] + comps['tougaard_'], comps['const_'] +comps['tougaard_'], alpha=0.5,color=cmap(7))
+        tg_bgs.append([comps['const_']+comps['tougaard_'], 0])
     else:
-        combined_ax.plot(x, comps['tougaard_'], label=f'j={j}')
+        if j>=28 and j<=30:
+            tg_bgs.append([comps['tougaard_'], j])
+        ax1.plot(x, comps['d1_'] + comps['tougaard_'], color=cmap(4), label="bulk")
+        ax1.plot(x, comps['d2_'] + comps['tougaard_'], color=cmap(6), label="surface")
+        ax1.fill_between(x, comps['d1_'] + comps['tougaard_'], comps['tougaard_'], alpha=0.5, color=cmap(5))
+        ax1.fill_between(x, comps['d2_'] + comps['tougaard_'], comps['tougaard_'], alpha=0.5, color=cmap(7))
         ax1.plot(x, comps['tougaard_'], label='Tougaard')
     ax1.legend()
     ax1.set_xlabel('energy in eV')
@@ -93,16 +103,16 @@ for j in [0]+[i for i in range(27,35,2)]:
     ax1.tick_params(axis='y', which='both', right=True,direction='in')
     ax2.tick_params(axis='x', which='both',top=True, direction='in')
     ax2.tick_params(axis='y', which='both', right=True, direction='in')
-    ax1.set_xticklabels([])
+    #ax1.set_xticklabels([])
     ax1.set_yticklabels([])
-    ax1.set_title(f'Value of extend Parameter: {j}')
+    ax1.set_title(f'extend={j}; red. chi-squared='+"{:.2f}".format(result.redchi))
     plt.subplots_adjust(hspace=0)
     ax1.set_xlim(np.min(x), np.max(x))
     # Residual plot
     residual = result.residual
-    ax2.plot(x, residual/np.sqrt(y), label='Residual')
+    ax2.plot(x, residual, label='Residual')
     ax2.legend()
-    ax2.set_xlabel('x')
+    ax2.set_xlabel('energy in eV')
     ax2.set_ylabel('Residual')
 
     # Save individual plots
@@ -115,6 +125,8 @@ for j in [0]+[i for i in range(27,35,2)]:
     residual_ax.plot(x, residual/np.sqrt(y), label=f'j={j}')
 
 # Save and close the combined plots
+for item in tg_bgs:
+    combined_ax.plot(x, item[0]/tg_bgs[0][0], label='extend={}'.format(item[1]))
 combined_ax.legend()
 combined_ax.set_xlabel('x')
 combined_ax.set_ylabel('y')
