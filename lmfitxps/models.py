@@ -123,7 +123,7 @@ The TougaardBG model is based on the four-parameter loss function (4-PIESCS) as 
 | The `extend` parameter represents the length of the data extension on the high-kinetic-energy side in eV and defaults to 0. 
 | This approach was found to lead to great convergence empirically with the extend value being in the range of 25eV to 75eV; however, the length of the data extension remains arbitrary and depends on the dataset.
 
-For further details, please refer to the documentation.
+For further details, please read more in :ref:`extend_parameter`.
 
 The Tougaard background is calculated using:
 
@@ -243,7 +243,10 @@ Notes
 class ShirleyBG(lmfit.model.Model):
     __doc__ = """
     Model of the Shirley background for X-ray photoelectron spectroscopy (XPS) spectra. 
-
+    This implementation calculates the Shirley background by integrating the step characteristic of the spectrum.
+    For further details, please refer to Shirley [6]_ or Jansson et al. [7]_.
+    
+    The Shirley background is calculated 
     Attributes:
         All attributes are inherited from the lmfit.model.Model class.
 

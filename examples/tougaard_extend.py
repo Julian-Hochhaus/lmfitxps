@@ -35,11 +35,14 @@ guess_extend(x,y,156.969,144.506,0.281,268.598)
 output_dir = os.path.join(exec_dir, 'docs/src/', 'plots')
 os.makedirs(output_dir, exist_ok=True)
 
-combined_fig, combined_ax = plt.subplots(figsize=(6, 4))
+combined_fig, (combined_ax1, combined_ax2) = plt.subplots(nrows=2,gridspec_kw={'height_ratios': [1, 1]}, sharex=True)
 combined_fig.patch.set_facecolor('#FCFCFC')
 residual_fig, residual_ax = plt.subplots(figsize=(6, 4))
 residual_fig.patch.set_facecolor('#FCFCFC')
+combined2_fig, combined2_ax = plt.subplots(figsize=(6, 4))
+combined2_fig.patch.set_facecolor('#FCFCFC')
 tg_bgs=[]
+tg_res=[]
 for j in [0]+[i for i in range(27,35,1)]:
     params = lmfit.Parameters()
     params.add('tougaard_B', value=148.969)
@@ -87,9 +90,11 @@ for j in [0]+[i for i in range(27,35,1)]:
         ax1.fill_between(x, comps['d1_'] + comps['const_'] + comps['tougaard_'], comps['const_'] +comps['tougaard_'], alpha=0.5,color=cmap(5))
         ax1.fill_between(x, comps['d2_'] + comps['const_'] + comps['tougaard_'], comps['const_'] +comps['tougaard_'], alpha=0.5,color=cmap(7))
         tg_bgs.append([comps['const_']+comps['tougaard_'], 0])
+        tg_res.append([result.residual,0])
     else:
         if j>=28 and j<=30:
             tg_bgs.append([comps['tougaard_'], j])
+            tg_res.append([result.residual, j])
         ax1.plot(x, comps['d1_'] + comps['tougaard_'], color=cmap(4), label="bulk")
         ax1.plot(x, comps['d2_'] + comps['tougaard_'], color=cmap(6), label="surface")
         ax1.fill_between(x, comps['d1_'] + comps['tougaard_'], comps['tougaard_'], alpha=0.5, color=cmap(5))
@@ -124,15 +129,32 @@ for j in [0]+[i for i in range(27,35,1)]:
     # Add residual to the combined residual plot
     residual_ax.plot(x, residual/np.sqrt(y), label=f'j={j}')
 
-# Save and close the combined plots
-for item in tg_bgs:
-    combined_ax.plot(x, item[0]/tg_bgs[0][0], label='extend={}'.format(item[1]))
-combined_ax.legend()
-combined_ax.set_xlabel('x')
-combined_ax.set_ylabel('y')
+for item in tg_bgs[1:]:
+    combined_ax1.plot(x, item[0]-tg_bgs[0][0], label='extend={}'.format(item[1]))
+
+for item in tg_res[1:]:
+    combined_ax2.plot(x, (item[0]-tg_res[0][0]), label='extend={}'.format(item[1]))
+combined_ax1.legend()
+combined_ax2.set_xlabel('energy in eV')
+combined_ax1.set_ylabel('intensity in arb. units')
+combined_ax1.set_title(r'$B_T(extend)-(B_T(extend=0)+B_C)$')
+combined_ax2.set_title(r'$Res(extend)$/$Res(extend=0)$')
 combined_plot_filename = os.path.join(output_dir, 'combined_plot.png')
 combined_fig.savefig(combined_plot_filename, dpi=300)
 plt.close(combined_fig)
+
+
+for item in tg_bgs:
+    combined2_ax.plot(x, item[0], label='extend={}'.format(item[1]))
+combined2_ax.legend()
+combined2_ax.set_ylim(2600,2800)
+combined2_ax.set_xlim(94.5,np.max(x))
+combined2_ax.set_xlabel('energy in eV')
+combined2_ax.set_ylabel('intensity in arb. units')
+combined2_ax.set_title(r'$B_T(extend)-(B_T(extend=0)+B_C)$')
+combined2_plot_filename = os.path.join(output_dir, 'combined2_plot.png')
+combined2_fig.savefig(combined2_plot_filename, dpi=300)
+plt.close(combined2_fig)
 
 residual_ax.legend()
 residual_ax.set_xlabel('x')

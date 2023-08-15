@@ -18,6 +18,7 @@ ___________________
     :member-order: bysource
     :show-inheritance:
 
+.. _extend_parameter:
 
 The 'extend' parameter in :class:`TougaardBG`
 ---------------------------------------------
@@ -69,11 +70,12 @@ To generate such a background, the :class:`TougaardBG` -model could be used with
 As shown in the figure below, the combination of :class:`TougaardBG` and :mod:`ConstantModel` already leads to a good agreement between fit and experimental data.
 
 .. figure:: src/plots/plot_0.png
-   :width: 100%
+   :width: 75%
    :alt: Au4f fitted with Tougaard background with added constant
 
 Due to the small asymmetry of the *Au4f*-signal only small improvement of the fit was achieved by using  :math:`extend` `!=` :math:`0`. This is shown in the four figures below.
-The ``reduced chi-squared``, which judges the agreement between model and experimental data, is only slightly decreased using :math:`28 \leq \text{extend} \leq 30`.
+The ``reduced chi-squared``, which judges the agreement between model and experimental data, is only slightly decreased using :math:`28 \leq \text{extend} \leq 30`. In addition, the figure below confirms, that using the :class:`TougaardBG` with :math:`extend!=0` is valid for modeling the background too.
+
 
 .. |extend28| image:: src/plots/plot_28.png
    :width: 100%
@@ -97,9 +99,19 @@ The ``reduced chi-squared``, which judges the agreement between model and experi
 |  |extend30| |  |extend31| |
 +-------------+-------------+
 
+The following figure illustrates the difference between :math:`B_T(\text{extend}) - (B_T(\text{extend}=0) + B_C)` and also displays the variation in residuals between models where :math:`\text{extend} \neq 0` and the model with :math:`\text{extend} = 0`.
 
+.. figure:: src/plots/combined_plot.png
+   :width: 75%
+   :alt: Comparison of backgrounds and residuals for different values for the extend parameter.
 
-.. collapse:: To see the full source code, please expand:
+Clear patterns emerge among the backgrounds with :math:`\text{extend} \neq 0`, showing a linear behaviour away from the peak. In contrast, the model with :math:`\text{extend} = 0` shows a distinct parabolic-like shape, depicted in the figure below. However, when compared to a mean background value of approximately :math:`I = 2700` counts, the discrepancies among various models remain confined within a 2% range.
+
+.. figure:: src/plots/combined2_plot.png
+   :width: 75%
+   :alt: Comparison of backgrounds away from the dublett structure.
+
+.. collapse:: To see the source code for generating the extend-parameter plots, please expand:
 
     .. literalinclude:: ../examples/tougaard_extend.py
 
@@ -120,4 +132,5 @@ __________
 .. [3] Tougaard, S. (1997). Universality Classes of Inelastic Electron Scattering Cross-sections. Surf. Interface Anal., 25: 137-154. https://doi.org/10.1002/(SICI)1096-9918(199703)25:3<137::AID-SIA230>3.0.CO;2-L
 .. [4] Tougaard, S. (2021). Practical guide to the use of backgrounds in quantitative XPS. Journal of Vacuum Science & Technology A; 39 (1): 011201. https://doi.org/10.1116/6.0000661
 .. [5] Tougaard, S. (1986). Background removal in x-ray photoelectron spectroscopy: Relative importance of intrinsic and extrinsic processes. Physical Review, 34(10), 6779–6783. https://doi.org/10.1103/physrevb.34.6779
-
+.. [6] Shirley, D. A. (1972). High-Resolution X-Ray photoemission spectrum of the valence bands of gold. Physical Review, 5(12), 4709–4714. https://doi.org/10.1103/physrevb.5.4709
+.. [7] Jansson, C., Tougaard, S., Beamson, G., Briggs, D., Davies, S.F., Rossi, A., Hauert, R., Hobi, G., Brown, N.M.D., Meenan, B.J., Anderson, C.A., Repoux, M., Malitesta, C. and Sabbatini, L. (1995), Intercomparison of algorithms for background correction in XPS. Surf. Interface Anal., 23: 484-494. https://doi.org/10.1002/sia.740230708
