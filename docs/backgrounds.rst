@@ -2,16 +2,20 @@ Background models
 =================
 .. include:: note.rst
 
-:class:`ShirleyBG`
-__________________
+.. _ShirleyBG:
+
+:py:class:`ShirleyBG`
+_____________________
 .. autoclass:: lmfitxps.models.ShirleyBG
     :members:
     :noindex:
     :member-order: bysource
     :show-inheritance:
 
-:class:`TougaardBG`
-___________________
+.. _TougaardBG:
+
+:py:class:`TougaardBG`
+______________________
 .. autoclass:: lmfitxps.models.TougaardBG
     :members:
     :noindex:
@@ -20,8 +24,8 @@ ___________________
 
 .. _extend_parameter:
 
-The 'extend' parameter in :class:`TougaardBG`
----------------------------------------------
+The 'extend' parameter in :ref:`TougaardBG`
+------------------------------------------------
 
 The challenge in calculating an approximation to the Tougaard background involves the following:
 
@@ -47,7 +51,7 @@ Due to the nature of the Tougaard background, one encounters the integral:
     B(E) = B_T(E) + B_C
 
 Here, :math:`B_C` is a constant term. However, when dealing with substantial asymmetry in the observed peaks, we found empirically that this approach using an added constant does not lead to an accurate approximation of the background.
-To generate such a background, the :class:`TougaardBG` -model could be used with ``extend`` set to :math:`0` and an additional :mod:`ConstantModel` from `lmfit <https://lmfit.github.io/lmfit-py/builtin_models.html#constantmodel>`_.
+To generate such a background, the :ref:`TougaardBG` -model could be used with ``extend`` set to :math:`0` and an additional :mod:`ConstantModel` from `lmfit <https://lmfit.github.io/lmfit-py/builtin_models.html#constantmodel>`_.
 
 .. code-block:: python
 
@@ -64,17 +68,17 @@ To generate such a background, the :class:`TougaardBG` -model could be used with
 
     # Set all other parameters
 
-| Using this background model, an *Au4f* spectrum was fitted. To model the dublett structure, a convolution of a gaussian with doniach profiles was used as implemented in :class:`ConvGaussianDoniachDublett`.
+| Using this background model, an *Au4f* spectrum was fitted. To model the dublett structure, a convolution of a gaussian with doniach profiles was used as implemented in :py:class:`ConvGaussianDoniachDublett`.
 | All peaks parameters were fixed and not varied in the fit to make it possible to compare the effect of different values for the ``extend`` parameter.
 
-As shown in the figure below, the combination of :class:`TougaardBG` and :mod:`ConstantModel` already leads to a good agreement between fit and experimental data.
+As shown in the figure below, the combination of :ref:`TougaardBG` and :mod:`ConstantModel` already leads to a good agreement between fit and experimental data.
 
 .. figure:: src/plots/plot_0.png
    :width: 75%
    :alt: Au4f fitted with Tougaard background with added constant
 
 Due to the small asymmetry of the *Au4f*-signal only small improvement of the fit was achieved by using  :math:`extend` `!=` :math:`0`. This is shown in the four figures below.
-The ``reduced chi-squared``, which judges the agreement between model and experimental data, is only slightly decreased using :math:`28 \leq \text{extend} \leq 30`. In addition, the figure below confirms, that using the :class:`TougaardBG` with :math:`extend!=0` is valid for modeling the background too.
+The ``reduced chi-squared``, which judges the agreement between model and experimental data, is only slightly decreased using :math:`28 \leq \text{extend} \leq 30`. In addition, the figure below confirms, that using the :ref:`TougaardBG` with :math:`extend!=0` is valid for modeling the background too.
 
 
 .. |extend28| image:: src/plots/plot_28.png
@@ -115,8 +119,8 @@ Clear patterns emerge among the backgrounds with :math:`\text{extend} \neq 0`, s
 
     .. literalinclude:: ../examples/tougaard_extend.py
 
-:class:`SlopeBG`
-________________
+:py:class:`SlopeBG`
+___________________
 
 .. autoclass:: lmfitxps.models.SlopeBG
     :members:
@@ -127,7 +131,7 @@ ________________
 
 References
 __________
-.. [1] R. Hesse; R. Denecke (2011). `Improved Tougaard background calculation by introduction of fittable parameters for the inelastic electron scattering cross-section in the peak fit of photoelectron spectra with UNIFIT 2011.`,` 43(12), 1514–1526. doi:10.1002/sia.3746 `
+.. [1] Hesse, R., Denecke, R. (2011). Improved Tougaard background calculation by introduction of fittable parameters for the inelastic electron scattering cross-section in the peak fit of photoelectron spectra with UNIFIT 2011.,43(12), 1514–1526. doi:10.1002/sia.3746
 .. [2] Tougaard, S. (1987). Low energy inelastic electron scattering properties of noble and transition metals" Solid State Communications, 61(9), 547–549. https://doi.org/10.1016/0038-1098(87)90166-9
 .. [3] Tougaard, S. (1997). Universality Classes of Inelastic Electron Scattering Cross-sections. Surf. Interface Anal., 25: 137-154. https://doi.org/10.1002/(SICI)1096-9918(199703)25:3<137::AID-SIA230>3.0.CO;2-L
 .. [4] Tougaard, S. (2021). Practical guide to the use of backgrounds in quantitative XPS. Journal of Vacuum Science & Technology A; 39 (1): 011201. https://doi.org/10.1116/6.0000661

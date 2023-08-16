@@ -246,25 +246,67 @@ class ShirleyBG(lmfit.model.Model):
     This implementation calculates the Shirley background by integrating the step characteristic of the spectrum.
     For further details, please refer to Shirley [6]_ or Jansson et al. [7]_.
     
-    The Shirley background is calculated 
-    Attributes:
-        All attributes are inherited from the lmfit.model.Model class.
+    The Shirley background is calculated using the following integral:
+    
+    .. math::
+        :label: shirley
+        
+        B_S(E)=k\\cdot \\int_{E}^{E_{\\text{right}}}\\left[I(E')-I_{\\text{right}}\\right] \, dE'
+        
+    The Shirley background is typically calculated iteratively using the following formula:
 
-    Methods:
-        `__init__(*args, **kwargs)`:
-            Initializes the ShirleyBG model instance. Calls the `super().__init__()` method of the parent class
-            (lmfit.model.Model) and sets parameter hints using _set_paramhints_prefix() method.
+    .. math::
+        :label: shirley2
 
-        `_set_paramhints_prefix()`:
-            Sets parameter hints for the model. Sets initial values and constraints for the parameters 'k' and 'const'.
+        B_{S, n}(E) = k_n \cdot \int_{E}^{E_{\text{right}}} [I(E') - I_{\text{right}} - B_{S, n-1}(E')] \, dE'
 
-        `guess(data, x=None, **kwargs)`:
-            Generates initial parameter values for the model based on the provided data and optional arguments.
+    The iterative process continues until the difference :math:`B_{S, n}(E) - B_{S, n-1}(E)` becomes smaller than a specified tolerance value :math:`tol`. This approach is implemented in the function referenced as :ref:`shirley_calculate`.
 
-    Note:
-        The ShirleyBG class inherits from lmfit.model.Model and extends it with specific behavior and functionality
-        related to the Shirley background for XPS spectra.
-    """ + lmfit.models.COMMON_INIT_DOC
+    However, calculating the Shirley background before fitting and calculating it with high precision in each fitting step are not practically meaningful. Instead, the Shirley background is computed according to the equation :math:numref:`shirley` within each iteration of the model optimization. This ensures that the Shirley background is adaptively determined during the fitting process, preserving the iterative concept of its calculation.
+
+    .. table:: Model-specific available parameters
+        :widths: auto
+
+        +------------+---------------+----------------------------------------------------------------------------------------------------+
+        | Parameters | Type          | Description                                                                                        |
+        +============+===============+====================================================================================================+
+        | x          | :obj:`array`  | 1D-array containing the x-values (energies) of the spectrum.                                       |
+        +------------+---------------+----------------------------------------------------------------------------------------------------+
+        | y          | :obj:`array`  | 1D-array containing the y-values (intensities) of the spectrum.                                    |
+        +------------+---------------+----------------------------------------------------------------------------------------------------+
+        | k          | :obj:`float`  | Shirley parameter :math:`k`, determines step-height of the Shirley background.                     |
+        +------------+---------------+----------------------------------------------------------------------------------------------------+
+        | const      | :obj:`float`  | Constant value added to the step-like Shirley background, often set to :math:`I_{\\text{right}}`.   |
+        +------------+---------------+----------------------------------------------------------------------------------------------------+
+
+        
+    Hint
+    ----
+    
+    The `ShirleyBG` class inherits from `lmfit.model.Model` and acts as a predefined model for calculating the Shirley background.
+        
+    Args
+    ----
+        `independent_vars` : :obj:`list` of :obj:`str`, optional
+            Arguments to the model function that are independent variables
+            default is ['x']).
+        `prefix` : :obj:`str`, optional
+            String to prepend to parameter names, needed to add two Models
+            that have parameter names in common.
+        `nan_policy` : {'raise', 'propagate', 'omit'}, optional
+            How to handle NaN and missing values in data. See Notes below.
+        `**kwargs` : optional
+            Keyword arguments to pass to :class:`Model`.
+    Notes
+    -----
+        1. `nan_policy` sets what to do when a NaN or missing value is seen in
+        the data. Should be one of:
+    
+            - `'raise'` : raise a `ValueError` (default)
+            - `'propagate'` : do nothing
+            - `'omit'` : drop missing data
+    
+    """
 
     def __init__(self, *args, **kwargs):
         """
@@ -288,15 +330,17 @@ class ShirleyBG(lmfit.model.Model):
         """
         Generates initial parameter values for the model based on the provided data and optional arguments.
 
-        Args:
-            data (array-like): Array containing the data to fit.
-            x (array-like): Array containing the independent variable values.
-            `**kwargs`: Arbitrary keyword arguments.
+        :param data: Array containing the data (=intensities) to fit.
+        :type data: array-like
+        :param x: Array containing the independent variable values.
+        :type x: array-like
+        :param kwargs: Arbitrary keyword arguments.
 
-        Returns:
-            Initial parameter values for the model.
+        :returns: Initial parameter values for the model.
+        :rtype: lmfit.Parameters
 
-        Note:
+
+        :note:
             The method requires the 'x' parameter to be provided.
         """
         if x is None:
