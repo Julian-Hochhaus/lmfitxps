@@ -39,6 +39,7 @@ extensions = [
     'sphinx.ext.autodoc',
     'sphinx.ext.viewcode',
     'sphinx_toolbox.collapse',
+    'sphinx_copybutton',
     'sphinx.ext.napoleon'
 ]
 # shpinx.ext.napoleon settings
