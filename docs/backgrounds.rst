@@ -41,7 +41,7 @@ Due to the nature of the Tougaard background, one encounters the integral:
 
 .. math::
 
-    B_T(E) = \int_{E}^{\infty} \frac{B \cdot T}{{(C + C_d^2)^2} + D \cdot T^2} \cdot y(E') \, dE'
+    B_T(E) = \int_{E}^{\infty} \frac{B \cdot T}{{(C + C_d \cdot T^2)^2} + D \cdot T^2} \cdot y(E') \, dE'
 
 | It's worth noting that the upper bound of the integral is set to :math:`\infty`. However, experimental data collection usually occurs within a finite energy range. Consequently, the need for suitable approximations to this integral arises.
 | A common approach is to limit the integral to the measured energy range. By doing so, the Tougaard integral approaches :math:`0` for the rightmost energy values (depending on the choosen constant!), leading to an inaccurate approximation of the measured data. To address this issue, the background is modified using the following equation:
@@ -131,10 +131,11 @@ ___________________
 
 References
 __________
-.. [1] Hesse, R., Denecke, R. (2011). Improved Tougaard background calculation by introduction of fittable parameters for the inelastic electron scattering cross-section in the peak fit of photoelectron spectra with UNIFIT 2011.,43(12), 1514–1526. doi:10.1002/sia.3746
-.. [2] Tougaard, S. (1987). Low energy inelastic electron scattering properties of noble and transition metals" Solid State Communications, 61(9), 547–549. https://doi.org/10.1016/0038-1098(87)90166-9
+.. [1] Hesse, R., Denecke, R. (2011). Improved Tougaard background calculation by introduction of fittable parameters for the inelastic electron scattering cross-section in the peak fit of photoelectron spectra with UNIFIT 2011.,43(12), 1514–1526. https://doi.org/10.1002/sia.3746
+.. [2] Tougaard, S. (1987). Low energy inelastic electron scattering properties of noble and transition metals. Solid State Communications, 61(9), 547–549. https://doi.org/10.1016/0038-1098(87)90166-9
 .. [3] Tougaard, S. (1997). Universality Classes of Inelastic Electron Scattering Cross-sections. Surf. Interface Anal., 25: 137-154. https://doi.org/10.1002/(SICI)1096-9918(199703)25:3<137::AID-SIA230>3.0.CO;2-L
 .. [4] Tougaard, S. (2021). Practical guide to the use of backgrounds in quantitative XPS. Journal of Vacuum Science & Technology A; 39 (1): 011201. https://doi.org/10.1116/6.0000661
 .. [5] Tougaard, S. (1986). Background removal in x-ray photoelectron spectroscopy: Relative importance of intrinsic and extrinsic processes. Physical Review, 34(10), 6779–6783. https://doi.org/10.1103/physrevb.34.6779
 .. [6] Shirley, D. A. (1972). High-Resolution X-Ray photoemission spectrum of the valence bands of gold. Physical Review, 5(12), 4709–4714. https://doi.org/10.1103/physrevb.5.4709
 .. [7] Jansson, C., Tougaard, S., Beamson, G., Briggs, D., Davies, S.F., Rossi, A., Hauert, R., Hobi, G., Brown, N.M.D., Meenan, B.J., Anderson, C.A., Repoux, M., Malitesta, C. and Sabbatini, L. (1995), Intercomparison of algorithms for background correction in XPS. Surf. Interface Anal., 23: 484-494. https://doi.org/10.1002/sia.740230708
+.. [8] Herrera-Gomez, A., Bravo-Sanchez,M., Aguirre-Tostado, F.S., Vazquez-Lepe, M.O. (2013) The slope-background for the near-peak regimen of photoemission spectra, Journal of Electron Spectroscopy and Related Phenomena, (189), 76-80. https://doi.org/10.1016/j.elspec.2013.07.006.
