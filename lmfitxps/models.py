@@ -129,7 +129,7 @@ The Tougaard background is calculated using:
 
 .. math::
 
-    B_T(E) = \\int_{E}^{\\infty} \\frac{B \\cdot T}{{(C + C_d^2)^2} + D \\cdot T^2} \\cdot y(E') \\, dE'
+    B_T(E) = \\int_{E}^{\\infty} \\frac{B \\cdot T}{{(C + C_d \\cdot T^2)^2} + D \\cdot T^2} \\cdot y(E') \\, dE'
 
 where:
 
@@ -251,14 +251,14 @@ class ShirleyBG(lmfit.model.Model):
     .. math::
         :label: shirley
         
-        B_S(E)=k\\cdot \\int_{E}^{E_{\\text{right}}}\\left[I(E')-I_{\\text{right}}\\right] \, dE'
+        B_S(E)=k\\cdot \\int_{E}^{E_{\\text{right}}}\\left[I(E')-I_{\\text{right}}\\right] \\, dE'
         
     The Shirley background is typically calculated iteratively using the following formula:
 
     .. math::
         :label: shirley2
 
-        B_{S, n}(E) = k_n \cdot \int_{E}^{E_{\text{right}}} [I(E') - I_{\text{right}} - B_{S, n-1}(E')] \, dE'
+        B_{S, n}(E) = k_n \\cdot \\int_{E}^{E_{\\text{right}}} [I(E') - I_{\\text{right}} - B_{S, n-1}(E')] \\, dE'
 
     The iterative process continues until the difference :math:`B_{S, n}(E) - B_{S, n-1}(E)` becomes smaller than a specified tolerance value :math:`tol`. This approach is implemented in the function referenced as :ref:`shirley_calculate`.
 
@@ -352,26 +352,71 @@ class ShirleyBG(lmfit.model.Model):
 class SlopeBG(lmfit.model.Model):
     __doc__ = """
     Model of the Slope background for X-ray photoelectron spectroscopy (XPS) spectra.
-    Slope Background implemented as suggested by A. Herrera-Gomez et al in [DOI: 10.1016/j.elspec.2013.07.006].
+    The Slope Background is implemented as suggested by A. Herrera-Gomez et al in [8]_.
+    Hereby, while the Shirley background is designed to account for the difference in background height between the two sides of a peak, the Slope background is designed to account for the change in slope.
+    This is done in a manner that resembles the Shirley method: 
+    
+    .. math::
+        :label: slope
+        
+        \\frac{B_{\\text{Slope}}(E)}{dE} = -k_{\\text{Slope}} \\cdot \\int_{E}^{E_{\\text{right}}} [I(E') - I_{\\text{right}} ] \\, dE'
 
-    Attributes:
-        All attributes are inherited from the lmfit.model.Model class.
+    where:
 
-    Methods:
-        `__init__(*args, **kwargs)`:
-            Initializes the SlopeBG model instance. Calls the `super().__init__()` method of the parent class
-            (lmfit.model.Model) and sets parameter hints using _set_paramhints_prefix() method.
+        - :math:`\\frac{B_{\\text{Slope}}(E)}{dE}` represents the slope of the background at energy :math:`E`,
+        - :math:`I(E')` is the measured intensity at :math:`E'`,
+        - :math:`I_{\\text{right}}` is the measured intensity of the rightmost datapoint,
+        - :math:`k_{\\text{Slope}}` parameter to scale the integral to resemble the measured data. This parameter is related to the Tougaard background. For details see [8]_.
+    
+    To get the background itself, equation :math:numref:`slope` is integrated:
+    
+    .. math::
+        :label: slope2
 
-        _set_paramhints_prefix():
-            Sets parameter hints for the model. Sets an initial value for the parameter 'k'.
+         B_{\\text{Slope}}(E)= \\int_{E}^{E_{\\text{right}}} [\\frac{B_{\\text{Slope}}(E')}{dE'}] \\, dE'
 
-        `guess(data, x=None, **kwargs)`:
-            Generates initial parameter values for the model based on the provided data and optional arguments.
+    
+    .. table:: Model-specific available parameters
+       :widths: auto
 
-    Note:
-        The SlopeBG class inherits from lmfit.model.Model and extends it with specific behavior and functionality
-        related to the Slope background for XPS spectra.
-    """ + lmfit.models.COMMON_INIT_DOC
+       +-----------+---------------+----------------------------------------------------------------------------------------+
+       | Parameters|  Type         | Description                                                                            |
+       +===========+===============+========================================================================================+
+       | x         | :obj:`array`  | 1D-array containing the x-values (energies) of the spectrum.                           |
+       +-----------+---------------+----------------------------------------------------------------------------------------+
+       | y         | :obj:`array`  | 1D-array containing the y-values (intensities) of the spectrum.                        |
+       +-----------+---------------+----------------------------------------------------------------------------------------+
+       | k         | :obj:`float`  | Slope parameter :math:`k_{\\text{Slope}}`.                                              |
+       +-----------+---------------+----------------------------------------------------------------------------------------+
+
+
+    Hint
+    ----
+
+    The `SlopeBG` class inherits from `lmfit.model.Model` and extends it with specific behavior and functionality related to the Slope background.
+
+    Args
+    ----
+        `independent_vars` : :obj:`list` of :obj:`str`, optional
+            Arguments to the model function that are independent variables
+            default is ['x']).
+        `prefix` : :obj:`str`, optional
+            String to prepend to parameter names, needed to add two Models
+            that have parameter names in common.
+        `nan_policy` : {'raise', 'propagate', 'omit'}, optional
+            How to handle NaN and missing values in data. See Notes below.
+        `**kwargs` : optional
+            Keyword arguments to pass to :class:`Model`.
+    Notes
+    -----
+        1. `nan_policy` sets what to do when a NaN or missing value is seen in
+        the data. Should be one of:
+
+            - `'raise'` : raise a `ValueError` (default)
+            - `'propagate'` : do nothing
+            - `'omit'` : drop missing data
+
+    """+ lmfit.models.COMMON_INIT_DOC
 
     def __init__(self, *args, **kwargs):
         """

@@ -14,7 +14,7 @@ def tougaard_closure():
     as suggested by [R.Hesse](https://doi.org/10.1002/sia.3746). In contrast to R.Hesse, the Tougaard background is not leveled with the data
     using a constant, but the background on the high-energy side is extended. This approach was found to lead to
     great convergence empirically, however, the length of the data extension remains arbitrary.
-    To reduce computing time, as long as only B should be variate (which makes sense in most cases), if the loss
+    To reduce computing time, as long as only B should be variated (which makes sense in most cases), if the loss
     function was already calculated, only B is further optimized.
     The 2-PIESCS loss function is created by using C_d=1 and D=0. Using C_d=-1 and D!=0 leads to the 3-PIESCS loss
     function.
@@ -218,8 +218,67 @@ def shirley_calculate(x, y, tol=1e-5, maxit=10):
 
 def tougaard_calculate(x, y, tb=2866, tc=1643, tcd=1, td=1, maxit=100):
     """
-    Calculate the Tougaard background for a given set of x and y data. Inspired from https://warwick.ac.uk/fac/sci/physics/research/condensedmatt/surface/people/james_mudd/igor/
+    Calculates the Tougaard background for a given set of x and y data. 
+    The calculation is hereby based on the four-parameter loss function (4-PIESCS) as suggested by R.Hesse [1]_.
+    The implementation was inspired by the IGOR implementation [2]_.
+    https://warwick.ac.uk/fac/sci/physics/research/condensedmatt/surface/people/james_mudd/igor/
+    The Tougaard background is calculated using:
 
+    .. math::
+
+        B_T(E) = \\int_{E}^{\\infty} \\frac{B \\cdot T}{{(C + C_d \\cdot T^2)^2} + D \\cdot T^2} \\cdot y(E') \\, dE'
+
+    where:
+
+        - :math:`B_T(E)` represents the Tougaard background at energy :math:`E`,
+        - :math:`y(E')` is the measured intensity at :math:`E'`,
+        - :math:`T` is the energy difference :math:`E' - E`.
+        - :math:`B` parameter of the 4-PIESCS loss function as introduced by R.Hesse [1]_. Acts as the scaling factor for the Tougaard background model. This parameter is the only one optimized/variated during the calculation.
+        - :math:`C` , :math:`C_d` and :math:`D` are parameter of the 4-PIESCS loss function as introduced by R.Hesse [1]_. These parameters are kept fixed during the calculation.
+
+    To generate the 2-PIESCS loss function, set :math:`C_d` to 1 and :math:`D` to 0.
+    Set :math:`C_d=1` and :math:`D !=`  :math:`0` to get the 3-PIESCS loss function.
+
+    For further details on the 2-PIESCS loss function, please refer to S.Tougaard [3]_, and for the
+    3-PIESCS loss function, see S. Tougaard [4]_.
+
+    .. table:: Model-specific available parameters
+        :widths: auto
+
+        +-----------+---------------+----------------------------------------------------------------------------------------+
+        | Parameters|  Type         | Description                                                                            |
+        +===========+===============+========================================================================================+
+        | x         | :obj:`array`  | 1D-array containing the x-values (energies) of the spectrum.                           |
+        +-----------+---------------+----------------------------------------------------------------------------------------+
+        | y         | :obj:`array`  | 1D-array containing the y-values (intensities) of the spectrum.                        |
+        +-----------+---------------+----------------------------------------------------------------------------------------+
+        | B         | :obj:`float`  | B parameter of the 4-PIESCS loss function [1]_.                                        |
+        +-----------+---------------+----------------------------------------------------------------------------------------+
+        | C         | :obj:`float`  | C parameter of the 4-PIESCS loss function [1]_.                                        |
+        +-----------+---------------+----------------------------------------------------------------------------------------+
+        | C_d       | :obj:`float`  | C' parameter of the 4-PIESCS loss function [1]_.                                       |
+        +-----------+---------------+----------------------------------------------------------------------------------------+
+        | D         | :obj:`float`  | D parameter of the 4-PIESCS loss function [1]_.                                        |
+        +-----------+---------------+----------------------------------------------------------------------------------------+
+
+
+    .. table:: Model-specific available parameters
+        :widths: auto
+
+       +-----------+------------------------+----------------------------------------------------------------------------------------+
+       | Parameters|  Type                  | Description                                                                            |
+       +===========+========================+========================================================================================+
+       | x         | :obj:`array`           | 1D-array containing the x-values (energies) of the spectrum.                           |
+       +-----------+------------------------+----------------------------------------------------------------------------------------+
+       | y         | :obj:`array`           | 1D-array containing the y-values (intensities) of the spectrum.                        |
+       +-----------+------------------------+----------------------------------------------------------------------------------------+
+       | tb        | :obj:`float`, optional | . Defaults to 2866.                                                                    |
+       +-----------+------------------------+----------------------------------------------------------------------------------------+
+       | y         | :obj:`array`           | 1D-array containing the y-values (intensities) of the spectrum.                        |
+       +-----------+------------------------+----------------------------------------------------------------------------------------+
+       | k         | :obj:`float`           | Slope parameter :math:`k_{\\text{Slope}}`.                                              |
+       +-----------+------------------------+----------------------------------------------------------------------------------------+
+    
     Args:
         x (array-like): The x-values of the data.
         y (array-like): The y-values of the data.
@@ -230,7 +289,7 @@ def tougaard_calculate(x, y, tb=2866, tc=1643, tcd=1, td=1, maxit=100):
         maxit (int, optional): Maximum number of iterations. Defaults to 100.
 
     Returns:
-        list: The Tougaard background calculated from the input data along with the final tb value.
+        :obj:`tuple` of (:obj:`numpy.ndarray`, :obj:`float`):  The function returns a tuple consisting of the calculated Tougaard background as a :obj:`numpy.array` and the Tougaard scale parameter :math:`B` as :obj:`float`.
     """
     # Sanity check: Do we actually have data to process here?
     if not (np.any(x) and np.any(y)):
@@ -273,4 +332,4 @@ def tougaard_calculate(x, y, tb=2866, tc=1643, tcd=1, td=1, maxit=100):
 
     print("Tougaard B:", tb, ", C:", tc, ", C':", tcd, ", D:", td)
 
-    return [np.asarray(y[len(y) - 1] + Btou), tb]
+    return np.asarray(y[len(y) - 1] + Btou), tb
