@@ -221,10 +221,10 @@ def tougaard_calculate(x, y, tb=2866, tc=1643, tcd=1, td=1, maxit=100):
     Calculates the Tougaard background for a given set of x and y data. 
     The calculation is hereby based on the four-parameter loss function (4-PIESCS) as suggested by R.Hesse [1]_.
     The implementation was inspired by the IGOR implementation [2]_.
-    https://warwick.ac.uk/fac/sci/physics/research/condensedmatt/surface/people/james_mudd/igor/
-    The Tougaard background is calculated using:
 
+    The Tougaard background is thereby calculated using:
     .. math::
+        :label: tougaard
 
         B_T(E) = \\int_{E}^{\\infty} \\frac{B \\cdot T}{{(C + C_d \\cdot T^2)^2} + D \\cdot T^2} \\cdot y(E') \\, dE'
 
@@ -242,51 +242,30 @@ def tougaard_calculate(x, y, tb=2866, tc=1643, tcd=1, td=1, maxit=100):
     For further details on the 2-PIESCS loss function, please refer to S.Tougaard [3]_, and for the
     3-PIESCS loss function, see S. Tougaard [4]_.
 
-    .. table:: Model-specific available parameters
+    During the calculation, the Tougaard background is calculated using the provided start parameters based on equation :math:numref:`tougaard`. This process is repeated, adapting the :math:`B` until convergence is reached or the number of iterations exceeds :math:`maxit`.
+    The convergence is hereby defined by the deviation between the calculated Tougaard background :math:`B_T(E)` and the measured intensity :math:`y(E)` at the leftmost datapoint.
+    The background is considered to converge if :math:`|B_T(E)-y(E)|< 10^{-6}\\cdot B_T(E)` is fulfilled.
+
+    .. table:: Available parameters
         :widths: auto
 
-        +-----------+---------------+----------------------------------------------------------------------------------------+
-        | Parameters|  Type         | Description                                                                            |
-        +===========+===============+========================================================================================+
-        | x         | :obj:`array`  | 1D-array containing the x-values (energies) of the spectrum.                           |
-        +-----------+---------------+----------------------------------------------------------------------------------------+
-        | y         | :obj:`array`  | 1D-array containing the y-values (intensities) of the spectrum.                        |
-        +-----------+---------------+----------------------------------------------------------------------------------------+
-        | B         | :obj:`float`  | B parameter of the 4-PIESCS loss function [1]_.                                        |
-        +-----------+---------------+----------------------------------------------------------------------------------------+
-        | C         | :obj:`float`  | C parameter of the 4-PIESCS loss function [1]_.                                        |
-        +-----------+---------------+----------------------------------------------------------------------------------------+
-        | C_d       | :obj:`float`  | C' parameter of the 4-PIESCS loss function [1]_.                                       |
-        +-----------+---------------+----------------------------------------------------------------------------------------+
-        | D         | :obj:`float`  | D parameter of the 4-PIESCS loss function [1]_.                                        |
-        +-----------+---------------+----------------------------------------------------------------------------------------+
-
-
-    .. table:: Model-specific available parameters
-        :widths: auto
-
-       +-----------+------------------------+----------------------------------------------------------------------------------------+
-       | Parameters|  Type                  | Description                                                                            |
-       +===========+========================+========================================================================================+
-       | x         | :obj:`array`           | 1D-array containing the x-values (energies) of the spectrum.                           |
-       +-----------+------------------------+----------------------------------------------------------------------------------------+
-       | y         | :obj:`array`           | 1D-array containing the y-values (intensities) of the spectrum.                        |
-       +-----------+------------------------+----------------------------------------------------------------------------------------+
-       | tb        | :obj:`float`, optional | . Defaults to 2866.                                                                    |
-       +-----------+------------------------+----------------------------------------------------------------------------------------+
-       | y         | :obj:`array`           | 1D-array containing the y-values (intensities) of the spectrum.                        |
-       +-----------+------------------------+----------------------------------------------------------------------------------------+
-       | k         | :obj:`float`           | Slope parameter :math:`k_{\\text{Slope}}`.                                              |
-       +-----------+------------------------+----------------------------------------------------------------------------------------+
-    
-    Args:
-        x (array-like): The x-values of the data.
-        y (array-like): The y-values of the data.
-        tb (float, optional): Initial background value. Defaults to 2866.
-        tc (float, optional): C parameter. Defaults to 1643.
-        tcd (float, optional): C' parameter. Defaults to 1.
-        td (float, optional): D parameter. Defaults to 1.
-        maxit (int, optional): Maximum number of iterations. Defaults to 100.
+        +-----------+---------------+------------------------------------------------------------------------------------------------------------------------------------------------+
+        | Parameter |  Type         | Description                                                                                                                                    |
+        +===========+===============+================================================================================================================================================+
+        | x         | :obj:`array`  | 1D-array containing the x-values (energies) of the spectrum.                                                                                   |
+        +-----------+---------------+------------------------------------------------------------------------------------------------------------------------------------------------+
+        | y         | :obj:`array`  | 1D-array containing the y-values (intensities) of the spectrum.                                                                                |
+        +-----------+---------------+------------------------------------------------------------------------------------------------------------------------------------------------+
+        | tb        | :obj:`float`  | B parameter of the 4-PIESCS loss function [1]_. Acts as scaling parameter and is optimized during the fit. Defaults to 2866 as starting value. |
+        +-----------+---------------+------------------------------------------------------------------------------------------------------------------------------------------------+
+        | tc        | :obj:`float`  | C parameter of the 4-PIESCS loss function [1]_. Defaults to 1643.                                                                              |
+        +-----------+---------------+------------------------------------------------------------------------------------------------------------------------------------------------+
+        | tcd       | :obj:`float`  | C' parameter of the 4-PIESCS loss function [1]_. Defaults to 1.                                                                                |
+        +-----------+---------------+------------------------------------------------------------------------------------------------------------------------------------------------+
+        | td        | :obj:`float`  | D parameter of the 4-PIESCS loss function [1]_. Defaults to 1.                                                                                 |
+        +-----------+---------------+------------------------------------------------------------------------------------------------------------------------------------------------+
+        | maxit     | :obj:`int`    | Maximum number of iterations before calculation is interrupted. Defaults to 100.                                                               |
+        +-----------+---------------+------------------------------------------------------------------------------------------------------------------------------------------------+
 
     Returns:
         :obj:`tuple` of (:obj:`numpy.ndarray`, :obj:`float`):  The function returns a tuple consisting of the calculated Tougaard background as a :obj:`numpy.array` and the Tougaard scale parameter :math:`B` as :obj:`float`.

@@ -388,8 +388,12 @@ class SlopeBG(lmfit.model.Model):
        +-----------+---------------+----------------------------------------------------------------------------------------+
        | k         | :obj:`float`  | Slope parameter :math:`k_{\\text{Slope}}`.                                              |
        +-----------+---------------+----------------------------------------------------------------------------------------+
-
-
+    
+    Warning
+    -------
+    Please note that the Slope background should not be solely relied upon to mimic a measured XPS background. It is advisable to use it combined with other background models, such as the Shirley background.
+    For further details, please refer to A. Herrera-Gomez et al [8]_. 
+    
     Hint
     ----
 
