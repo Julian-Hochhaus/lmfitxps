@@ -86,7 +86,6 @@ class FermiEdgeModel(lmfit.model.Model):
     __doc__ = "Model of a ThermalDistribution convoluted with a gaussian. " \
               "See also lmfit->lineshape.gaussian and lmfit->lineshape.thermal_distribution." \
               + lmfit.models.COMMON_INIT_DOC
-
     def __init__(self, *args, **kwargs):
         super().__init__(fermi_edge, *args, **kwargs)
         # limit several input parameters to positive values
@@ -101,6 +100,7 @@ class FermiEdgeModel(lmfit.model.Model):
     def guess(self, data, x=None, **kwargs):
         if x is None:
             return
+        kb = 8.6173e-5 # boltzmann constant in eV/K
         self.set_param_hint('center', value=np.mean(x), min=min(x), max=max(x))
         self.set_param_hint('kt', value=kb * 300, min=0, max=kb * 1500)
         self.set_param_hint('amplitude', value=(max(data) - min(data)) / 10, min=0, max=(max(data) - min(data)))
