@@ -11,10 +11,10 @@
 
    introduction
    backgrounds
-   peaks
-   usage
    static_backgrounds
+   peaks
    lineshapes
+   usage
    contribution
    about
 

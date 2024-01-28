@@ -8,49 +8,68 @@ __maintainer__ = "Julian Andreas Hochhaus"
 __email__ = "julian.hochhaus@tu-dortmund.de"
 
 def tougaard_closure():
-    """
-    Calculates the Tougaard background of an X-ray photoelectron spectroscopy (XPS) spectrum.
-    The following implementation is based on the four-parameter loss function (4-PIESCS)
-    as suggested by [R.Hesse](https://doi.org/10.1002/sia.3746). In contrast to R.Hesse, the Tougaard background is not leveled with the data
-    using a constant, but the background on the high-energy side is extended. This approach was found to lead to
-    great convergence empirically, however, the length of the data extension remains arbitrary.
-    To reduce computing time, as long as only B should be variated (which makes sense in most cases), if the loss
-    function was already calculated, only B is further optimized.
-    The 2-PIESCS loss function is created by using C_d=1 and D=0. Using C_d=-1 and D!=0 leads to the 3-PIESCS loss
-    function.
-    For further details on the 2-PIESCS loss function, see https://doi.org/10.1016/0038-1098(87)90166-9, and for the
-    3-PIESCS loss function, see https://doi.org/10.1002/(SICI)1096-9918(199703)25:3<137::AID-SIA230>3.0.CO;2-L
-
-    Parameters
-    ----------
-    x : array-like
-        1D-array containing the x-values (energies) of the spectrum.
-    y : array-like
-        1D-array containing the y-values (intensities) of the spectrum.
-    B : float
-        B parameter of the 4-PIESCS loss function as introduced by R.Hesse (https://doi.org/10.1002/sia.3746).
-        Acts as scaling factor of the Tougaard background model.
-    C : float
-        C parameter of the 4-PIESCS loss function as introduced by R.Hesse (https://doi.org/10.1002/sia.3746).
-    C_d : float
-        C' parameter of the 4-PIESCS loss function as introduced by R.Hesse (https://doi.org/10.1002/sia.3746).
-        Set to 1 for the 2-PIESCS loss function. (and D to 0). Set to -1 for the 3-PIESCS loss function (D!=0).
-    D : float
-        D parameter of the 4-PIESCS loss function as introduced by R.Hesse (https://doi.org/10.1002/sia.3746).
-        Set to 0 for the 2-PIESCS loss function (and C_d to 1). Set to !=0 for the 3-PIESCS loss function (C_d=-1).
-    extend : float, optional
-        Length of the data extension on the high-kinetic-energy side. Defaults to 0.
-    Returns
-    -------
-    array-like
-        The Tougaard background of the XPS spectrum.
-    See Also
-    --------
-    The following implementation is based on the four-parameter loss function as suggested by
-    R.Hesse [https://doi.org/10.1002/sia.3746].
-    """
     bgrnd = [[], [], []]  # This will act as the closure to store the precalculated data
     def tougaard_helper(x, y, B, C, C_d, D, extend=0):
+        """
+        .. Hint::
+            This function employs a closure to calculate the Tougaard sum only once and subsequently accesses it during subsequent executions of the optimization procedure. When calling `tougaard()`, you are effectively accessing the inner, nested function.
+
+            The concept is as follows:
+
+        .. code-block:: python
+
+            def tougaard_closure():
+                bgrnd=[] #store the Tougaard background to optimize performance by avoiding recalculations
+                def tougaard_helper():
+                    # do actual calculation
+
+            tougaard = tougaard_closure()
+
+        The Tougaard backlground is based on the four-parameter loss function (4-PIESCS) as suggested by R.Hesse [1]_.
+
+        | In addition to R.Hesse's approach, this model introduces the `extend` parameter, for details, please refer to :ref:`extend_parameter`.
+
+        The Tougaard background is calculated using:
+
+        .. math::
+
+            B_T(E) = \\int_{E}^{\\infty} \\frac{B \\cdot T}{{(C + C_d \\cdot T^2)^2} + D \\cdot T^2} \\cdot y(E') \\, dE'
+
+        where:
+
+            - :math:`B_T(E)` represents the Tougaard background at energy :math:`E`,
+            - :math:`y(E')` is the measured intensity at :math:`E'`,
+            - :math:`T` is the energy difference :math:`E' - E`.
+            - :math:`B` parameter of the 4-PIESCS loss function as introduced by R.Hesse [1]_. Acts as the scaling factor for the Tougaard background model.
+            - :math:`C` , :math:`C_d` and :math:`D` are parameter of the 4-PIESCS loss function as introduced by R.Hesse [1]_.
+
+        To generate the 2-PIESCS loss function, set :math:`C_d` to 1 and :math:`D` to 0.
+        Set :math:`C_d=1` and :math:`D !=`  :math:`0` to get the 3-PIESCS loss function.
+
+        For further details on the 2-PIESCS loss function, please refer to S.Tougaard [2]_, and for the 3-PIESCS loss function, see S. Tougaard [3]_.
+
+
+        .. table::
+            :widths: auto
+
+            +-----------+---------------+----------------------------------------------------------------------------------------+
+            | Parameters|  Type         | Description                                                                            |
+            +===========+===============+========================================================================================+
+            | x         | :obj:`array`  | 1D-array containing the x-values (energies) of the spectrum.                           |
+            +-----------+---------------+----------------------------------------------------------------------------------------+
+            | y         | :obj:`array`  | 1D-array containing the y-values (intensities) of the spectrum.                        |
+            +-----------+---------------+----------------------------------------------------------------------------------------+
+            | B         | :obj:`float`  | B parameter of the 4-PIESCS loss function [1]_.                                        |
+            +-----------+---------------+----------------------------------------------------------------------------------------+
+            | C         | :obj:`float`  | C parameter of the 4-PIESCS loss function [1]_.                                        |
+            +-----------+---------------+----------------------------------------------------------------------------------------+
+            | C_d       | :obj:`float`  | C' parameter of the 4-PIESCS loss function [1]_.                                       |
+            +-----------+---------------+----------------------------------------------------------------------------------------+
+            | D         | :obj:`float`  | D parameter of the 4-PIESCS loss function [1]_.                                        |
+            +-----------+---------------+----------------------------------------------------------------------------------------+
+            | extend    | :obj:`float`  | Determines, how far the spectrum is extended on the right (in eV). Defaults to 0.      |
+            +-----------+---------------+----------------------------------------------------------------------------------------+
+        """
 
         nonlocal bgrnd
 
@@ -109,26 +128,44 @@ def shirley(y, k, const):
 
 def slope(y, k):
     """
-    Calculates the slope background of an X-ray photoelectron spectroscopy (XPS) spectrum.
-    The slope background has some similarities to the Shirley background, e.g. the slope background is calculated
-    by integrating the Shirley background from each data point to the end.
-    Afterwards, a slope parameter k is used to scale the slope accordingly to the measured data.
+    Calculates the Slope background for X-ray photoelectron spectroscopy (XPS) spectra.
+    The Slope Background is implemented as suggested by A. Herrera-Gomez et al in [4]_.
+    Hereby, while the Shirley background is designed to account for the difference in background height between the two sides of a peak, the Slope background is designed to account for the change in slope.
+    This is done in a manner that resembles the Shirley method:
 
-    Parameters
-    ----------
-    y : array-like
-        1D-array containing the y-values (intensities) of the spectrum.
-    k : float
-        Slope of the linear function for determining the background.
+    .. math::
 
-    Returns
+        \\frac{B_{\\text{Slope}}(E)}{dE} = -k_{\\text{Slope}} \\cdot \\int_{E}^{E_{\\text{right}}} [I(E') - I_{\\text{right}} ] \\, dE'
+
+    where:
+
+        - :math:`\\frac{B_{\\text{Slope}}(E)}{dE}` represents the slope of the background at energy :math:`E`,
+        - :math:`I(E')` is the measured intensity at :math:`E'`,
+        - :math:`I_{\\text{right}}` is the measured intensity of the rightmost datapoint,
+        - :math:`k_{\\text{Slope}}` parameter to scale the integral to resemble the measured data. This parameter is related to the Tougaard background. For details see [4]_.
+
+    To get the background itself, equation :math:numref:`slope` is integrated:
+
+    .. math::
+
+         B_{\\text{Slope}}(E)= \\int_{E}^{E_{\\text{right}}} [\\frac{B_{\\text{Slope}}(E')}{dE'}] \\, dE'
+
+
+    .. table::
+       :widths: auto
+
+       +-----------+---------------+----------------------------------------------------------------------------------------+
+       | Parameters|  Type         | Description                                                                            |
+       +===========+===============+========================================================================================+
+       | y         | :obj:`array`  | 1D-array containing the y-values (intensities) of the spectrum.                        |
+       +-----------+---------------+----------------------------------------------------------------------------------------+
+       | k         | :obj:`float`  | Slope parameter :math:`k_{\\text{Slope}}`.                                              |
+       +-----------+---------------+----------------------------------------------------------------------------------------+
+
+    Warning
     -------
-    array-like
-        The slope background of the XPS spectrum.
-
-    See Also
-    --------
-    Slope Background implemented as suggested by A. Herrera-Gomez et al in [DOI: 10.1016/j.elspec.2013.07.006].
+    Please note that the Slope background should not be solely relied upon to mimic a measured XPS background. It is advisable to use it combined with other background models, such as the Shirley background.
+    For further details, please refer to A. Herrera-Gomez et al [4]_.
     """
     n = len(y)
     y_right = np.min(y)
@@ -144,17 +181,64 @@ def slope(y, k):
 
 def shirley_calculate(x, y, tol=1e-5, maxit=10):
     """
-    Calculate the Shirley background for a given set of x and y data.
-    Originally inspired by https://github.com/kaneod/physics/blob/master/python/specs.py.
+    Calculates the Shirley background for a given set of x (energy) and y (intensity) data.
 
-    Args:
-        x (array-like): The x-values of the data.
-        y (array-like): The y-values of the data.
-        tol (float, optional): Tolerance for convergence. Defaults to 1e-5.
-        maxit (int, optional): Maximum number of iterations. Defaults to 10.
+    The implementation was inspired by the python implementation of Kane O'Donnell [5]_.
+
+    The Shirley background is calculated iteratively:
+
+    .. math::
+        :label: shirleystatic
+
+        B_{S, n}(E) = k_n \\cdot \\int_{E}^{E_{\\text{right}}} [I(E') - I_{\\text{right}} - B_{S, n-1}(E')] \\, dE'
+
+
+    where:
+        - :math:`B_{S, n}(E)` represents the Shirley background at :math:`E` in the :math:`n`-th iteration,
+        - :math:`I(E')` is the intensity at :math:`E'`,
+        - :math:`k_n` is the Shirley scaling parameter for the :math:`n`-th iteration.
+        - :math:`E_{\\text{right}}` and :math:`I_{\\text{right}}` are the rightmost energy/intensity of the dataset.
+
+    The iterative process continues until the difference :math:`B_{S, n}(E) - B_{S, n-1}(E)` is suitable small or the number of maximum iterations :math:`maxit` is exceeded.
+
+    Initially, :math:`B_{S, 0}(E)=0` is choosen and :math:`k_n` is found from the requirement, that :math:`\\left(I_{\\text{left}}-B_{S, n}(E_{\\text{left}})\\right)=0`.
+    For further details, please refer to e.g. S. Tougaard [6]_ .
+
+    Typically, convergence is reached after :math:`\\approx 5` iterations. The convergence criterion is:
+
+     .. math::
+        :label: shirleyconvergence
+
+        \\left(B_{S, n}(E)-B_{S, n-1}(E)\\right)^2<tol
+
+
+    Parameters:
+    -----------
+
+    .. table:: Available parameters
+        :widths: auto
+
+        +-----------+---------------+--------------------------------------------------------------------------------------------------------------------------------+
+        | Parameter |  Type         | Description                                                                                                                    |
+        +===========+===============+================================================================================================================================+
+        | x         | :obj:`array`  | 1D-array containing the x-values (energies) of the spectrum.                                                                   |
+        +-----------+---------------+--------------------------------------------------------------------------------------------------------------------------------+
+        | y         | :obj:`array`  | 1D-array containing the y-values (intensities) of the spectrum.                                                                |
+        +-----------+---------------+--------------------------------------------------------------------------------------------------------------------------------+
+        | tol       | :obj:`float`  | Tolerance used to determine, when the convergence is reached in equation :math:numref:`shirleyconvergence`. Defaults to 1e-5.  |
+        +-----------+---------------+--------------------------------------------------------------------------------------------------------------------------------+
+        | maxit     | :obj:`int`    | Maximum number of iterations before calculation is interrupted. Defaults to 10.                                                |
+        +-----------+---------------+--------------------------------------------------------------------------------------------------------------------------------+
 
     Returns:
-        array: The Shirley background calculated from the input data.
+    --------
+        :obj:`array`:  The function returns the calculated Shirley background as an :obj:`array`.
+
+    Hint
+    ----
+
+    This function should be used, if you intend to calculate and remove the background from your data before starting the fitting procedure, if you instead wish to include the background in the fitting model, please use the desired background model, e.g. :ref:`ShirleyBG`.
+
     """
 
     n = len(y)
@@ -220,9 +304,11 @@ def tougaard_calculate(x, y, tb=2866, tc=1643, tcd=1, td=1, maxit=100):
     """
     Calculates the Tougaard background for a given set of x and y data. 
     The calculation is hereby based on the four-parameter loss function (4-PIESCS) as suggested by R.Hesse [1]_.
-    The implementation was inspired by the IGOR implementation [2]_.
 
-    The Tougaard background is thereby calculated using:
+    The implementation was inspired by the IGOR implementation of James Mudd [2]_.
+
+    The Tougaard background is calculated using:
+
     .. math::
         :label: tougaard
 
@@ -242,9 +328,14 @@ def tougaard_calculate(x, y, tb=2866, tc=1643, tcd=1, td=1, maxit=100):
     For further details on the 2-PIESCS loss function, please refer to S.Tougaard [3]_, and for the
     3-PIESCS loss function, see S. Tougaard [4]_.
 
-    During the calculation, the Tougaard background is calculated using the provided start parameters based on equation :math:numref:`tougaard`. This process is repeated, adapting the :math:`B` until convergence is reached or the number of iterations exceeds :math:`maxit`.
+    During the calculation, the Tougaard background is calculated using the provided start parameters based on equation :math:numref:`tougaard`. This process is iteratively repeated, adapting the :math:`B` parameter, until convergence is reached or the number of iterations exceeds :math:`maxit`.
+
     The convergence is hereby defined by the deviation between the calculated Tougaard background :math:`B_T(E)` and the measured intensity :math:`y(E)` at the leftmost datapoint.
-    The background is considered to converge if :math:`|B_T(E)-y(E)|< 10^{-6}\\cdot B_T(E)` is fulfilled.
+
+    The Tougaard background is considered to converge if :math:`|B_T(E)-y(E)|< 10^{-6}\\cdot B_T(E)` is fulfilled.
+
+    Parameters:
+    -----------
 
     .. table:: Available parameters
         :widths: auto
@@ -268,7 +359,14 @@ def tougaard_calculate(x, y, tb=2866, tc=1643, tcd=1, td=1, maxit=100):
         +-----------+---------------+------------------------------------------------------------------------------------------------------------------------------------------------+
 
     Returns:
+    --------
         :obj:`tuple` of (:obj:`numpy.ndarray`, :obj:`float`):  The function returns a tuple consisting of the calculated Tougaard background as a :obj:`numpy.array` and the Tougaard scale parameter :math:`B` as :obj:`float`.
+
+    Hint
+    ----
+
+    This function should be used, if you intend to calculate and remove the background from your data before starting the fitting procedure, if you instead wish to include the background in the fitting model, please use the desired background model, e.g. :ref:`TougaardBG`.
+
     """
     # Sanity check: Do we actually have data to process here?
     if not (np.any(x) and np.any(y)):

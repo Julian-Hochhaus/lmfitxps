@@ -2,6 +2,7 @@ Background models
 =================
 .. include:: note.rst
 
+
 .. _ShirleyBG:
 
 :py:class:`ShirleyBG`

@@ -7,11 +7,8 @@ Static backgrounds
 :py:func:`shirley_calculate`
 ____________________________
 
-.. autoclass:: lmfitxps.backgrounds.shirley_calculate
-    :members:
-    :noindex:
-    :member-order: bysource
-    :show-inheritance:
+
+.. autofunction:: lmfitxps.backgrounds.shirley_calculate
 
 :py:func:`tougaard_calculate`
 _____________________________
@@ -26,3 +23,5 @@ __________
 .. [2] Mudd, J. (2011). Igor procedure for subtracting XPS backgrounds. https://warwick.ac.uk/fac/sci/physics/research/condensedmatt/surface/people/james_mudd/igor/
 .. [3] Tougaard, S. (1987). Low energy inelastic electron scattering properties of noble and transition metals. Solid State Communications, 61(9), 547–549. https://doi.org/10.1016/0038-1098(87)90166-9
 .. [4] Tougaard, S. (1997). Universality Classes of Inelastic Electron Scattering Cross-sections. Surf. Interface Anal., 25: 137-154. https://doi.org/10.1002/(SICI)1096-9918(199703)25:3<137::AID-SIA230>3.0.CO;2-L
+.. [5] O'Donnell, K., (2013) Implementation of the auto-Shirley background. https://github.com/kaneod/physics/blob/master/python/specs.py
+.. [6] Tougaard, S. (2021). Practical guide to the use of backgrounds in quantitative XPS. Journal of Vacuum Science & Technology A; 39 (1): 011201. https://doi.org/10.1116/6.0000661
