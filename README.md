@@ -1,4 +1,4 @@
-![lmfitxps](docs/src/logo_large.png)
+![lmfitxps](src/logos/logo_large.png)
 ## Introduction
 Welcome to lmfitxps, a small Python package designed as an extension for the popular lmfit package , specifically tailored for X-ray Photoelectron Spectroscopy (XPS) data analysis.
 
