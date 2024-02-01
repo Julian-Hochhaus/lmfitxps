@@ -6,7 +6,7 @@
   <a href="https://doi.org/10.5281/zenodo.8181379"><img src="https://zenodo.org/badge/DOI/10.5281/zenodo.8181379.svg" alt="DOI"></a>
   <a href="https://lmfitxps.readthedocs.io/en/latest/?badge=latest"><img src="https://readthedocs.org/projects/lmfitxps/badge/?version=latest" alt="Documentation Status"></a>
   <a href="https://pypi.org/project/lmfitxps/"><img src="https://img.shields.io/pypi/v/PACKAGE?label=pypi%20lmfitxps" alt="PyPI"></a>
-  <a href="https://pypi.org/project/lmfitxps/"><img src="https://img.shields.io/pypi/dm/lmfitxps" alt="PyPI - Downloads"></a>
+  <a href="https://static.pepy.tech/badge/lmfitxps"><img src="https://static.pepy.tech/badge/lmfitxps" alt="Downloads"></a>
   <a href="https://opensource.org/licenses/"><img src="https://img.shields.io/badge/license-MIT-blue" alt="License: MIT"></a>
   <a href="https://en.wikipedia.org/wiki/Free_and_open-source_software"><img src="https://img.shields.io/badge/FOSS-100%25-green.svg?style=flat" alt="FOSS: 100%"></a>
 </p>
