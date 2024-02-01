@@ -1,4 +1,4 @@
-# lmfitxps
+![lmfitxps](docs/src/logo_large.png)
 ## Introduction
 Welcome to lmfitxps, a small Python package designed as an extension for the popular lmfit package , specifically tailored for X-ray Photoelectron Spectroscopy (XPS) data analysis.
 
@@ -11,3 +11,8 @@ For further details, please refer to the documentation of [lmfitxps](https://lmf
 To install lmfitxps, simply use pip:
 
  `pip install lmfitxps`
+
+ ## How to cite
+ [![DOI](https://zenodo.org/badge/642726930.svg)](https://zenodo.org/badge/latestdoi/642726930)
+
+
