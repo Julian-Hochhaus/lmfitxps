@@ -6,6 +6,7 @@ from lmfit import Model
 import lmfit
 from lmfit.models import guess_from_peak
 from scipy.signal import convolve as sc_convolve
+import scipy.constants
 
 __author__ = "Julian Andreas Hochhaus"
 __copyright__ = "Copyright 2023"
@@ -107,6 +108,7 @@ class FermiEdgeModel(lmfit.model.Model):
     def guess(self, data, x=None, **kwargs):
         if x is None:
             return
+        kb = scipy.constants.physical_constants['Boltzmann constant in eV/K'][0]
         self.set_param_hint('center', value=np.mean(x), min=min(x), max=max(x))
         self.set_param_hint('kt', value=kb * 300, min=0, max=kb * 1500)
         self.set_param_hint('amplitude', value=(max(data) - min(data)) / 10, min=0, max=(max(data) - min(data)))
