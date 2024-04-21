@@ -124,6 +124,8 @@ Clear patterns emerge among the backgrounds with :math:`\text{extend} \neq 0`, s
 
     .. literalinclude:: ../examples/tougaard_extend.py
 
+.. _SlopeBG:
+
 :py:class:`SlopeBG`
 ___________________
 
