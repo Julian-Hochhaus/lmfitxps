@@ -1,3 +1,5 @@
+.. _PeakModels:
+
 Peak Models
 =================
 .. include:: note.rst

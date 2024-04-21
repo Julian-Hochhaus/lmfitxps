@@ -1,5 +1,9 @@
+.. _BGModels:
+
 Background models
 =================
+
+
 .. include:: note.rst
 
 

@@ -1,6 +1,7 @@
 Model functions
 =================================
 .. include:: note.rst
+In the following subsections, all used model functions which are used for the lmfit models in :ref:`BGModels` as well as in :ref:`PeakModels` are documented.
 
 Lineshapes
 ___________
