@@ -21,7 +21,7 @@ For further details, please refer to, for example, the `Practical guide for curv
 ``lmfitxps`` therefore provides convolution functions based on scipy's and numpy's convolution functions to enable the user to build custom `lmfit CompositeModels <https://lmfit.github.io/lmfit-py/model.html#lmfit.model.CompositeModel>`_ using convolution of models.
 In addition, ``lmfitxps`` provides several pre-build models, which use the convolution of a gaussian with model functions of the lmfit-package and provides the user with the following models:
 
-.. table:: Peak models
+.. table:: Peak-like/Step-like models
    :widths: 35 65
 
    +-------------------------------------------+------------------------------------------------------------+
