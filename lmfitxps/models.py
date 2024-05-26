@@ -19,29 +19,28 @@ __email__ = "julian.hochhaus@tu-dortmund.de"
 
 class ConvGaussianDoniachSinglett(lmfit.model.Model):
     __doc__ = ("""
-    Model for fitting XPS signals with asymmetry. The model is a convolution of a Gaussian and a Doniach-Sunjic. 
-    Thereby, the Gaussian represents the gaussian-like influences of the experimental setup and the Doniach-Sunjic represents the sample's physics.
-      
-    Model of the Slope background for X-ray photoelectron spectroscopy (XPS) spectra.
-    The Slope Background is implemented as suggested b
-    Hereby, while the Shirley background is designed to account for the difference in background height between the two sides of a peak, the Slope background is designed to account for the change in slope.
-    This is done in a manner that resembles the Shirley method: 
-
+    A model based on a convolution of a Gaussian and a Doniach-Sunjic profile. The model is designed for fitting XPS signals with asymmetry. 
+    The Gaussian thereby represents the gaussian-like influences of the experimental setup and the Doniach-Sunjic represents the sample's physics.
+    
+    The implementation is based on the `Gaussian <https://github.com/lmfit/lmfit-py/blob/7710da6d7e878ffee0dc90a85286f1ec619fc20f/lmfit/lineshapes.py#L46>`_ 
+    and `Doniach <https://github.com/lmfit/lmfit-py/blob/7710da6d7e878ffee0dc90a85286f1ec619fc20f/lmfit/lineshapes.py#L296>`_ 
+    lineshapes of the LMFIT package. The convolution is calculated using the FFT-Convolution 
+    implemented in `scipy.signal.fftconvolve <https://docs.scipy.org/doc/scipy/reference/generated/scipy.signal.fftconvolve.html>`_.
+    
+    The Convolution is, in analogy to the Voigt profile given by:
+    
     .. math::
-        :label: singlett
+        
+        (DS * G)(E, A, \\mu, \\gamma, \\alpha, \\sigma) = A \\cdot \\int_{-\\infty}^{\\infty} DS(E', \\mu,\\gamma,\\alpha) G(E - E', \\sigma)\\, dE'
 
-        \\frac{B_{\\text{Slope}}(E)}{dE} = -k_{\\text{Slope}} \\cdot \\int_{E}^{E_{\\text{right}}} [I(E') - I_{\\text{right}} ] \\, dE'
+    The Doniach-Sunjic profile (:math:`DS`) is convolved with the Gaussian kernel (:math:`G`).
 
-    where:
-
-        - :math:`\\frac{B_{\\text{Slope}}(E)}{dE}` represents the slope of the background at energy :math:`E`,
-        - :math:`I(E')` is the measured intensity at :math:`E'`,
-        - :math:`I_{\\text{right}}` is the measured intensity of the rightmost datapoint,
-        - :math:`k_{\\text{Slope}}` parameter to scale the integral to resemble the measured data. This parameter is related to the Tougaard background. 
-
-    To get the backgroun
-
-
+    Thereby:
+        - :math:`A` is the amplitude of the peak profile,
+        - :math:`\\mu` is the center of the peak,
+        - :math:`\\gamma` represents the broadening of the Doniach-Sunjic lineshape,
+        - :math:`\\alpha` is the asymmetry of the Doniach-Sunjic lineshape,
+        - :math:`\\sigma` is the broadening parameter of the Gaussian kernel.
 
     .. table:: Model-specific available parameters
         :widths: auto
@@ -53,15 +52,15 @@ class ConvGaussianDoniachSinglett(lmfit.model.Model):
         +----------------+---------------+----------------------------------------------------------------------------------------+
         | y              | :obj:`array`  | 1D-array containing the y-values (intensities) of the spectrum.                        |
         +----------------+---------------+----------------------------------------------------------------------------------------+
-        | amplitude      | :obj:`float`  | Slope parameter :math:`k_{\\text{Slope}}`.                                              |
+        | amplitude      | :obj:`float`  | amplitude :math:`A` of the peak profile                                                |
         +----------------+---------------+----------------------------------------------------------------------------------------+
-        | sigma          | :obj:`float`  | Slope parameter :math:`k_{\\text{Slope}}`.                                              |
+        | sigma          | :obj:`float`  | Broadening of the Doniach-Sunjic.                                                      |
         +----------------+---------------+----------------------------------------------------------------------------------------+
-        | gamma          | :obj:`float`  | Slope parameter :math:`k_{\\text{Slope}}`.                                              |
+        | gamma          | :obj:`float`  | Asymmetry of the Doniach-Sunjic.                                                       |
         +----------------+---------------+----------------------------------------------------------------------------------------+
-        | gaussian_sigma | :obj:`float`  | Slope parameter :math:`k_{\\text{Slope}}`.                                              |
+        | center         | :obj:`float`  | Center of the peak profile.                                                            |
         +----------------+---------------+----------------------------------------------------------------------------------------+
-        | center         | :obj:`float`  | Slope parameter :math:`k_{\\text{Slope}}`.                                              |
+        | gaussian_sigma | :obj:`float`  | Broadening of the gaussian kernel.                                                     |
         +----------------+---------------+----------------------------------------------------------------------------------------+
 
 
@@ -93,6 +92,12 @@ class ConvGaussianDoniachSinglett(lmfit.model.Model):
 
     def guess(self, data, x=None, **kwargs):
         """
+        Hint
+        ----
+
+        Needs improvement and does not work great yet. E.g. using peakfind.
+
+
         Generates initial parameter values for the model based on the provided data and optional arguments.
 
         :param data: Array containing the data (=intensities) to fit.
@@ -120,11 +125,63 @@ class ConvGaussianDoniachSinglett(lmfit.model.Model):
 
 class ConvGaussianDoniachDublett(lmfit.model.Model):
     __doc__ = ("""
+    This model represents a dublett peak profile as observed in XPS spectra.
+    The model is basically the sum of two singlett peak profiles separated by the energy distance of the two orbitals with different spin-orbit state.
+    The implementation is therefore similar to the one of :ref:`ConvGaussianDoniachSinglett`.
+    It based on a convolution of a Gaussian and the sum of two Doniach-Sunjic profiles.
+
+    The implementation is based on the `Gaussian <https://github.com/lmfit/lmfit-py/blob/7710da6d7e878ffee0dc90a85286f1ec619fc20f/lmfit/lineshapes.py#L46>`_ 
+    and `Doniach <https://github.com/lmfit/lmfit-py/blob/7710da6d7e878ffee0dc90a85286f1ec619fc20f/lmfit/lineshapes.py#L296>`_ 
+    lineshapes of the LMFIT package. The convolution is calculated using the FFT-Convolution 
+    implemented in `scipy.signal.fftconvolve <https://docs.scipy.org/doc/scipy/reference/generated/scipy.signal.fftconvolve.html>`_.
+
+    .. math::
+
+         &((DS_1+DS_2) * G)(E, A, \\mu, \\gamma, \\alpha, \\sigma, d, r, ckf) \\\\ 
+         &= A \\cdot \\int_{-\\infty}^{\\infty} (DS_1(E', \\mu,\\gamma,\\alpha)+DS_2(E', \\mu,\\gamma,\\alpha, d,r,ckf)) G(E - E', \\sigma)\\, dE'
+
+    Thereby:
+        - :math:`A` is the amplitude of the larger peak of the dublett (P1),
+        - :math:`r` defines the ratio of the height of the smaller dublett-peak (P2) with respect to the larger one,
+        - :math:`\\mu` is the center of the larger peak (P1),
+        - :math:`d` is the energy distance between the two peaks as an absolute value
+        - :math:`\\gamma` represents the broadening of P1,
+        - :math:`ckf` scales the broadening of P2 with respect to P1 to represent the Coster-Kronig effect.
+        - :math:`\\alpha` is the asymmetry of both peaks,
+        - :math:`\\sigma` is the broadening parameter of the Gaussian kernel.
+        
+
+    .. table:: Model-specific available parameters
+        :widths: auto
+
+        +------------------+---------------+----------------------------------------------------------------------------------------+
+        | Parameters       |  Type         | Description                                                                            |
+        +==================+===============+========================================================================================+
+        | x                | :obj:`array`  | 1D-array containing the x-values (energies) of the spectrum.                           |
+        +------------------+---------------+----------------------------------------------------------------------------------------+
+        | y                | :obj:`array`  | 1D-array containing the y-values (intensities) of the spectrum.                        |
+        +------------------+---------------+----------------------------------------------------------------------------------------+
+        | amplitude        | :obj:`float`  | amplitude :math:`A` of the larger peak (P1) of the dublett.                            |
+        +------------------+---------------+----------------------------------------------------------------------------------------+
+        | sigma            | :obj:`float`  | Doniach-broadening of the larger peak (P1) of the dublett.                             |
+        +------------------+---------------+----------------------------------------------------------------------------------------+
+        | gamma            | :obj:`float`  | Asymmetry of the larger peak (P1) of the dublett.                                      |
+        +------------------+---------------+----------------------------------------------------------------------------------------+
+        | center           | :obj:`float`  | Center of peak P1.                                                                     |
+        +------------------+---------------+----------------------------------------------------------------------------------------+
+        | soc              | :obj:`float`  | Distance (:math:`d`) in energy between the two peaks.                                  |
+        +------------------+---------------+----------------------------------------------------------------------------------------+
+        | height_ratio     | :obj:`float`  | Ratio (:math:`r`) of the amplitude of the smaller peak with respect to the larger one. |
+        +------------------+---------------+----------------------------------------------------------------------------------------+
+        | fct_coster_kronig| :obj:`float`  | Factor :math:`ckf` scales P2's broadening with respect to P1 (Coster-Kronig effect).   |
+        +------------------+---------------+----------------------------------------------------------------------------------------+
+        | gaussian_sigma   | :obj:`float`  | Broadening of the gaussian kernel.                                                     |
+        +------------------+---------------+----------------------------------------------------------------------------------------+
 
     Hint
     ----
 
-    The `SlopeBG` class inherits from `lmfit.model.Model` and extends it with specific behavior and functionality related to the Slope background. Therefore, the `lmfit.model.Model` class parameters are inherited as well.
+    The `ConvGaussianDoniachDublett` class inherits from `lmfit.model.Model` and only extends it. Therefore, the `lmfit.model.Model` class parameters are inherited as well.
 
 
     **LMFIT: Common models documentation**
@@ -188,17 +245,57 @@ class ConvGaussianDoniachDublett(lmfit.model.Model):
 
 class FermiEdgeModel(lmfit.model.Model):
     __doc__ = ("""
+        This Model function is intended to fit the Fermi edge in XPS spectra.
+        To do so, a Fermi-Dirac Distribution is convoluted with a Gaussian.
 
-    Hint
-    ----
+        The implementation is based on the `Gaussian <https://github.com/lmfit/lmfit-py/blob/7710da6d7e878ffee0dc90a85286f1ec619fc20f/lmfit/lineshapes.py#L46>`_ 
+        and `thermal_distribution (form='fermi') <https://github.com/lmfit/lmfit-py/blob/7710da6d7e878ffee0dc90a85286f1ec619fc20f/lmfit/lineshapes.py#L371>`_ 
+        lineshapes of the LMFIT package. The convolution is calculated using the FFT-Convolution 
+        implemented in `scipy.signal.fftconvolve <https://docs.scipy.org/doc/scipy/reference/generated/scipy.signal.fftconvolve.html>`_.
 
-    The `SlopeBG` class inherits from `lmfit.model.Model` and extends it with specific behavior and functionality related to the Slope background. Therefore, the `lmfit.model.Model` class parameters are inherited as well.
+        The Convolution is given by:
+
+        .. math::
+
+           (FD * G)(E, A, \\mu, k_B T, \\sigma) = A \\cdot \\int_{-\\infty}^{\\infty} FD(E', \\mu,k_B T) G(E - E', \\sigma)\\, dE'
 
 
-    **LMFIT: Common models documentation**
-    """"""""""""""""""""""""""""""""""""
+        Thereby is:
+            - :math:`A` is the step-height of the Fermi edge,
+            - :math:`\\mu` is the Fermi level,
+            - :math:`k_B T` is the Boltzmann constant in eV/K multiplied by the temperature T in Kelvin (i.e. at room temperature: k_B T=k_B*T=8.6173e-5 eV/K*300K=0.02585 eV),
+            - :math:`\\sigma` is the broadening parameter of the Gaussian kernel.
 
-    """ + lmfit.models.COMMON_INIT_DOC)
+        .. table:: Model-specific available parameters
+            :widths: auto
+
+            +----------------+---------------+----------------------------------------------------------------------------------------+
+            | Parameters     |  Type         | Description                                                                            |
+            +================+===============+========================================================================================+
+            | x              | :obj:`array`  | 1D-array containing the x-values (energies) of the spectrum.                           |
+            +----------------+---------------+----------------------------------------------------------------------------------------+
+            | y              | :obj:`array`  | 1D-array containing the y-values (intensities) of the spectrum.                        |
+            +----------------+---------------+----------------------------------------------------------------------------------------+
+            | amplitude      | :obj:`float`  | step height :math:`A` of the fermi edge.                                               |
+            +----------------+---------------+----------------------------------------------------------------------------------------+
+            | center         | :obj:`float`  | position :math:`mu` of the edge (Fermi level)                                          |
+            +----------------+---------------+----------------------------------------------------------------------------------------+
+            | kt             | :obj:`float`  | Boltzmann constant in eV/K multiplied by temperature T in Kelvin (:math:`k_B T`)       |
+            +----------------+---------------+----------------------------------------------------------------------------------------+
+            | sigma          | :obj:`float`  | Broadening of the gaussian kernel.                                                     |
+            +----------------+---------------+----------------------------------------------------------------------------------------+
+
+
+        Hint
+        ----
+
+        The `ConvGaussianDoniachSinglett` class inherits from `lmfit.model.Model` and only extends it. Therefore, the `lmfit.model.Model` class parameters are inherited as well.
+
+
+        **LMFIT: Common models documentation**
+        """"""""""""""""""""""""""""""""""""
+
+        """ + lmfit.models.COMMON_INIT_DOC)
 
     def __init__(self, *args, **kwargs):
         super().__init__(fermi_edge, *args, **kwargs)
