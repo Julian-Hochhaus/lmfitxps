@@ -1,6 +1,6 @@
 .. _BGModels:
 
-Background models
+Background Models
 =================
 
 
@@ -17,6 +17,7 @@ _____________________
     :member-order: bysource
     :show-inheritance:
 
+
 .. _TougaardBG:
 
 :py:class:`TougaardBG`
@@ -26,6 +27,7 @@ ______________________
     :noindex:
     :member-order: bysource
     :show-inheritance:
+
 
 .. _extend_parameter:
 
@@ -123,6 +125,7 @@ Clear patterns emerge among the backgrounds with :math:`\text{extend} \neq 0`, s
 .. collapse:: To see the source code for generating the extend-parameter plots, please expand:
 
     .. literalinclude:: ../examples/tougaard_extend.py
+
 
 .. _SlopeBG:
 

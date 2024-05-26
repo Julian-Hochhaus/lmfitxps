@@ -9,7 +9,7 @@ Because these functions are not part of the fit model, they need to be applied s
 
 However, these static backgrounds are implemented iteratively, allowing their scaling parameters to be optimized for the input dataset.
 
-Especially in cases where the fitting model is complex, applying these static background functions to the dataset can aid in approximating suitable starting parameters for the background within the fit model.
+Especially in cases where the fitting model is complex, applying these static background functions to the dataset can aid in approximating suitable starting parameters for the :ref:`BGModels` within the fit model.
 
 .. _shirley_calculate:
 
