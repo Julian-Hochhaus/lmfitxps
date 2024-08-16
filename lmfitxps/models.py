@@ -102,7 +102,7 @@ class FermiEdgeModel(lmfit.model.Model):
     def _set_paramhints_prefix(self):
         self.set_param_hint('kt', value=0.02585, min=0)  # initial value is room temperature
         self.set_param_hint('sigma', value=0.2, min=0)
-        self.set_param_hint('center', value=100, min=0)
+        self.set_param_hint('center', value=100)
         self.set_param_hint('amplitude', value=100, min=0)
 
     def guess(self, data, x=None, **kwargs):
@@ -212,10 +212,10 @@ Notes
         The method sets initial values and constraints for the parameters 'B', 'C', 'C_d', 'D', and 'extend'.
 
         """
-        self.set_param_hint('B', value=2886, min=0)
-        self.set_param_hint('C', value=1643, min=0)
-        self.set_param_hint('C_d', value=1, min=0)
-        self.set_param_hint('D', value=1, min=0)
+        self.set_param_hint('B', value=2886)
+        self.set_param_hint('C', value=1643)
+        self.set_param_hint('C_d', value=1)
+        self.set_param_hint('D', value=1)
         self.set_param_hint('extend', value=0, vary=False)
 
     def guess(self, data, x=None, **kwargs):
@@ -325,8 +325,8 @@ class ShirleyBG(lmfit.model.Model):
         The method sets initial values and constraints for the parameters :math:`k` and :math: `const`.
 
         """
-        self.set_param_hint('k', value=0.03, min=0)
-        self.set_param_hint('const', value=1000, min=0)
+        self.set_param_hint('k', value=0.03)
+        self.set_param_hint('const', value=1000)
 
     def guess(self, data, x=None, **kwargs):
         """
