@@ -7,7 +7,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name='lmfitxps'
 readme='README.md'
-version = "2.1.4"
+version = "2.1.5"
 authors=[{name='Julian Hochhaus', email='julian.hochhaus@tu-dortmund.de'}]
 license={file='LICENSE', name='MIT'}
 description='This package contains additional models for the lmfit package for fitting XPS spectra.'
