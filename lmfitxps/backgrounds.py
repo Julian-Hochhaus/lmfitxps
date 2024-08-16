@@ -69,6 +69,10 @@ def tougaard_closure():
             +-----------+---------------+----------------------------------------------------------------------------------------+
             | extend    | :obj:`float`  | Determines, how far the spectrum is extended on the right (in eV). Defaults to 0.      |
             +-----------+---------------+----------------------------------------------------------------------------------------+
+
+        Note
+        ----
+        This function is used as the model function in the :ref:`TougaardBG` lmfitxps model.
         """
 
         nonlocal bgrnd
@@ -101,26 +105,50 @@ tougaard = tougaard_closure()
 
 def shirley(y, k, const):
     """
-    Calculates the Shirley background of an X-ray photoelectron spectroscopy (XPS) spectrum.
-    This implementation calculates the Shirley background by integrating the step characteristic of the spectrum.
+    Calculates the Shirley background for X-ray photoelectron spectroscopy (XPS) spectra by integrating the step characteristic of the spectrum.
+    For further details, please refer to Shirley [5]_ or Jansson et al. [6]_.
 
-    Parameters
-    ----------
-    y : array-like
-        1D-array containing the y-values (intensities) of the spectrum.
-    k : float
-        Slope of the step characteristic.
-    const : float
-        Constant offset of the step characteristic.
+    Hint
+    ----
+    The Shirley background is typically calculated iteratively using the following formula:
 
-    Returns
-    -------
-    array-like
-        The Shirley background of the XPS spectrum.
+    .. math::
+
+        B_{S, n}(E) = k_n \\cdot \\int_{E}^{E_{\\text{right}}} [I(E') - I_{\\text{right}} - B_{S, n-1}(E')] \\, dE'
+
+    Using this iterative process, makes it necessary to calculate the Shirley background before the fitting procedure, which is not always meaningful.
+    If you want to use this approach, please use the :ref:`shirley_calculate` function.
+
+
+    Here the Shirley background is computed according to:
+
+    .. math::
+
+        B_S(E)=k\\cdot \\int_{E}^{E_{\\text{right}}}\\left[I(E')-I_{\\text{right}}\\right] \\, dE'
+
+    In the actual implementation of the function, :math:`I_{\\text{right}}` corresponds to `const` and is substracted from the intensity data y (:math:`I(E)`) before calculating the integral by summing over the intensities.
+    This approach allows to include the Shirley background into the fitting model (e.g. as implemented in the :ref:`ShirleyBG` lmfitxps model) and to be adaptively determined during the fitting process, while still preserving the iterative concept of the Shirley's background calculation.
+
+    .. table::
+        :widths: auto
+
+        +------------+---------------+----------------------------------------------------------------------------------------------------+
+        | Parameters | Type          | Description                                                                                        |
+        +============+===============+====================================================================================================+
+        | y          | :obj:`array`  | 1D-array containing the y-values (intensities) of the spectrum.                                    |
+        +------------+---------------+----------------------------------------------------------------------------------------------------+
+        | k          | :obj:`float`  | Shirley parameter :math:`k`, determines step-height of the Shirley background.                     |
+        +------------+---------------+----------------------------------------------------------------------------------------------------+
+        | const      | :obj:`float`  | Constant value added to the step-like Shirley background, often set to :math:`I_{\\text{right}}`.   |
+        +------------+---------------+----------------------------------------------------------------------------------------------------+
+    Note
+    ----
+    This function is used as the model function in the :ref:`ShirleyBG` lmfitxps model.
+
     """
     n = len(y)
     y_right = const
-    y_temp = y - y_right  # step characteristic is better approximated if only the step without background is integrated
+    y_temp = y - y_right  # step characteristic is better approximated if only the step without  constant background offset is integrated
     bg = []
     for i in range(n):
         bg.append(np.sum(y_temp[i:]))
@@ -162,9 +190,13 @@ def slope(y, k):
        | k         | :obj:`float`  | Slope parameter :math:`k_{\\text{Slope}}`.                                              |
        +-----------+---------------+----------------------------------------------------------------------------------------+
 
+    Note
+    ----
+    This function is used as the model function in the :ref:`SlopeBG` lmfitxps model
+
     Warning
     -------
-    Please note that the Slope background should not be solely relied upon to mimic a measured XPS background. It is advisable to use it combined with other background models, such as the Shirley background.
+    Please note that the Slope background should not be solely relied upon to mimic a measured XPS background. It is advisable to use it combined with other background functions, such as the Shirley background.
     For further details, please refer to A. Herrera-Gomez et al [4]_.
     """
     n = len(y)

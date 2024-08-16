@@ -18,11 +18,62 @@ __email__ = "julian.hochhaus@tu-dortmund.de"
 
 
 class ConvGaussianDoniachSinglett(lmfit.model.Model):
-    """
-    Model of a Doniach dublett profile convoluted with a gaussian.
-    See also lmfit->lineshape.gaussian and lmfit->lineshape.doniach.
+    __doc__ = ("""
+    A model based on a convolution of a Gaussian and a Doniach-Sunjic profile. The model is designed for fitting XPS signals with asymmetry. 
+    The Gaussian thereby represents the gaussian-like influences of the experimental setup and the Doniach-Sunjic represents the sample's physics.
+    
+    The implementation is based on the `Gaussian <https://github.com/lmfit/lmfit-py/blob/7710da6d7e878ffee0dc90a85286f1ec619fc20f/lmfit/lineshapes.py#L46>`_ 
+    and `Doniach <https://github.com/lmfit/lmfit-py/blob/7710da6d7e878ffee0dc90a85286f1ec619fc20f/lmfit/lineshapes.py#L296>`_ 
+    lineshapes of the LMFIT package. The convolution is calculated using the FFT-Convolution 
+    implemented in `scipy.signal.fftconvolve <https://docs.scipy.org/doc/scipy/reference/generated/scipy.signal.fftconvolve.html>`_.
+    
+    The Convolution is, in analogy to the Voigt profile given by:
+    
+    .. math::
+        
+        (DS * G)(E, A, \\mu, \\gamma, \\alpha, \\sigma) = A \\cdot \\int_{-\\infty}^{\\infty} DS(E', \\mu,\\gamma,\\alpha) G(E - E', \\sigma)\\, dE'
 
-    """ + lmfit.models.COMMON_INIT_DOC
+    The Doniach-Sunjic profile (:math:`DS`) is convolved with the Gaussian kernel (:math:`G`).
+
+    Thereby:
+        - :math:`A` is the amplitude of the peak profile,
+        - :math:`\\mu` is the center of the peak,
+        - :math:`\\gamma` represents the broadening of the Doniach-Sunjic lineshape,
+        - :math:`\\alpha` is the asymmetry of the Doniach-Sunjic lineshape,
+        - :math:`\\sigma` is the broadening parameter of the Gaussian kernel.
+
+    .. table:: Model-specific available parameters
+        :widths: auto
+        
+        +----------------+---------------+----------------------------------------------------------------------------------------+
+        | Parameters     |  Type         | Description                                                                            |
+        +================+===============+========================================================================================+
+        | x              | :obj:`array`  | 1D-array containing the x-values (energies) of the spectrum.                           |
+        +----------------+---------------+----------------------------------------------------------------------------------------+
+        | y              | :obj:`array`  | 1D-array containing the y-values (intensities) of the spectrum.                        |
+        +----------------+---------------+----------------------------------------------------------------------------------------+
+        | amplitude      | :obj:`float`  | amplitude :math:`A` of the peak profile                                                |
+        +----------------+---------------+----------------------------------------------------------------------------------------+
+        | sigma          | :obj:`float`  | Broadening of the Doniach-Sunjic.                                                      |
+        +----------------+---------------+----------------------------------------------------------------------------------------+
+        | gamma          | :obj:`float`  | Asymmetry of the Doniach-Sunjic.                                                       |
+        +----------------+---------------+----------------------------------------------------------------------------------------+
+        | center         | :obj:`float`  | Center of the peak profile.                                                            |
+        +----------------+---------------+----------------------------------------------------------------------------------------+
+        | gaussian_sigma | :obj:`float`  | Broadening of the gaussian kernel.                                                     |
+        +----------------+---------------+----------------------------------------------------------------------------------------+
+
+
+    Hint
+    ----
+
+    The `ConvGaussianDoniachSinglett` class inherits from `lmfit.model.Model` and only extends it. Therefore, the `lmfit.model.Model` class parameters are inherited as well.
+
+
+    **LMFIT: Common models documentation**
+    """"""""""""""""""""""""""""""""""""
+
+    """ + lmfit.models.COMMON_INIT_DOC)
 
     def __init__(self, *args, **kwargs):
         super().__init__(singlett, *args, **kwargs)
@@ -40,6 +91,28 @@ class ConvGaussianDoniachSinglett(lmfit.model.Model):
         self.set_param_hint('lorentzian_fwhm', expr=l_fwhm_expr.format(pre=self.prefix))
 
     def guess(self, data, x=None, **kwargs):
+        """
+        Hint
+        ----
+
+        Needs improvement and does not work great yet. E.g. using peakfind.
+
+
+        Generates initial parameter values for the model based on the provided data and optional arguments.
+
+        :param data: Array containing the data (=intensities) to fit.
+        :type data: array-like
+        :param x: Array containing the independent variable (=energy).
+        :type x: array-like
+        :param kwargs: Initial guesses for the parameters of the model function.
+
+        :returns: Initial parameter values for the model.
+        :rtype: lmfit.Parameters
+
+
+        :note:
+            The method requires the 'x' parameter to be provided.
+        """
         if x is None:
             return
         doniach_pars = guess_from_peak(Model(doniach), data, x, negative=False)
@@ -51,10 +124,70 @@ class ConvGaussianDoniachSinglett(lmfit.model.Model):
 
 
 class ConvGaussianDoniachDublett(lmfit.model.Model):
-    """
-    Model of a Doniach profile convoluted with a gaussian.
-    See also lmfit->lineshape.gaussian and lmfit->lineshape.doniach.
-    """ + lmfit.models.COMMON_INIT_DOC
+    __doc__ = ("""
+    This model represents a dublett peak profile as observed in XPS spectra.
+    The model is basically the sum of two singlett peak profiles separated by the energy distance of the two orbitals with different spin-orbit state.
+    The implementation is therefore similar to the one of :ref:`ConvGaussianDoniachSinglett`.
+    It based on a convolution of a Gaussian and the sum of two Doniach-Sunjic profiles.
+
+    The implementation is based on the `Gaussian <https://github.com/lmfit/lmfit-py/blob/7710da6d7e878ffee0dc90a85286f1ec619fc20f/lmfit/lineshapes.py#L46>`_ 
+    and `Doniach <https://github.com/lmfit/lmfit-py/blob/7710da6d7e878ffee0dc90a85286f1ec619fc20f/lmfit/lineshapes.py#L296>`_ 
+    lineshapes of the LMFIT package. The convolution is calculated using the FFT-Convolution 
+    implemented in `scipy.signal.fftconvolve <https://docs.scipy.org/doc/scipy/reference/generated/scipy.signal.fftconvolve.html>`_.
+
+    .. math::
+
+         &((DS_1+DS_2) * G)(E, A, \\mu, \\gamma, \\alpha, \\sigma, d, r, ckf) \\\\ 
+         &= A \\cdot \\int_{-\\infty}^{\\infty} (DS_1(E', \\mu,\\gamma,\\alpha)+DS_2(E', \\mu,\\gamma,\\alpha, d,r,ckf)) G(E - E', \\sigma)\\, dE'
+
+    Thereby:
+        - :math:`A` is the amplitude of the larger peak of the dublett (P1),
+        - :math:`r` defines the ratio of the height of the smaller dublett-peak (P2) with respect to the larger one,
+        - :math:`\\mu` is the center of the larger peak (P1),
+        - :math:`d` is the energy distance between the two peaks as an absolute value
+        - :math:`\\gamma` represents the broadening of P1,
+        - :math:`ckf` scales the broadening of P2 with respect to P1 to represent the Coster-Kronig effect.
+        - :math:`\\alpha` is the asymmetry of both peaks,
+        - :math:`\\sigma` is the broadening parameter of the Gaussian kernel.
+        
+
+    .. table:: Model-specific available parameters
+        :widths: auto
+
+        +------------------+---------------+----------------------------------------------------------------------------------------+
+        | Parameters       |  Type         | Description                                                                            |
+        +==================+===============+========================================================================================+
+        | x                | :obj:`array`  | 1D-array containing the x-values (energies) of the spectrum.                           |
+        +------------------+---------------+----------------------------------------------------------------------------------------+
+        | y                | :obj:`array`  | 1D-array containing the y-values (intensities) of the spectrum.                        |
+        +------------------+---------------+----------------------------------------------------------------------------------------+
+        | amplitude        | :obj:`float`  | amplitude :math:`A` of the larger peak (P1) of the dublett.                            |
+        +------------------+---------------+----------------------------------------------------------------------------------------+
+        | sigma            | :obj:`float`  | Doniach-broadening of the larger peak (P1) of the dublett.                             |
+        +------------------+---------------+----------------------------------------------------------------------------------------+
+        | gamma            | :obj:`float`  | Asymmetry of the larger peak (P1) of the dublett.                                      |
+        +------------------+---------------+----------------------------------------------------------------------------------------+
+        | center           | :obj:`float`  | Center of peak P1.                                                                     |
+        +------------------+---------------+----------------------------------------------------------------------------------------+
+        | soc              | :obj:`float`  | Distance (:math:`d`) in energy between the two peaks.                                  |
+        +------------------+---------------+----------------------------------------------------------------------------------------+
+        | height_ratio     | :obj:`float`  | Ratio (:math:`r`) of the amplitude of the smaller peak with respect to the larger one. |
+        +------------------+---------------+----------------------------------------------------------------------------------------+
+        | fct_coster_kronig| :obj:`float`  | Factor :math:`ckf` scales P2's broadening with respect to P1 (Coster-Kronig effect).   |
+        +------------------+---------------+----------------------------------------------------------------------------------------+
+        | gaussian_sigma   | :obj:`float`  | Broadening of the gaussian kernel.                                                     |
+        +------------------+---------------+----------------------------------------------------------------------------------------+
+
+    Hint
+    ----
+
+    The `ConvGaussianDoniachDublett` class inherits from `lmfit.model.Model` and only extends it. Therefore, the `lmfit.model.Model` class parameters are inherited as well.
+
+
+    **LMFIT: Common models documentation**
+    """"""""""""""""""""""""""""""""""""
+
+    """ + lmfit.models.COMMON_INIT_DOC)
 
     def __init__(self, *args, **kwargs):
         super().__init__(dublett, *args, **kwargs)
@@ -77,6 +210,28 @@ class ConvGaussianDoniachDublett(lmfit.model.Model):
         self.set_param_hint('lorentzian_fwhm_p2', expr=l_p2_fwhm_expr.format(pre=self.prefix))
 
     def guess(self, data, x=None, **kwargs):
+        """
+        Hint
+        ----
+
+        Needs improvement and does not work great yet. E.g. using peakfind.
+
+
+        Generates initial parameter values for the model based on the provided data and optional arguments.
+
+        :param data: Array containing the data (=intensities) to fit.
+        :type data: array-like
+        :param x: Array containing the independent variable (=energy).
+        :type x: array-like
+        :param kwargs: Initial guesses for the parameters of the model function.
+
+        :returns: Initial parameter values for the model.
+        :rtype: lmfit.Parameters
+
+
+        :note:
+            The method requires the 'x' parameter to be provided.
+        """
         if x is None:
             return
         doniach_pars = guess_from_peak(Model(doniach), data, x, negative=False)
@@ -89,10 +244,58 @@ class ConvGaussianDoniachDublett(lmfit.model.Model):
 
 
 class FermiEdgeModel(lmfit.model.Model):
-    """
-    Model of a ThermalDistribution convoluted with a gaussian.
-    See also lmfit->lineshape.gaussian and lmfit->lineshape.thermal_distribution.
-    """ + lmfit.models.COMMON_INIT_DOC
+    __doc__ = ("""
+        This Model function is intended to fit the Fermi edge in XPS spectra.
+        To do so, a Fermi-Dirac Distribution is convoluted with a Gaussian.
+
+        The implementation is based on the `Gaussian <https://github.com/lmfit/lmfit-py/blob/7710da6d7e878ffee0dc90a85286f1ec619fc20f/lmfit/lineshapes.py#L46>`_ 
+        and `thermal_distribution (form='fermi') <https://github.com/lmfit/lmfit-py/blob/7710da6d7e878ffee0dc90a85286f1ec619fc20f/lmfit/lineshapes.py#L371>`_ 
+        lineshapes of the LMFIT package. The convolution is calculated using the FFT-Convolution 
+        implemented in `scipy.signal.fftconvolve <https://docs.scipy.org/doc/scipy/reference/generated/scipy.signal.fftconvolve.html>`_.
+
+        The Convolution is given by:
+
+        .. math::
+
+           (FD * G)(E, A, \\mu, k_B T, \\sigma) = A \\cdot \\int_{-\\infty}^{\\infty} FD(E', \\mu,k_B T) G(E - E', \\sigma)\\, dE'
+
+
+        Thereby is:
+            - :math:`A` is the step-height of the Fermi edge,
+            - :math:`\\mu` is the Fermi level,
+            - :math:`k_B T` is the Boltzmann constant in eV/K multiplied by the temperature T in Kelvin (i.e. at room temperature: k_B T=k_B*T=8.6173e-5 eV/K*300K=0.02585 eV),
+            - :math:`\\sigma` is the broadening parameter of the Gaussian kernel.
+
+        .. table:: Model-specific available parameters
+            :widths: auto
+
+            +----------------+---------------+----------------------------------------------------------------------------------------+
+            | Parameters     |  Type         | Description                                                                            |
+            +================+===============+========================================================================================+
+            | x              | :obj:`array`  | 1D-array containing the x-values (energies) of the spectrum.                           |
+            +----------------+---------------+----------------------------------------------------------------------------------------+
+            | y              | :obj:`array`  | 1D-array containing the y-values (intensities) of the spectrum.                        |
+            +----------------+---------------+----------------------------------------------------------------------------------------+
+            | amplitude      | :obj:`float`  | step height :math:`A` of the fermi edge.                                               |
+            +----------------+---------------+----------------------------------------------------------------------------------------+
+            | center         | :obj:`float`  | position :math:`mu` of the edge (Fermi level)                                          |
+            +----------------+---------------+----------------------------------------------------------------------------------------+
+            | kt             | :obj:`float`  | Boltzmann constant in eV/K multiplied by temperature T in Kelvin (:math:`k_B T`)       |
+            +----------------+---------------+----------------------------------------------------------------------------------------+
+            | sigma          | :obj:`float`  | Broadening of the gaussian kernel.                                                     |
+            +----------------+---------------+----------------------------------------------------------------------------------------+
+
+
+        Hint
+        ----
+
+        The `ConvGaussianDoniachSinglett` class inherits from `lmfit.model.Model` and only extends it. Therefore, the `lmfit.model.Model` class parameters are inherited as well.
+
+
+        **LMFIT: Common models documentation**
+        """"""""""""""""""""""""""""""""""""
+
+        """ + lmfit.models.COMMON_INIT_DOC)
 
     def __init__(self, *args, **kwargs):
         super().__init__(fermi_edge, *args, **kwargs)
@@ -106,6 +309,22 @@ class FermiEdgeModel(lmfit.model.Model):
         self.set_param_hint('amplitude', value=100, min=0)
 
     def guess(self, data, x=None, **kwargs):
+        """
+        Generates initial parameter values for the model based on the provided data and optional arguments.
+
+        :param data: Array containing the data (=intensities) to fit.
+        :type data: array-like
+        :param x: Array containing the independent variable (=energy).
+        :type x: array-like
+        :param kwargs: Initial guesses for the parameters of the model function.
+
+        :returns: Initial parameter values for the model.
+        :rtype: lmfit.Parameters
+
+
+        :note:
+            The method requires the 'x' parameter to be provided.
+        """
         if x is None:
             return
         kb = scipy.constants.physical_constants['Boltzmann constant in eV/K'][0]
@@ -118,84 +337,68 @@ class FermiEdgeModel(lmfit.model.Model):
 
 
 class TougaardBG(lmfit.model.Model):
-    __doc__ = """
-The TougaardBG model is based on the four-parameter loss function (4-PIESCS) as suggested by R.Hesse [1]_.
+    __doc__ = ("""
+    The TougaardBG model is based on the four-parameter loss function (4-PIESCS) as suggested by R.Hesse [1]_.
 
-| In addition to R.Hesse's approach, this model introduces the `extend` parameter, which enhances the agreement between the data and the Tougaard background by extending the data on the high-kinetic energy side (low binding energy side) using the mean value of the rightmost ten intensity values (with regard to kinetic energy scale, binding energy scale vice versa).
-| The `extend` parameter represents the length of the data extension on the high-kinetic-energy side in eV and defaults to 0. 
-| This approach was found to lead to great convergence empirically with the extend value being in the range of 25eV to 75eV; however, the length of the data extension remains arbitrary and depends on the dataset.
+    | In addition to R.Hesse's approach, this model introduces the `extend` parameter, which enhances the agreement between the data and the Tougaard background by extending the data on the high-kinetic energy side (low binding energy side) using the mean value of the rightmost ten intensity values (with regard to kinetic energy scale, binding energy scale vice versa).
+    | The `extend` parameter represents the length of the data extension on the high-kinetic-energy side in eV and defaults to 0. 
+    | This approach was found to lead to great convergence empirically with the extend value being in the range of 25eV to 75eV; however, the length of the data extension remains arbitrary and depends on the dataset.
 
-For further details, please read more in :ref:`extend_parameter`.
+    For further details, please read more in :ref:`extend_parameter`.
 
-The Tougaard background is calculated using:
+    The Tougaard background is calculated using:
 
-.. math::
+    .. math::
 
-    B_T(E) = \\int_{E}^{\\infty} \\frac{B \\cdot T}{{(C + C_d \\cdot T^2)^2} + D \\cdot T^2} \\cdot y(E') \\, dE'
+        B_T(E) = \\int_{E}^{\\infty} \\frac{B \\cdot T}{{(C + C_d \\cdot T^2)^2} + D \\cdot T^2} \\cdot y(E') \\, dE'
 
-where:
+    where:
 
-    - :math:`B_T(E)` represents the Tougaard background at energy :math:`E`,
-    - :math:`y(E')` is the measured intensity at :math:`E'`,
-    - :math:`T` is the energy difference :math:`E' - E`.
-    - :math:`B` parameter of the 4-PIESCS loss function as introduced by R.Hesse [1]_. Acts as the scaling factor for the Tougaard background model.
-    - :math:`C` , :math:`C_d` and :math:`D` are parameter of the 4-PIESCS loss function as introduced by R.Hesse [1]_.
+        - :math:`B_T(E)` represents the Tougaard background at energy :math:`E`,
+        - :math:`y(E')` is the measured intensity at :math:`E'`,
+        - :math:`T` is the energy difference :math:`E' - E`.
+        - :math:`B` parameter of the 4-PIESCS loss function as introduced by R.Hesse [1]_. Acts as the scaling factor for the Tougaard background model.
+        - :math:`C` , :math:`C_d` and :math:`D` are parameter of the 4-PIESCS loss function as introduced by R.Hesse [1]_.
 
-To generate the 2-PIESCS loss function, set :math:`C_d` to 1 and :math:`D` to 0. 
-Set :math:`C_d=1` and :math:`D !=`  :math:`0` to get the 3-PIESCS loss function.
+    To generate the 2-PIESCS loss function, set :math:`C_d` to 1 and :math:`D` to 0. 
+    Set :math:`C_d=1` and :math:`D !=`  :math:`0` to get the 3-PIESCS loss function.
 
-For further details on the 2-PIESCS loss function, please refer to S.Tougaard [2]_, and for the
-3-PIESCS loss function, see S. Tougaard [3]_.
+    For further details on the 2-PIESCS loss function, please refer to S.Tougaard [2]_, and for the
+    3-PIESCS loss function, see S. Tougaard [3]_.
 
-.. table:: Model-specific available parameters
-   :widths: auto
+    .. table:: Model-specific available parameters
+        :widths: auto
 
-   +-----------+---------------+----------------------------------------------------------------------------------------+
-   | Parameters|  Type         | Description                                                                            |
-   +===========+===============+========================================================================================+
-   | x         | :obj:`array`  | 1D-array containing the x-values (energies) of the spectrum.                           |
-   +-----------+---------------+----------------------------------------------------------------------------------------+
-   | y         | :obj:`array`  | 1D-array containing the y-values (intensities) of the spectrum.                        |
-   +-----------+---------------+----------------------------------------------------------------------------------------+
-   | B         | :obj:`float`  | B parameter of the 4-PIESCS loss function [1]_.                                        |
-   +-----------+---------------+----------------------------------------------------------------------------------------+
-   | C         | :obj:`float`  | C parameter of the 4-PIESCS loss function [1]_.                                        |
-   +-----------+---------------+----------------------------------------------------------------------------------------+
-   | C_d       | :obj:`float`  | C' parameter of the 4-PIESCS loss function [1]_.                                       |
-   +-----------+---------------+----------------------------------------------------------------------------------------+
-   | D         | :obj:`float`  | D parameter of the 4-PIESCS loss function [1]_.                                        |
-   +-----------+---------------+----------------------------------------------------------------------------------------+
-   | extend    | :obj:`float`  | Determines, how far the spectrum is extended on the right (in eV).                     |
-   +-----------+---------------+----------------------------------------------------------------------------------------+
+        +-----------+---------------+----------------------------------------------------------------------------------------+
+        | Parameters|  Type         | Description                                                                            |
+        +===========+===============+========================================================================================+
+        | x         | :obj:`array`  | 1D-array containing the x-values (energies) of the spectrum.                           |
+        +-----------+---------------+----------------------------------------------------------------------------------------+
+        | y         | :obj:`array`  | 1D-array containing the y-values (intensities) of the spectrum.                        |
+        +-----------+---------------+----------------------------------------------------------------------------------------+
+        | B         | :obj:`float`  | B parameter of the 4-PIESCS loss function [1]_.                                        |
+        +-----------+---------------+----------------------------------------------------------------------------------------+
+        | C         | :obj:`float`  | C parameter of the 4-PIESCS loss function [1]_.                                        |
+        +-----------+---------------+----------------------------------------------------------------------------------------+
+        | C_d       | :obj:`float`  | C' parameter of the 4-PIESCS loss function [1]_.                                       |
+        +-----------+---------------+----------------------------------------------------------------------------------------+
+        | D         | :obj:`float`  | D parameter of the 4-PIESCS loss function [1]_.                                        |
+        +-----------+---------------+----------------------------------------------------------------------------------------+
+        | extend    | :obj:`float`  | Determines, how far the spectrum is extended on the right (in eV).                     |
+        +-----------+---------------+----------------------------------------------------------------------------------------+
 
 
-Hint
-----
+    Hint
+    ----
 
-The `TougaardBG` class inherits from `lmfit.model.Model` and extends it with specific behavior and functionality related to the Tougaard 4-parameter loss function.
+    The `TougaardBG` class inherits from `lmfit.model.Model` and extends it with specific behavior and functionality related to the Tougaard 4-parameter loss function. Therefore, the `lmfit.model.Model` class parameters are inherited as well.
+
+
+    **LMFIT: Common models documentation**
+    """"""""""""""""""""""""""""""""""""
     
-Args
-----
-    `independent_vars` : :obj:`list` of :obj:`str`, optional
-        Arguments to the model function that are independent variables
-        default is ['x']).
-    `prefix` : :obj:`str`, optional
-        String to prepend to parameter names, needed to add two Models
-        that have parameter names in common.
-    `nan_policy` : {'raise', 'propagate', 'omit'}, optional
-        How to handle NaN and missing values in data. See Notes below.
-    `**kwargs` : optional
-        Keyword arguments to pass to :class:`Model`.
-Notes
------
-    1. `nan_policy` sets what to do when a NaN or missing value is seen in
-    the data. Should be one of:
-
-        - `'raise'` : raise a `ValueError` (default)
-        - `'propagate'` : do nothing
-        - `'omit'` : drop missing data
-
-"""
+    
+    """ + lmfit.models.COMMON_INIT_DOC)
 
     def __init__(self, *args, **kwargs):
         """
@@ -220,14 +423,13 @@ Notes
 
     def guess(self, data, x=None, **kwargs):
         """
-
         Generates initial parameter values for the model based on the provided data and optional arguments.
 
         :param data: Array containing the data (=intensities) to fit.
         :type data: array-like
-        :param x: Array containing the independent variable values.
+        :param x: Array containing the independent variable (=energy).
         :type x: array-like
-        :param kwargs: Arbitrary keyword arguments.
+        :param kwargs: Initial guesses for the parameters of the model function.
 
         :returns: Initial parameter values for the model.
         :rtype: lmfit.Parameters
@@ -243,7 +445,7 @@ Notes
 
 
 class ShirleyBG(lmfit.model.Model):
-    __doc__ = """
+    __doc__ = ("""
     Model of the Shirley background for X-ray photoelectron spectroscopy (XPS) spectra. 
     This implementation calculates the Shirley background by integrating the step characteristic of the spectrum.
     For further details, please refer to Shirley [6]_ or Jansson et al. [7]_.
@@ -285,30 +487,13 @@ class ShirleyBG(lmfit.model.Model):
     Hint
     ----
     
-    The `ShirleyBG` class inherits from `lmfit.model.Model` and acts as a predefined model for calculating the Shirley background.
-        
-    Args
-    ----
-        `independent_vars` : :obj:`list` of :obj:`str`, optional
-            Arguments to the model function that are independent variables
-            default is ['x']).
-        `prefix` : :obj:`str`, optional
-            String to prepend to parameter names, needed to add two Models
-            that have parameter names in common.
-        `nan_policy` : {'raise', 'propagate', 'omit'}, optional
-            How to handle NaN and missing values in data. See Notes below.
-        `**kwargs` : optional
-            Keyword arguments to pass to :class:`Model`.
-    Notes
-    -----
-        1. `nan_policy` sets what to do when a NaN or missing value is seen in
-        the data. Should be one of:
+    The `ShirleyBG` class inherits from `lmfit.model.Model` and acts as a predefined model for calculating the Shirley background.Therefore, the `lmfit.model.Model` class parameters are inherited as well.
+
+
+    **LMFIT: Common models documentation**
+    """"""""""""""""""""""""""""""""""""
     
-            - `'raise'` : raise a `ValueError` (default)
-            - `'propagate'` : do nothing
-            - `'omit'` : drop missing data
-    
-    """
+    """ + lmfit.models.COMMON_INIT_DOC)
 
     def __init__(self, *args, **kwargs):
         """
@@ -334,9 +519,9 @@ class ShirleyBG(lmfit.model.Model):
 
         :param data: Array containing the data (=intensities) to fit.
         :type data: array-like
-        :param x: Array containing the independent variable values.
+        :param x: Array containing the independent variable (=energy).
         :type x: array-like
-        :param kwargs: Arbitrary keyword arguments.
+        :param kwargs: Initial guesses for the parameters of the model function.
 
         :returns: Initial parameter values for the model.
         :rtype: lmfit.Parameters
@@ -352,7 +537,7 @@ class ShirleyBG(lmfit.model.Model):
 
 
 class SlopeBG(lmfit.model.Model):
-    __doc__ = """
+    __doc__ = ("""
     Model of the Slope background for X-ray photoelectron spectroscopy (XPS) spectra.
     The Slope Background is implemented as suggested by A. Herrera-Gomez et al in [8]_.
     Hereby, while the Shirley background is designed to account for the difference in background height between the two sides of a peak, the Slope background is designed to account for the change in slope.
@@ -399,30 +584,13 @@ class SlopeBG(lmfit.model.Model):
     Hint
     ----
 
-    The `SlopeBG` class inherits from `lmfit.model.Model` and extends it with specific behavior and functionality related to the Slope background.
+    The `SlopeBG` class inherits from `lmfit.model.Model` and extends it with specific behavior and functionality related to the Slope background. Therefore, the `lmfit.model.Model` class parameters are inherited as well.
 
-    Args
-    ----
-        `independent_vars` : :obj:`list` of :obj:`str`, optional
-            Arguments to the model function that are independent variables
-            default is ['x']).
-        `prefix` : :obj:`str`, optional
-            String to prepend to parameter names, needed to add two Models
-            that have parameter names in common.
-        `nan_policy` : {'raise', 'propagate', 'omit'}, optional
-            How to handle NaN and missing values in data. See Notes below.
-        `**kwargs` : optional
-            Keyword arguments to pass to :class:`Model`.
-    Notes
-    -----
-        1. `nan_policy` sets what to do when a NaN or missing value is seen in
-        the data. Should be one of:
 
-            - `'raise'` : raise a `ValueError` (default)
-            - `'propagate'` : do nothing
-            - `'omit'` : drop missing data
-
-    """+ lmfit.models.COMMON_INIT_DOC
+    **LMFIT: Common models documentation**
+    """"""""""""""""""""""""""""""""""""
+        
+    """+ lmfit.models.COMMON_INIT_DOC)
 
     def __init__(self, *args, **kwargs):
         """
@@ -444,15 +612,17 @@ class SlopeBG(lmfit.model.Model):
         """
         Generates initial parameter values for the model based on the provided data and optional arguments.
 
-        Args:
-            data (array-like): Array containing the data to fit.
-            x (array-like): Array containing the independent variable values.
-            `**kwargs:` Arbitrary keyword arguments.
+        :param data: Array containing the data (=intensities) to fit.
+        :type data: array-like
+        :param x: Array containing the independent variable (=energy).
+        :type x: array-like
+        :param kwargs: Initial guesses for the parameters of the model function.
 
-        Returns:
-            Parameters: Initial parameter values for the model.
+        :returns: Initial parameter values for the model.
+        :rtype: lmfit.Parameters
 
-        Note:
+
+        :note:
             The method requires the 'x' parameter to be provided.
         """
         if x is None:
