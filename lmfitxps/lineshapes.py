@@ -82,7 +82,7 @@ def singlett(x, amplitude, sigma, gamma, gaussian_sigma, center):
     return amplitude * conv_temp / max(conv_temp)
 
 
-kb = 8.6173e-5  # Boltzmann k in eV/K
+kb = 8.6173e-5  # Boltzmann k in eV/K , replace by scipy const value
 
 
 def fermi_edge(x, amplitude, center, kt, sigma):

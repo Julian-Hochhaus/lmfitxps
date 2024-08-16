@@ -2,6 +2,15 @@ Static backgrounds
 ==================
 .. include:: note.rst
 
+
+The naming of the following two background functions as "static backgrounds" might lead to some confusion. The functions :ref:`shirley_calculate` and :ref:`tougaard_calculate` are referred to as static simply because they aren't designed to be directly integrated into the fitting model itself.
+
+Because these functions are not part of the fit model, they need to be applied separately to the data, removing the background before applying the Levenberg–Marquardt algorithm through lmfit. Unlike the approach in :ref:`BGModels`, where the background is dynamically adjusted and optimized at each iteration step of model optimization, here the background has to be removed before the fitting process begins.
+
+However, these static backgrounds are implemented iteratively, allowing their scaling parameters to be optimized for the input dataset.
+
+Especially in cases where the fitting model is complex, applying these static background functions to the dataset can aid in approximating suitable starting parameters for the :ref:`BGModels` within the fit model.
+
 .. _shirley_calculate:
 
 :py:func:`shirley_calculate`
@@ -9,6 +18,8 @@ ____________________________
 
 
 .. autofunction:: lmfitxps.backgrounds.shirley_calculate
+
+.. _tougaard_calculate:
 
 :py:func:`tougaard_calculate`
 _____________________________

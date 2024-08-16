@@ -10,8 +10,8 @@
    :caption: Contents:
 
    introduction
-   backgrounds
    static_backgrounds
+   backgrounds
    peaks
    lineshapes
    usage
