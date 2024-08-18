@@ -1,4 +1,4 @@
-setuptools>=61.0.0
+setuptools
 wheel
 scipy>=1.6
 numpy>=1.19
