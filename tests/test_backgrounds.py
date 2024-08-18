@@ -1,7 +1,6 @@
-import matplotlib.pyplot as plt
 import numpy as np
 import lmfit
-from tests.context import backgrounds
+from src.lmfitxps import backgrounds
 import pytest
 
 @pytest.fixture
@@ -25,7 +24,7 @@ def test_shirley_same_output(shirley_func):
 @pytest.fixture
 def shirley_calculate_func():
     def create_shirley_calculate(x,y,tol,maxit):
-        return backgrounds.shirley_calculate(x,y,tol,maxit)
+        return backgrounds.shirley_calculate(x, y, tol, maxit)
 
     return create_shirley_calculate
 @pytest.mark.parametrize(

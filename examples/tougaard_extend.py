@@ -2,7 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import lmfit
 import os
-from examples.context import models
+from src.lmfitxps import models
 import matplotlib as mpl
 def guess_extend(x,y, B, C, C_d, D):
     y_end=np.mean(y[-10:])

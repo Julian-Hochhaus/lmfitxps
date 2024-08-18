@@ -1,7 +1,7 @@
 # pyproject.toml
 
 [build-system]
-requires = ["setuptools>=61.0.0", "wheel", 'scipy', 'numpy', 'lmfit']
+requires = ["setuptools", "wheel", 'scipy', 'numpy', 'lmfit']
 build-backend = "setuptools.build_meta"
 
 [project]
@@ -16,4 +16,8 @@ description='This package contains additional models for the lmfit package for f
 homepage='https://github.com/Julian-Hochhaus/lmfitxps'
 documentation='https://lmfitxps.readthedocs.io/en/latest/'
 
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+packages = ["lmfitxps"]
 

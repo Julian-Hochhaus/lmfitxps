@@ -1,7 +1,6 @@
-import matplotlib.pyplot as plt
 import numpy as np
 import lmfit
-from tests.context import models
+from src.lmfitxps import models
 import pytest
 
 @pytest.fixture()
@@ -11,7 +10,7 @@ def dublett_model():
 @pytest.fixture()
 def tougaard_model():
     """Return a Tougaard background model."""
-    return models.TougaardBG(prefix='tougaard_', independent_vars=['x','y'])
+    return models.TougaardBG(prefix='tougaard_', independent_vars=['x', 'y'])
 
 def test_fit_tougaard_dublett(tougaard_model, dublett_model):
     data = np.genfromtxt('examples/clean_Au_4f.csv', delimiter=',', skip_header=1)

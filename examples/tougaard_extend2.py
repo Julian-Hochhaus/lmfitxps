@@ -1,16 +1,15 @@
 import numpy as np
 import matplotlib.pyplot as plt
-import lmfit
 import os
-from examples.context import models
-from examples.context import backgrounds
+from src.lmfitxps import backgrounds
+
 exec_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 data = np.genfromtxt(exec_dir + '/examples/clean_Au_4f.csv', delimiter=',', skip_header=1)
 x = data[:, 0]
 y = data[:, 1]
 output_dir = os.path.join(exec_dir, 'examples', 'plots')
 os.makedirs(output_dir, exist_ok=True)
-calc_tougaard=backgrounds.tougaard
+calc_tougaard= backgrounds.tougaard
 delta_x=(x[-1]-x[0])/len(x)
 len_padded = int(33 / delta_x)
 padded_x = np.concatenate((np.linspace( x[0] - delta_x * len_padded,x[0]-delta_x, len_padded),x))
