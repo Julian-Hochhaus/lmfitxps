@@ -1,5 +1,5 @@
 [tool.bumpver]
-current_version = "2.1.6"
+current_version = "2.2.0"
 version_pattern = 'MAJOR.MINOR.PATCH[PYTAGNUM]'
 commit_message = "bump version {old_version} -> {new_version}"
 commit = true
@@ -10,8 +10,7 @@ push = true
 [tool.bumpver.file_patterns]
 "bumpver.toml" = ['current_version = "{version}"']
 "pyproject.toml" = ['version = "{version}"']
-"lmfitxps/models.py" = ['__version__ = "{version}"']
-"lmfitxps/backgrounds.py" = ['__version__ = "{version}"']
-"lmfitxps/lineshapes.py" = ['__version__ = "{version}"']
+"src/lmfitxps/models.py" = ['__version__ = "{version}"']
+"src/lmfitxps/backgrounds.py" = ['__version__ = "{version}"']
+"src/lmfitxps/lineshapes.py" = ['__version__ = "{version}"']
 
-"docs/conf.py" = [ 'release = "{version}"' ]
