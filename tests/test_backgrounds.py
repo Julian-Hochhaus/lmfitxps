@@ -1,6 +1,9 @@
 import numpy as np
 import lmfit
-from src.lmfitxps import backgrounds
+import sys
+import os
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../src')))
+from lmfitxps import backgrounds
 import pytest
 
 @pytest.fixture
