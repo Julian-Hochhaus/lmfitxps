@@ -85,7 +85,7 @@ def tougaard_closure():
             bgrnd[2] = [extend]
             bg = []
             delta_x = (x[-1] - x[0]) / len(x)
-            len_padded = int(extend / abs(delta_x))
+            len_padded = abs(int(extend / delta_x))
             padded_x = np.concatenate((x, np.linspace(x[-1] + delta_x, x[-1] + delta_x * len_padded, len_padded)))
             padded_y = np.concatenate((y, np.mean(y[-10:]) * np.ones(len_padded)))
             for k in range(len(x)):
