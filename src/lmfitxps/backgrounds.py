@@ -1,4 +1,5 @@
 import numpy as np
+import copy
 __author__ = "Julian Andreas Hochhaus"
 __copyright__ = "Copyright 2023"
 __credits__ = ["Julian Andreas Hochhaus"]
@@ -81,7 +82,7 @@ def tougaard_closure():
             # Check if loss function was already calculated
             return [B * elem for elem in bgrnd[1]]
         else:
-            bgrnd[0] = y
+            bgrnd[0] = copy.deepcopy(y)
             bgrnd[2] = [extend]
             bg = []
             delta_x = (x[-1] - x[0]) / len(x)
@@ -284,8 +285,8 @@ def shirley_calculate(x, y, tol=1e-5, maxit=10):
     # if not, reverse them.
     if x[0] < x[-1]:
         is_reversed = True
-        x = x[::-1]
-        y = y[::-1]
+        x = copy.deepcopy(x[::-1])
+        y = copy.deepcopy(y[::-1])
     else:
         is_reversed = False
 
