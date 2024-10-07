@@ -37,3 +37,6 @@ To install lmfitxps, simply use pip:
 - P. Weinert et al. [Structural, chemical, and magnetic investigation of a graphene/cobalt/platinum multilayer system on silicon carbide](http://dx.doi.org/10.1088/1361-6528/ad1d7b) Nanotechnology, **35** 165702 (2024). 
 - P. Lamichhane et al. [Investigating the synergy of rapidly synthesized iron oxide predecessor and plasma-gaseous species for dye-removal to reuse water in irrigation](https://doi.org/10.1016/j.chemosphere.2024.143040) Chemosphere, **24** 143040 (2024).
 - P. Weinert [Structural, chemical, and magnetic investigation of a graphene/cobalt/platinum multilayer system on silicon carbide : About the formation of magnetic structures in 2D cobalt layers](https://d-nb.info/1328839591) Dissertation (2024).
+
+Publications that use [LG4X-V2](https://github.com/Julian-Hochhaus/LG4X-V2), a graphical user interface (GUI) for XPS/XAS analysis that heavily utilizes `lmfit` and `lmfitxps`, are also included.
+
