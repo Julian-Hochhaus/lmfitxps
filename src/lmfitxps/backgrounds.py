@@ -4,7 +4,7 @@ __author__ = "Julian Andreas Hochhaus"
 __copyright__ = "Copyright 2023"
 __credits__ = ["Julian Andreas Hochhaus"]
 __license__ = "MIT"
-__version__ = "3.0.0"
+__version__ = "4.0.1"
 __maintainer__ = "Julian Andreas Hochhaus"
 __email__ = "julian.hochhaus@tu-dortmund.de"
 
