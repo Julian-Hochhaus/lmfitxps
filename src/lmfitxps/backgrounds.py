@@ -146,8 +146,7 @@ def shirley(y, k, const):
 
     """
     y_right = const
-    y_temp = y - y_right  # Subtract constant background offset
-    bg = np.cumsum(y_temp)[::-1]
+    bg = np.cumsum(y)[::-1]
     return k * bg + y_right
 
 def slope(y, k):
