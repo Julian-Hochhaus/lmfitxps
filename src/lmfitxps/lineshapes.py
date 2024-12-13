@@ -43,10 +43,21 @@ def dublett(x, amplitude, sigma, gamma, gaussian_sigma, center, soc, height_rati
     array-type
         convolution of a doniach dublett and a gaussian profile
     """
-    conv_temp = fft_convolve(
-        doniach(x, amplitude=1, center=center, sigma=sigma, gamma=gamma) + doniach(x, height_ratio, center - soc,
-                                                                                   fct_coster_kronig * sigma, gamma),
-        1 / (np.sqrt(2 * np.pi) * gaussian_sigma) * gaussian(x, amplitude=1, center=np.mean(x), sigma=gaussian_sigma))
+    if x[0] < x[-1]:
+        conv_temp = fft_convolve(
+            doniach(x, amplitude=1, center=center, sigma=sigma, gamma=gamma) + doniach(x, height_ratio, center - soc,
+                                                                                       fct_coster_kronig * sigma,
+                                                                                       gamma),
+            1 / (np.sqrt(2 * np.pi) * gaussian_sigma) * gaussian(x, amplitude=1, center=np.mean(x),
+                                                                 sigma=gaussian_sigma))
+    else:
+        conv_temp = fft_convolve(
+            doniach(x[::-1], amplitude=1, center=center, sigma=sigma, gamma=gamma) + doniach(x[::-1], height_ratio,
+                                                                                             center - soc,
+                                                                                             fct_coster_kronig * sigma,
+                                                                                             gamma),
+            1 / (np.sqrt(2 * np.pi) * gaussian_sigma) * gaussian(x[::-1], amplitude=1, center=np.mean(x),
+                                                                 sigma=gaussian_sigma))
     return amplitude * conv_temp / max(conv_temp)
 
 
@@ -76,9 +87,14 @@ def singlett(x, amplitude, sigma, gamma, gaussian_sigma, center):
     array-type
         convolution of a doniach profile and a gaussian profile
     """
-    conv_temp = fft_convolve(doniach(x, amplitude=1, center=center, sigma=sigma, gamma=gamma),
-                             1 / (np.sqrt(2 * np.pi) * gaussian_sigma) * gaussian(x, amplitude=1, center=np.mean(x),
-                                                                                  sigma=gaussian_sigma))
+    if x[0] < x[-1]:
+        conv_temp = fft_convolve(doniach(x, amplitude=1, center=center, sigma=sigma, gamma=gamma),
+                                 1 / (np.sqrt(2 * np.pi) * gaussian_sigma) * gaussian(x, amplitude=1, center=np.mean(x),
+                                                                                      sigma=gaussian_sigma))
+    else:
+        conv_temp = fft_convolve(doniach(x[::-1], amplitude=1, center=center, sigma=sigma, gamma=gamma),
+                                 1 / (np.sqrt(2 * np.pi) * gaussian_sigma) * gaussian(x[::-1], amplitude=1, center=np.mean(x),
+                                                                                      sigma=gaussian_sigma))
     return amplitude * conv_temp / max(conv_temp)
 
 
@@ -112,9 +128,14 @@ def fermi_edge(x, amplitude, center, kt, sigma):
     array-type
         convolution of a fermi dirac distribution and a gaussian profile
     """
-    conv_temp = fft_convolve(thermal_distribution(x, amplitude=1, center=center, kt=kt, form='fermi'),
-                             1 / (np.sqrt(2 * np.pi) * sigma) * gaussian(x, amplitude=1, center=np.mean(x),
-                                                                         sigma=sigma))
+    if x[0] < x[-1]:
+        conv_temp = fft_convolve(thermal_distribution(x, amplitude=1, center=center, kt=kt, form='fermi'),
+                                 1 / (np.sqrt(2 * np.pi) * sigma) * gaussian(x, amplitude=1, center=np.mean(x),
+                                                                             sigma=sigma))
+    else:
+        conv_temp = fft_convolve(thermal_distribution(x, amplitude=1, center=center, kt=-kt, form='fermi'),
+                                 1 / (np.sqrt(2 * np.pi) * sigma) * gaussian(x, amplitude=1, center=np.mean(x),
+                                                                             sigma=sigma))
     return amplitude * conv_temp / max(conv_temp)
 
 

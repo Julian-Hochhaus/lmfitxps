@@ -9,97 +9,95 @@ __maintainer__ = "Julian Andreas Hochhaus"
 __email__ = "julian.hochhaus@tu-dortmund.de"
 
 def tougaard_closure():
-    bgrnd = [[], [], []]  # This will act as the closure to store the precalculated data
+    bgrnd = [None, None, None] # This will act as the closure to store the precalculated data
+    """
+     .. Hint::
+         This function employs a closure to calculate the Tougaard sum only once and subsequently accesses it during subsequent executions of the optimization procedure. When calling `tougaard()`, you are effectively accessing the inner, nested function.
+
+         The concept is as follows:
+
+     .. code-block:: python
+
+         def tougaard_closure():
+             bgrnd=[] #store the Tougaard background to optimize performance by avoiding recalculations
+             def tougaard_helper():
+                 # do actual calculation
+
+         tougaard = tougaard_closure()
+
+     The Tougaard backlground is based on the four-parameter loss function (4-PIESCS) as suggested by R.Hesse [1]_.
+
+     | In addition to R.Hesse's approach, this model introduces the `extend` parameter, for details, please refer to :ref:`extend_parameter`.
+
+     The Tougaard background is calculated using:
+
+     .. math::
+
+         B_T(E) = \\int_{E}^{\\infty} \\frac{B \\cdot T}{{(C + C_d \\cdot T^2)^2} + D \\cdot T^2} \\cdot y(E') \\, dE'
+
+     where:
+
+         - :math:`B_T(E)` represents the Tougaard background at energy :math:`E`,
+         - :math:`y(E')` is the measured intensity at :math:`E'`,
+         - :math:`T` is the energy difference :math:`E' - E`.
+         - :math:`B` parameter of the 4-PIESCS loss function as introduced by R.Hesse [1]_. Acts as the scaling factor for the Tougaard background model.
+         - :math:`C` , :math:`C_d` and :math:`D` are parameter of the 4-PIESCS loss function as introduced by R.Hesse [1]_.
+
+     To generate the 2-PIESCS loss function, set :math:`C_d` to 1 and :math:`D` to 0.
+     Set :math:`C_d=1` and :math:`D !=`  :math:`0` to get the 3-PIESCS loss function.
+
+     For further details on the 2-PIESCS loss function, please refer to S.Tougaard [2]_, and for the 3-PIESCS loss function, see S. Tougaard [3]_.
+
+
+     .. table::
+         :widths: auto
+
+         +-----------+---------------+----------------------------------------------------------------------------------------+
+         | Parameters|  Type         | Description                                                                            |
+         +===========+===============+========================================================================================+
+         | x         | :obj:`array`  | 1D-array containing the x-values (energies) of the spectrum.                           |
+         +-----------+---------------+----------------------------------------------------------------------------------------+
+         | y         | :obj:`array`  | 1D-array containing the y-values (intensities) of the spectrum.                        |
+         +-----------+---------------+----------------------------------------------------------------------------------------+
+         | B         | :obj:`float`  | B parameter of the 4-PIESCS loss function [1]_.                                        |
+         +-----------+---------------+----------------------------------------------------------------------------------------+
+         | C         | :obj:`float`  | C parameter of the 4-PIESCS loss function [1]_.                                        |
+         +-----------+---------------+----------------------------------------------------------------------------------------+
+         | C_d       | :obj:`float`  | C' parameter of the 4-PIESCS loss function [1]_.                                       |
+         +-----------+---------------+----------------------------------------------------------------------------------------+
+         | D         | :obj:`float`  | D parameter of the 4-PIESCS loss function [1]_.                                        |
+         +-----------+---------------+----------------------------------------------------------------------------------------+
+         | extend    | :obj:`float`  | Determines, how far the spectrum is extended on the right (in eV). Defaults to 0.      |
+         +-----------+---------------+----------------------------------------------------------------------------------------+
+
+     Note
+     ----
+     This function is used as the model function in the :ref:`TougaardBG` lmfitxps model.
+     """
+
     def tougaard_helper(x, y, B, C, C_d, D, extend=0):
-        """
-        .. Hint::
-            This function employs a closure to calculate the Tougaard sum only once and subsequently accesses it during subsequent executions of the optimization procedure. When calling `tougaard()`, you are effectively accessing the inner, nested function.
-
-            The concept is as follows:
-
-        .. code-block:: python
-
-            def tougaard_closure():
-                bgrnd=[] #store the Tougaard background to optimize performance by avoiding recalculations
-                def tougaard_helper():
-                    # do actual calculation
-
-            tougaard = tougaard_closure()
-
-        The Tougaard backlground is based on the four-parameter loss function (4-PIESCS) as suggested by R.Hesse [1]_.
-
-        | In addition to R.Hesse's approach, this model introduces the `extend` parameter, for details, please refer to :ref:`extend_parameter`.
-
-        The Tougaard background is calculated using:
-
-        .. math::
-
-            B_T(E) = \\int_{E}^{\\infty} \\frac{B \\cdot T}{{(C + C_d \\cdot T^2)^2} + D \\cdot T^2} \\cdot y(E') \\, dE'
-
-        where:
-
-            - :math:`B_T(E)` represents the Tougaard background at energy :math:`E`,
-            - :math:`y(E')` is the measured intensity at :math:`E'`,
-            - :math:`T` is the energy difference :math:`E' - E`.
-            - :math:`B` parameter of the 4-PIESCS loss function as introduced by R.Hesse [1]_. Acts as the scaling factor for the Tougaard background model.
-            - :math:`C` , :math:`C_d` and :math:`D` are parameter of the 4-PIESCS loss function as introduced by R.Hesse [1]_.
-
-        To generate the 2-PIESCS loss function, set :math:`C_d` to 1 and :math:`D` to 0.
-        Set :math:`C_d=1` and :math:`D !=`  :math:`0` to get the 3-PIESCS loss function.
-
-        For further details on the 2-PIESCS loss function, please refer to S.Tougaard [2]_, and for the 3-PIESCS loss function, see S. Tougaard [3]_.
-
-
-        .. table::
-            :widths: auto
-
-            +-----------+---------------+----------------------------------------------------------------------------------------+
-            | Parameters|  Type         | Description                                                                            |
-            +===========+===============+========================================================================================+
-            | x         | :obj:`array`  | 1D-array containing the x-values (energies) of the spectrum.                           |
-            +-----------+---------------+----------------------------------------------------------------------------------------+
-            | y         | :obj:`array`  | 1D-array containing the y-values (intensities) of the spectrum.                        |
-            +-----------+---------------+----------------------------------------------------------------------------------------+
-            | B         | :obj:`float`  | B parameter of the 4-PIESCS loss function [1]_.                                        |
-            +-----------+---------------+----------------------------------------------------------------------------------------+
-            | C         | :obj:`float`  | C parameter of the 4-PIESCS loss function [1]_.                                        |
-            +-----------+---------------+----------------------------------------------------------------------------------------+
-            | C_d       | :obj:`float`  | C' parameter of the 4-PIESCS loss function [1]_.                                       |
-            +-----------+---------------+----------------------------------------------------------------------------------------+
-            | D         | :obj:`float`  | D parameter of the 4-PIESCS loss function [1]_.                                        |
-            +-----------+---------------+----------------------------------------------------------------------------------------+
-            | extend    | :obj:`float`  | Determines, how far the spectrum is extended on the right (in eV). Defaults to 0.      |
-            +-----------+---------------+----------------------------------------------------------------------------------------+
-
-        Note
-        ----
-        This function is used as the model function in the :ref:`TougaardBG` lmfitxps model.
-        """
-
         nonlocal bgrnd
+        extend = int(extend)
+        if bgrnd[0] is not None and np.array_equal(bgrnd[0], y) and int(bgrnd[2]) == extend:
+            return B * np.array(bgrnd[1])
+        bgrnd[0] = np.copy(y)
+        bgrnd[2] = extend
 
-        if np.array_equal(bgrnd[0], y) and bgrnd[2][0] == extend:
-            # Check if loss function was already calculated
-            return [B * elem for elem in bgrnd[1]]
-        else:
-            bgrnd[0] = copy.deepcopy(y)
-            bgrnd[2] = [extend]
-            bg = []
-            delta_x = (x[-1] - x[0]) / len(x)
-            len_padded = abs(int(extend / delta_x))
-            padded_x = np.concatenate((x, np.linspace(x[-1] + delta_x, x[-1] + delta_x * len_padded, len_padded)))
-            padded_y = np.concatenate((y, np.mean(y[-10:]) * np.ones(len_padded)))
-            for k in range(len(x)):
-                x_k = x[k]
-                bg_temp = 0
-                for j in range(len(padded_y[k:])):
-                    padded_x_kj = padded_x[k + j]
-                    bg_temp += abs(padded_x_kj - x_k) / ((C + C_d * (padded_x_kj - x_k) ** 2) ** 2
-                                                      + D * (padded_x_kj - x_k) ** 2) * padded_y[k + j] * abs(delta_x)
-                bg.append(bg_temp)
-            bgrnd[1] = bg
-            return np.asarray([B * elem for elem in bgrnd[1]])
+        delta_x = abs((x[-1] - x[0])) / len(x)
+        len_padded = abs(int(extend / delta_x))
+        padded_x = np.concatenate([x, np.linspace(x[-1] + delta_x, x[-1] + delta_x * len_padded, len_padded)])
+        padded_y = np.concatenate([y, np.full(len_padded, np.mean(y[-10:]))])
+
+        bg = np.zeros_like(x)
+        for k, x_k in enumerate(x):
+            dx = padded_x[k:] - x_k
+            denominator = (C + C_d * dx ** 2) ** 2 + D * dx ** 2
+            bg[k] = np.sum(np.abs(dx) / denominator * padded_y[k:] * delta_x)
+        bgrnd[1] = bg
+        return B * bg
+
     return tougaard_helper
+
 
 # Create the tougaard function with the closure
 tougaard = tougaard_closure()
@@ -147,13 +145,10 @@ def shirley(y, k, const):
     This function is used as the model function in the :ref:`ShirleyBG` lmfitxps model.
 
     """
-    n = len(y)
     y_right = const
-    y_temp = y - y_right  # step characteristic is better approximated if only the step without  constant background offset is integrated
-    bg = []
-    for i in range(n):
-        bg.append(np.sum(y_temp[i:]))
-    return np.asarray([k * elem + y_right for elem in bg])
+    y_temp = y - y_right  # Subtract constant background offset
+    bg = np.cumsum(y_temp)[::-1]
+    return k * bg + y_right
 
 def slope(y, k):
     """
@@ -210,6 +205,13 @@ def slope(y, k):
     for j in range(n):
         bg.append(np.sum(temp[j:]))
     return np.asarray([-k * elem for elem in bg])
+
+    y_right = np.min(y)
+    y_temp = y - y_right
+    temp = np.cumsum(y_temp[::-1])[::-1]
+    bg = np.cumsum(temp[::-1])[::-1]
+
+    return -k * bg
 
 
 def shirley_calculate(x, y, tol=1e-5, maxit=10):
