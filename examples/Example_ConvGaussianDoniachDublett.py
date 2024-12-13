@@ -68,7 +68,6 @@ ax2.set_ylabel('Residual')
 
 plot_filename = os.path.join(output_dir, f'plot_dublett_kin.png')
 fig.savefig(plot_filename, dpi=300)
-plt.show()
 plt.close(fig)
 
 
@@ -133,5 +132,4 @@ ax22.set_ylabel('residual')
 ax22.set_xlim(np.max(x), np.min(x))
 plot_filename = os.path.join(output_dir, f'plot_dublett_bin.png')
 fig2.savefig(plot_filename, dpi=300)
-plt.show()
 plt.close(fig2)
