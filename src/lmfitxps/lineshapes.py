@@ -43,21 +43,13 @@ def dublett(x, amplitude, sigma, gamma, gaussian_sigma, center, soc, height_rati
     array-type
         convolution of a doniach dublett and a gaussian profile
     """
-    if x[0] < x[-1]:
-        conv_temp = fft_convolve(
+    is_binding_energy= x[-1] < x[0]
+    conv_temp = fft_convolve(
             doniach(x, amplitude=1, center=center, sigma=sigma, gamma=gamma) + doniach(x, height_ratio, center - soc,
                                                                                        fct_coster_kronig * sigma,
                                                                                        gamma),
             1 / (np.sqrt(2 * np.pi) * gaussian_sigma) * gaussian(x, amplitude=1, center=np.mean(x),
-                                                                 sigma=gaussian_sigma))
-    else:
-        conv_temp = fft_convolve(
-            doniach(x[::-1], amplitude=1, center=center, sigma=sigma, gamma=gamma) + doniach(x[::-1], height_ratio,
-                                                                                             center - soc,
-                                                                                             fct_coster_kronig * sigma,
-                                                                                             gamma),
-            1 / (np.sqrt(2 * np.pi) * gaussian_sigma) * gaussian(x[::-1], amplitude=1, center=np.mean(x),
-                                                                 sigma=gaussian_sigma))
+                                                                 sigma=gaussian_sigma), is_binding_energy=is_binding_energy)
     return amplitude * conv_temp / max(conv_temp)
 
 
@@ -87,14 +79,10 @@ def singlett(x, amplitude, sigma, gamma, gaussian_sigma, center):
     array-type
         convolution of a doniach profile and a gaussian profile
     """
-    if x[0] < x[-1]:
-        conv_temp = fft_convolve(doniach(x, amplitude=1, center=center, sigma=sigma, gamma=gamma),
+    is_binding_energy= x[-1] < x[0]
+    conv_temp = fft_convolve(doniach(x, amplitude=1, center=center, sigma=sigma, gamma=gamma),
                                  1 / (np.sqrt(2 * np.pi) * gaussian_sigma) * gaussian(x, amplitude=1, center=np.mean(x),
-                                                                                      sigma=gaussian_sigma))
-    else:
-        conv_temp = fft_convolve(doniach(x[::-1], amplitude=1, center=center, sigma=sigma, gamma=gamma),
-                                 1 / (np.sqrt(2 * np.pi) * gaussian_sigma) * gaussian(x[::-1], amplitude=1, center=np.mean(x),
-                                                                                      sigma=gaussian_sigma))
+                                                                                      sigma=gaussian_sigma), is_binding_energy=is_binding_energy)
     return amplitude * conv_temp / max(conv_temp)
 
 
@@ -128,14 +116,13 @@ def fermi_edge(x, amplitude, center, kt, sigma):
     array-type
         convolution of a fermi dirac distribution and a gaussian profile
     """
-    if x[0] < x[-1]:
-        conv_temp = fft_convolve(thermal_distribution(x, amplitude=1, center=center, kt=kt, form='fermi'),
+    is_binding_energy= x[-1] < x[0]
+
+    if is_binding_energy:
+        kt=-kt
+    conv_temp = fft_convolve(thermal_distribution(x, amplitude=1, center=center, kt=kt, form='fermi'),
                                  1 / (np.sqrt(2 * np.pi) * sigma) * gaussian(x, amplitude=1, center=np.mean(x),
-                                                                             sigma=sigma))
-    else:
-        conv_temp = fft_convolve(thermal_distribution(x, amplitude=1, center=center, kt=-kt, form='fermi'),
-                                 1 / (np.sqrt(2 * np.pi) * sigma) * gaussian(x, amplitude=1, center=np.mean(x),
-                                                                             sigma=sigma))
+                                                                             sigma=sigma), is_binding_energy=is_binding_energy)
     return amplitude * conv_temp / max(conv_temp)
 
 
@@ -170,7 +157,7 @@ def convolve(data, kernel):
     return (out[n_start_data:])[:min_num_pts]
 
 
-def fft_convolve(data, kernel):
+def fft_convolve(data, kernel, is_binding_energy=False):
     """
     Calculates the convolution of a data array with a kernel by using the convolution theorem and thereby
     transforming the time-consuming convolution operation into a multiplication of FFTs.
@@ -185,6 +172,8 @@ def fft_convolve(data, kernel):
         1D-array containing the data to convolve
     kernel: array-like
         1D-array which defines the kernel used for convolution
+    is_binding_energy: boolean
+        Boolean determining type of energy scale which determines the orientation of the kernel
 
     Returns
     ---------
@@ -195,6 +184,8 @@ def fft_convolve(data, kernel):
     ---------
     scipy.signal.convolve()
     """
+    if is_binding_energy:
+        kernel=kernel[::-1]
     min_num_pts = min(len(data), len(kernel))
     padding = np.ones(min_num_pts)
     padded_data = np.concatenate((padding * data[0], data, padding * data[-1]))
