@@ -42,7 +42,7 @@ ax1.plot(x, comps['singlett_'] + comps['shirley_'], color=cmap(4), label="Doniac
 
 ax1.fill_between(x, comps['singlett_'] + comps['shirley_'], comps['shirley_'], alpha=0.5,color=cmap(5))
 ax1.legend()
-ax1.set_xlabel('bin. energy in eV')
+ax1.set_xlabel('bin. energy (eV)')
 ax1.set_ylabel('intensity in arb. units')
 # Set ticks only inside
 ax1.tick_params(axis='x', which='both',top=True, direction='in')
@@ -99,7 +99,7 @@ ax21.plot(x, comps['singlett_'] + comps['shirley_'], color=cmap(4), label="Donia
 
 ax21.fill_between(x, comps['singlett_'] + comps['shirley_'], comps['shirley_'], alpha=0.5,color=cmap(5))
 ax21.legend()
-ax21.set_xlabel('bin. energy in eV')
+ax21.set_xlabel('bin. energy (eV)')
 ax21.set_ylabel('intensity in arb. units')
 # Set ticks only inside
 ax21.tick_params(axis='x', which='both',top=True, direction='in')
@@ -114,7 +114,7 @@ ax21.set_xlim(np.min(x), np.max(x))
 # Residual plot
 residual = result.residual
 ax22.plot(x, residual)
-ax22.set_xlabel('bin. energy in eV')
+ax22.set_xlabel('bin. energy (eV)')
 ax22.set_ylabel('residual')
 ax22.set_xlim(np.max(x), np.min(x))
 plot_filename = os.path.join(output_dir, f'plot_singlett_bin.png')
