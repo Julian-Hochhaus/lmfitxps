@@ -2,8 +2,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 import lmfit
 import os
-from lmfitxps.models import ShirleyBG
-from lmfitxps.models import ConvGaussianDoniachSinglett
+from src.lmfitxps import ShirleyBG
+from src.lmfitxps import ConvGaussianDoniachSinglett
 import matplotlib as mpl
 exec_dir=os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 shirley_model=ShirleyBG(prefix='shirley_', independent_vars=['y'])

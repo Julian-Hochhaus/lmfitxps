@@ -1,7 +1,10 @@
-import matplotlib.pyplot as plt
 import numpy as np
 import lmfit
-from tests.context import backgrounds
+import sys
+import os
+import matplotlib.pyplot as plt
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../src')))
+from lmfitxps import backgrounds
 import pytest
 
 @pytest.fixture
@@ -25,7 +28,7 @@ def test_shirley_same_output(shirley_func):
 @pytest.fixture
 def shirley_calculate_func():
     def create_shirley_calculate(x,y,tol,maxit):
-        return backgrounds.shirley_calculate(x,y,tol,maxit)
+        return backgrounds.shirley_calculate(x, y, tol, maxit)
 
     return create_shirley_calculate
 @pytest.mark.parametrize(
@@ -55,10 +58,10 @@ def test_fit_shirley(shirley_model, shirley_calculate_func):
     y = data[:, 1]
     params = lmfit.Parameters()
     y_shirley = shirley_calculate_func(x=x, y=y, tol=1e-8, maxit=100)
-    params.add('k', value=0.00151)
-    params.add('const', value=y[-1])
-    result = shirley_model.fit(y_shirley, params, y=y)
-
+    params.add('k', value=0.0015)
+    params.add('const', value=np.min(y))
+    eva= shirley_model.eval(data=y, params=params, y=y)
+    result = shirley_model.fit(y_shirley, params, y=y, weights=1/np.sqrt(y))
     assert result.success
     assert result.errorbars
     assert result.redchi/len(x) < 1000
@@ -131,7 +134,6 @@ def test_fit_tougaard(tougaard_calculate_func, tougaard_model):
     params.add('D', value=268.598, vary=False)
     params.add('extend', value=50, vary=False)
     result = tougaard_model.fit(y_tougaard, params, y=y, x=x)
-
     assert result.success
     assert result.errorbars
     assert result.redchi / len(x) < 1000
