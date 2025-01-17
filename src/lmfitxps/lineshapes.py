@@ -17,7 +17,7 @@ def dublett(x, amplitude, sigma, gamma, gaussian_sigma, center, soc, height_rati
     Parameters
     ----------
     x: array-like
-        Array containing the energy of the spectrum to fit
+        Array containing the energy of the spectrum to fit. Works for both, kinetic+binding energy scaled data.
     amplitude: float
         factor used to scale the calculated convolution to the measured spectrum. This factor is used as the amplitude
         of the Doniach profile.
@@ -31,7 +31,8 @@ def dublett(x, amplitude, sigma, gamma, gaussian_sigma, center, soc, height_rati
         position of the maximum of the measured spectrum
     soc: float
         distance of the second-highest peak (higher-bound-orbital) of the spectrum in relation to the maximum of the
-        spectrum (the lower-bound orbital)
+        spectrum (the lower-bound orbital). Given in absolute values, the model function automatically detects if
+        binding or kinetic energy scale is used.
     height_ratio: float
         height ratio of the second-highest peak (higher-bound-orbital) of the spectrum in relation to the maximum of
         the spectrum (the lower-bound orbital)
@@ -43,13 +44,15 @@ def dublett(x, amplitude, sigma, gamma, gaussian_sigma, center, soc, height_rati
     array-type
         convolution of a doniach dublett and a gaussian profile
     """
-    is_binding_energy= x[-1] < x[0]
+    is_binding_energy = x[-1] < x[0]
+    second_center = center + soc if is_binding_energy else center - soc
+
     conv_temp = fft_convolve(
-            doniach(x, amplitude=1, center=center, sigma=sigma, gamma=gamma) + doniach(x, height_ratio, center - soc,
-                                                                                       fct_coster_kronig * sigma,
-                                                                                       gamma),
-            1 / (np.sqrt(2 * np.pi) * gaussian_sigma) * gaussian(x, amplitude=1, center=np.mean(x),
-                                                                 sigma=gaussian_sigma), is_binding_energy=is_binding_energy)
+        doniach(x, amplitude=1, center=center, sigma=sigma, gamma=gamma) +
+        doniach(x, amplitude=height_ratio, center=second_center, sigma=fct_coster_kronig * sigma, gamma=gamma),
+        1 / (np.sqrt(2 * np.pi) * gaussian_sigma) * gaussian(x, amplitude=1, center=np.mean(x), sigma=gaussian_sigma),
+        is_binding_energy=is_binding_energy
+    )
     return amplitude * conv_temp / max(conv_temp)
 
 
@@ -61,7 +64,7 @@ def singlett(x, amplitude, sigma, gamma, gaussian_sigma, center):
     Parameters
     ----------
     x: array-like
-        Array containing the energy of the spectrum to fit
+        Array containing the energy of the spectrum to fit.  Works for both, kinetic+binding energy scaled data.
     amplitude: float
         factor used to scale the calculated convolution to the measured spectrum. This factor is used as
         the amplitude of the Doniach profile.
@@ -97,7 +100,7 @@ def fermi_edge(x, amplitude, center, kt, sigma):
     Parameters
     ----------
     x: array-like
-        Array containing the energy of the spectrum to fit
+        Array containing the energy of the spectrum to fit. Works for both, kinetic+binding energy scaled data.
     amplitude: float
         factor used to scale the calculated convolution to the measured spectrum. This factor is used
         as the amplitude of the Gaussian Kernel.
@@ -171,7 +174,7 @@ def fft_convolve(data, kernel, is_binding_energy=False):
     data: array-like
         1D-array containing the data to convolve
     kernel: array-like
-        1D-array which defines the kernel used for convolution
+        1D-array which defines the kernel used for convolution. If binding energy scale is used, the kernel is inverted/flipped.
     is_binding_energy: boolean
         Boolean determining type of energy scale which determines the orientation of the kernel
 
