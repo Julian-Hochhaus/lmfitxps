@@ -38,11 +38,16 @@ Using one of the predefined models in `lmfitxps` typically follows this schemati
     print(result.fit_report())
 
 The `result` object, an instance of the `ModelResult` class, contains the following:
-- **Fit result**: The optimal parameter values and their uncertainties
-- **Fit report**: A comprehensive summary of the fit process
-- **Best fit**: The model values for the best fit
-- **Residuals**: Differences between the observed and fitted values
-- **Statistics**: Various fit statistics such as reduced chi-square and Akaike information criterion
+
+- **Fit result**: The optimal parameter values and their uncertainties.
+
+- **Fit report**: A comprehensive summary of the fit process.
+
+- **Best fit**: The model values for the best fit.
+
+- **Residuals**: Differences between the observed and fitted values.
+
+- **Statistics**: Various fit statistics such as reduced chi-square and Akaike information criterion.
 
 For additional details about the `ModelResult` class and its methods, please refer to the
 `lmfit ModelResult documentation <https://lmfit.github.io/lmfit-py/model.html#the-modelresult-class>`_.
