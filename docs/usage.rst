@@ -37,19 +37,20 @@ Using one of the predefined models in `lmfitxps` typically follows this schemati
     # Access the fit results
     print(result.fit_report())
 
-The `result` object, an instance of the `ModelResult` class, contains the following:
+The `result` object, an instance of the `ModelResult` class, holds, besides others, the following properties:
 
-- **Fit result**: The optimal parameter values and their uncertainties.
 
-- **Fit report**: A comprehensive summary of the fit process.
+- `fit_report()`: Return a printable fit report. It contains fit statistics and best-fit values with uncertainties and correlations..
 
-- **Best fit**: The model values for the best fit.
+- `best_fit`: The model function, evaluated with best-fit parameters
 
-- **Residuals**: Differences between the observed and fitted values.
+- `residual`: Holds the residual, the difference between the data and best fitted model.
 
-- **Statistics**: Various fit statistics such as reduced chi-square and Akaike information criterion.
+- `eval_components()`: Allows to evaluate each component of a composite model function.
 
-For additional details about the `ModelResult` class and its methods, please refer to the
+- ** Fit statistics** : Various parameters indicating the goodness of the fit, such as Akaike Information Criterion (`aic`), Bayesian Information Criterion (`bic`), best-fit chi-square statistics ('chisqr`) and the reduced chi-square ('redchi`), etc.
+
+For additional details about the `ModelResult` class and its methods and attributes, please refer to the
 `lmfit ModelResult documentation <https://lmfit.github.io/lmfit-py/model.html#the-modelresult-class>`_.
 
 Example Usage of Different Models
