@@ -2,6 +2,7 @@
 
 Peak-like/Step-like models
 ==========================
+
 .. include:: note.rst
 
 The following sections documents the peak-like/step-like models implemented as an extension to the `lmfit build-in models <https://lmfit.github.io/lmfit-py/builtin_models.html>`_ .
@@ -34,7 +35,7 @@ ____________________________________
 .. _fwhm_doniach:
 
 Approximation to the FWHM of Doniach-Sunjic line shape
-----------------------------------
+------------------------------------------------------
 Generally speaking, the Doniach-Sunjic line shape has several limitations with regards to its application in analysing XPS data. However, it is still widely used in the XPS community due to its excellent agreement with asymmetric XPS peaks.
 The area of the Doniach-Sunjic line shape is ill-defined and infinite. In addition, no closed formula exists for its FWHM.
 To give an approximation to the FWHM, the following formula is used:

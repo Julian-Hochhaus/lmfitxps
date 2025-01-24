@@ -1,17 +1,18 @@
 Model functions
 ----------------
 .. include:: note.rst
+
 In the following subsections, all used model functions which are used for the lmfit models in :ref:`BGModels` as well as in :ref:`PeakModels` are documented.
 
 Lineshapes
-~~~~~~~~~~~~~
+~~~~~~~~~~
 
 .. autofunction:: lmfitxps.lineshapes.singlett
 .. autofunction:: lmfitxps.lineshapes.dublett
 .. autofunction:: lmfitxps.lineshapes.fermi_edge
 
 Background model functions
-~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~
 .. autofunction:: lmfitxps.backgrounds.shirley
 .. autofunction:: lmfitxps.backgrounds.slope
 .. autofunction:: lmfitxps.backgrounds.tougaard

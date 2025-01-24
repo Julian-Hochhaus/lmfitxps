@@ -1,6 +1,3 @@
-Publications using lmfitxps
-=====
-
 Cite this project
 -----------------
 
