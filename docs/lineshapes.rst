@@ -15,7 +15,7 @@ Background model functions
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 .. autofunction:: lmfitxps.backgrounds.shirley
 .. autofunction:: lmfitxps.backgrounds.slope
-.. autofunction:: lmfitxps.backgrounds.tougaard
+.. autofunction:: lmfitxps.backgrounds.tougaard_closure
 
 
 References

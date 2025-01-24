@@ -34,19 +34,25 @@ ____________________________________
 
 .. _fwhm_doniach:
 
-Approximation to the FWHM of Doniach-Sunjic line shape
+Approximation to the FWHM of Doniach-Sunjic Line Shape
 ------------------------------------------------------
-Generally speaking, the Doniach-Sunjic line shape has several limitations with regards to its application in analysing XPS data. However, it is still widely used in the XPS community due to its excellent agreement with asymmetric XPS peaks.
-The area of the Doniach-Sunjic line shape is ill-defined and infinite. In addition, no closed formula exists for its FWHM.
-To give an approximation to the FWHM, the following formula is used:
-    .. math::
 
-    \text{FWHM}_{DS}=\gamma \cdot \left(2+ \alpha \cdot a +(\alpha \cdot b )^4 \right)
+The Doniach-Sunjic line shape is commonly used in the analysis of X-ray photoelectron spectroscopy (XPS) data, despite having several limitations. Its popularity in the XPS community stems from its ability to accurately represent asymmetric XPS peaks.
 
-Thereby:
+However, there are notable challenges associated with the Doniach-Sunjic line shape:
+- The area under this line shape is ill-defined and infinite.
+- There is no closed formula available for calculating its full width at half maximum (FWHM).
 
-    - :math:`\gamma` represents the broadening of the Doniach-Sunjic lineshape,
-    - :math:`\alpha` is the asymmetry of the Doniach-Sunjic lineshape,
-    - :math:` a=2.5135` and :math:` b=3.6398` were found to approximate the FWHM with an error <2% for reasonable range of the asymmetry being :math:`\alpha<0.25`.
+To approximate the FWHM, the following formula is employed:
 
-If :math:`\alpha=0`, the Doniach-Sunjic lineshape equals the Lorentzian line shape and the approximation formula equals the FWHM of the Lorentzian as well.
+.. math::
+
+    \text{FWHM}_{DS} = \gamma \cdot \left(2 + \alpha \cdot a + (\alpha \cdot b)^4\right)
+
+In this formula:
+
+- :math:`\gamma` denotes the broadening parameter of the Doniach-Sunjic line shape.
+- :math:`\alpha` represents the asymmetry of the line shape.
+- The constants :math:`a = 2.5135` and :math:`b = 3.6398` provide an approximation for the FWHM with an error of less than 2% within a reasonable range of asymmetry, specifically when :math:`\alpha < 0.25`.
+
+When :math:`\alpha = 0`, the Doniach-Sunjic line shape simplifies to a Lorentzian line shape, and thus, this approximation formula corresponds to the FWHM of a Lorentzian as well.
