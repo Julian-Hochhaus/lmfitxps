@@ -14,7 +14,7 @@ You can also use our `CITATION.cff <https://github.com/Julian-Hochhaus/lmfitxps/
 Publications Using lmfitxps
 ----------------------------
 
-The following scientific papers have utilized the ``lmfitxps`` package:
+The following scientific publications have utilized the ``lmfitxps`` package:
 
 - A. Kononov, `Fullerene and bismuth clusters on nanostructured oxide films <http://dx.doi.org/10.17877/DE290R-24509>`_, Dissertation (2024)
 - K. Teenakul et al., `Treatment of carbon electrodes with Ti3C2Tx MXene coating and thermal method for vanadium redox flow batteries: a comparative study <https://doi.org/10.1039/D4RA01380H>`_, RSC Adv., **14**, 12807-12816 (2024).

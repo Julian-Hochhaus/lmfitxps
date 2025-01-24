@@ -15,8 +15,6 @@
    peaks
    lineshapes
    usage
-   citations
-   contribution
    about
 
 
