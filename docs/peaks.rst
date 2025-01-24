@@ -40,6 +40,7 @@ Approximation to the FWHM of Doniach-Sunjic Line Shape
 The Doniach-Sunjic line shape is commonly used in the analysis of X-ray photoelectron spectroscopy (XPS) data, despite having several limitations. Its popularity in the XPS community stems from its ability to accurately represent asymmetric XPS peaks.
 
 However, there are notable challenges associated with the Doniach-Sunjic line shape:
+
 - The area under this line shape is ill-defined and infinite.
 - There is no closed formula available for calculating its full width at half maximum (FWHM).
 
