@@ -79,7 +79,6 @@ for j in [0]+[i for i in range(27,35,1)]:
 
     result = fit_model.fit(y, params, y=y, x=x, weights=1 /(np.sqrt(y)))
     comps = result.eval_components(x=x, y=y)
-    print(result.fit_report())
     fig, (ax1, ax2) = plt.subplots(nrows=2,gridspec_kw={'height_ratios': [4, 1]}, sharex=True)
     fig.patch.set_facecolor('#FCFCFC')
     # Data plot
@@ -132,11 +131,12 @@ for j in [0]+[i for i in range(27,35,1)]:
     # Add residual to the combined residual plot
     residual_ax.plot(x, residual/np.sqrt(y), label=f'j={j}')
 
-for item in tg_bgs[1:]:
-    combined_ax1.plot(x, item[0]-tg_bgs[0][0], label='extend={}'.format(item[1]))
+for i, item in enumerate(tg_bgs[1:], start=1):
+    print(i, item[1])
+    combined_ax1.plot(x, item[0] - tg_bgs[0][0], label='extend={}'.format(item[1]), color=cmap(i))
 
-for item in tg_res[1:]:
-    combined_ax2.plot(x, (item[0]-tg_res[0][0]), label='extend={}'.format(item[1]))
+for i, item in enumerate(tg_res[1:], start=1):
+    combined_ax2.plot(x, (item[0] - tg_res[0][0]), label='extend={}'.format(item[1]), color=cmap(i))
 combined_ax1.legend()
 combined_ax2.set_xlabel('energy in eV')
 combined_ax1.set_ylabel('intensity in arb. units')
@@ -188,7 +188,7 @@ params.add('d1_sigma', value=0.21)
 params.add('d1_gamma', value=0.01)
 params.add('d1_gaussian_sigma', value=0.0892)
 params.add('d1_center', value=180-92.2273)
-params.add('d1_soc', value=-3.67127)
+params.add('d1_soc', value=3.67127)
 params.add('d1_height_ratio', value=0.7)
 params.add('d1_fct_coster_kronig', value=1.04, vary=False)
 params.add('d2_amplitude', value=43966)
@@ -202,10 +202,9 @@ params.add('d2_height_ratio', value=0.7, expr='d1_height_ratio')
 params.add('d2_fct_coster_kronig', value=1, expr='d1_fct_coster_kronig')
 params.add('const_c', value=2677.97771)
 fit_model = tougaard_model + d1+d2  + const
-print(x)
+
 result = fit_model.fit(y, params, y=y, x=x, weights=1 /(np.sqrt(y)))
 comps = result.eval_components(x=x, y=y)
-print(result.fit_report())
 fig, (ax1, ax2) = plt.subplots(nrows=2,gridspec_kw={'height_ratios': [4, 1]}, sharex=True)
 fig.patch.set_facecolor('#FCFCFC')
 # Data plot
@@ -236,7 +235,7 @@ ax1.set_xlim(np.max(x), np.min(x))
 residual = result.residual
 ax2.plot(x, residual, label='Residual')
 ax2.legend()
-ax2.set_xlabel('energy in eV')
+ax2.set_xlabel('binding energy in eV')
 ax2.set_ylabel('Residual')
 
 # Save individual plots
@@ -246,32 +245,6 @@ plt.savefig(plot_filename, dpi=300)
 plt.close(fig)
 
 
-for item in tg_bgs[1:]:
-    combined_ax1.plot(x, item[0]-tg_bgs[0][0], label='extend={}'.format(item[1]))
-
-for item in tg_res[1:]:
-    combined_ax2.plot(x, (item[0]-tg_res[0][0]), label='extend={}'.format(item[1]))
-combined_ax1.legend()
-combined_ax2.set_xlabel('energy in eV')
-combined_ax1.set_ylabel('intensity in arb. units')
-combined_ax1.set_title(r'$B_T(extend)-(B_T(extend=0)+B_C)$')
-combined_ax2.set_title(r'$Res(extend)$/$Res(extend=0)$')
-combined_plot_filename = os.path.join(output_dir, 'combined_plot.png')
-combined_fig.savefig(combined_plot_filename, dpi=300)
-plt.close(combined_fig)
-
-
-for item in tg_bgs:
-    combined2_ax.plot(x, item[0], label='extend={}'.format(item[1]))
-combined2_ax.legend()
-combined2_ax.set_ylim(2600,2800)
-combined2_ax.set_xlim(94.5,np.max(x))
-combined2_ax.set_xlabel('energy in eV')
-combined2_ax.set_ylabel('intensity in arb. units')
-combined2_ax.set_title(r'$B_T(extend)-(B_T(extend=0)+B_C)$')
-combined2_plot_filename = os.path.join(output_dir, 'combined2_plot.png')
-combined2_fig.savefig(combined2_plot_filename, dpi=300)
-plt.close(combined2_fig)
 
 residual_ax.legend()
 residual_ax.set_xlabel('x')
