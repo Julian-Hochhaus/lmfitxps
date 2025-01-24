@@ -54,10 +54,10 @@ For additional details about the `ModelResult` class and its methods and attribu
 `lmfit ModelResult documentation <https://lmfit.github.io/lmfit-py/model.html#the-modelresult-class>`_.
 
 Example Usage of Different Models
-=================================
+---------------------------------
 
 FermiModel
-----------
+~~~~~~~~~~
 
 .. |fermibin| image:: ../examples/plots/plot_fermi_bin.png
    :width: 100%
@@ -76,7 +76,7 @@ FermiModel
     .. literalinclude:: ../examples/Example_FermiEdgeModel.py
 
 ConvGaussianDoniachSinglett with ShirleyBG Model
-------------------------------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. |singlettbin| image:: ../examples/plots/plot_singlett_bin.png
    :width: 100%
@@ -95,7 +95,7 @@ ConvGaussianDoniachSinglett with ShirleyBG Model
     .. literalinclude:: ../examples/Example_ConvGaussianDoniachSinglett.py
 
 ConvGaussianDoniachDublett with TougaardBG Model
-------------------------------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. |dublettbin| image:: ../examples/plots/plot_dublett_bin.png
    :width: 100%
@@ -114,7 +114,7 @@ ConvGaussianDoniachDublett with TougaardBG Model
     .. literalinclude:: ../examples/Example_ConvGaussianDoniachDublett.py
 
 Notes
------
+~~~~~
 
 - In all cases, one can see that the fits for binding energy and kinetic energy agree well.
 - The models were not chosen to perfectly match the data, and in practice, a second component would likely be necessary to achieve a great fit result. Here, the models were used as examples.
