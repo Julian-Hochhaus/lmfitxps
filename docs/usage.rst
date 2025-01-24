@@ -73,7 +73,7 @@ FermiModel
 
 .. collapse:: To see the source code, please expand:
 
-    .. literalinclude:: ../examples/Example_Fermi_Edge_Model.py
+    .. literalinclude:: ../examples/Example_FermiEdgeModel.py
 
 ConvGaussianDoniachSinglett with ShirleyBG Model
 ------------------------------------------------

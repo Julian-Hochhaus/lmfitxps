@@ -80,7 +80,7 @@ To generate such a background, the :ref:`TougaardBG` -model could be used with `
 
 As shown in the figure below, the combination of :ref:`TougaardBG` and :mod:`ConstantModel` already leads to a good agreement between fit and experimental data.
 
-.. figure:: src/plots/plot_0.png
+.. figure:: ../examples/plots/plot_0.png
    :width: 75%
    :alt: Au4f fitted with Tougaard background with added constant
 
@@ -88,19 +88,19 @@ Due to the small asymmetry of the *Au4f*-signal only small improvement of the fi
 The ``reduced chi-squared``, which judges the agreement between model and experimental data, is only slightly decreased using :math:`28 \leq \text{extend} \leq 30`. In addition, the figure below confirms, that using the :ref:`TougaardBG` with :math:`extend!=0` is valid for modeling the background too.
 
 
-.. |extend28| image:: src/plots/plot_28.png
+.. |extend28| image:: ../examples/plots/plot_28.png
    :width: 100%
    :target: src/plots/plot_28.png
 
-.. |extend29| image:: src/plots/plot_29.png
+.. |extend29| image:: ../examples/plots/plot_29.png
    :width: 100%
    :target: src/plots/plot_29.png
 
-.. |extend30| image:: src/plots/plot_30.png
+.. |extend30| image:: ../examples/plots/plot_30.png
    :width: 100%
    :target: src/plots/plot_30.png
 
-.. |extend31| image:: src/plots/plot_31.png
+.. |extend31| image:: ../examples/plots/plot_31.png
    :width: 100%
    :target: src/plots/plot_31.png
 
