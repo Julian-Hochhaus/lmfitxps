@@ -278,7 +278,7 @@ class FermiEdgeModel(lmfit.model.Model):
             +----------------+---------------+----------------------------------------------------------------------------------------+
             | amplitude      | :obj:`float`  | step height :math:`A` of the fermi edge.                                               |
             +----------------+---------------+----------------------------------------------------------------------------------------+
-            | center         | :obj:`float`  | position :math:`mu` of the edge (Fermi level)                                          |
+            | center         | :obj:`float`  | position :math:`\mu` of the edge (Fermi level)                                         |
             +----------------+---------------+----------------------------------------------------------------------------------------+
             | kt             | :obj:`float`  | Boltzmann constant in eV/K multiplied by temperature T in Kelvin (:math:`k_B T`)       |
             +----------------+---------------+----------------------------------------------------------------------------------------+
@@ -286,16 +286,16 @@ class FermiEdgeModel(lmfit.model.Model):
             +----------------+---------------+----------------------------------------------------------------------------------------+
 
 
-        Hint
-        ----
+    Hint
+    ----
 
-        The `ConvGaussianDoniachSinglett` class inherits from `lmfit.model.Model` and only extends it. Therefore, the `lmfit.model.Model` class parameters are inherited as well.
+    The `FermiEdgeModel` class inherits from `lmfit.model.Model` and only extends it. Therefore, the `lmfit.model.Model` class parameters are inherited as well.
 
 
-        **LMFIT: Common models documentation**
-        """"""""""""""""""""""""""""""""""""
+    **LMFIT: Common models documentation**
+    """"""""""""""""""""""""""""""""""""
 
-        """ + lmfit.models.COMMON_INIT_DOC)
+    """ + lmfit.models.COMMON_INIT_DOC)
 
     def __init__(self, *args, **kwargs):
         super().__init__(fermi_edge, *args, **kwargs)

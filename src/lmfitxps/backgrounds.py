@@ -9,7 +9,6 @@ __maintainer__ = "Julian Andreas Hochhaus"
 __email__ = "julian.hochhaus@tu-dortmund.de"
 
 def tougaard_closure():
-    bgrnd = [None, None, None] # This will act as the closure to store the precalculated data
     """
      .. Hint::
          This function employs a closure to calculate the Tougaard sum only once and subsequently accesses it during subsequent executions of the optimization procedure. When calling `tougaard()`, you are effectively accessing the inner, nested function.
@@ -74,6 +73,7 @@ def tougaard_closure():
      ----
      This function is used as the model function in the :ref:`TougaardBG` lmfitxps model.
      """
+    bgrnd = [None, None, None] # This will act as the closure to store the precalculated data
 
     def tougaard_helper(x, y, B, C, C_d, D, extend=0):
         nonlocal bgrnd

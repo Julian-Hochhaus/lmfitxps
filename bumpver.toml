@@ -13,4 +13,5 @@ tag_message = "Release {new_version}"
 "src/lmfitxps/models.py" = ['__version__ = "{version}"']
 "src/lmfitxps/backgrounds.py" = ['__version__ = "{version}"']
 "src/lmfitxps/lineshapes.py" = ['__version__ = "{version}"']
+"docs/conf.py" = ['release = "{version}"']
 
