@@ -58,13 +58,7 @@ html_search_language='en'  # Specify language if needed
 
 # Add after importing necessary libraries
 
-# Autodoc options
-autodoc_default_options = {
-    'members': True,
-    'undoc-members': True,
-    'private-members': True,
-    'special-members': '__init__',
-}
+
 
 # Ensure search functionality is enabled
 html_search = True  # Generally true by default; add for clarity
