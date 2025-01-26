@@ -19,7 +19,7 @@ copyright = '2023-2025, Julian A. Hochhaus'
 author = 'Julian A. Hochhaus'
 
 # The full version, including alpha/beta/rc tags
-release = "4.1.0"
+release = "4.1.1"
 
 sys.path.append(os.path.abspath('exts'))
 numfig = True
