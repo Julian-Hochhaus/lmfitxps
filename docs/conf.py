@@ -15,7 +15,7 @@ sys.path.insert(0, target_dir)
 # -- Project information -----------------------------------------------------
 
 project = 'lmfitxps'
-copyright = '2023, Julian A. Hochhaus'
+copyright = '2023-2025, Julian A. Hochhaus'
 author = 'Julian A. Hochhaus'
 
 # The full version, including alpha/beta/rc tags

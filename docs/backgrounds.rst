@@ -26,9 +26,6 @@ ______________________
 
 .. autoclass:: lmfitxps.models.TougaardBG
     :members:
-    :member-order: bysource
-    :show-inheritance:
-    :exclude-members: guess, __init__, _set_paramhints_prefix
 
 .. note::
    The class functions are inherited from the lmfit Model class. For details, please refer to their documentation at
@@ -144,9 +141,6 @@ ___________________
 
 .. autoclass:: lmfitxps.models.SlopeBG
     :members:
-    :member-order: bysource
-    :show-inheritance:
-    :exclude-members: guess, __init__, _set_paramhints_prefix
 
 .. note::
    The class functions are inherited from the lmfit Model class. For details, please refer to their documentation at
