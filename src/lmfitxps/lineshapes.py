@@ -129,7 +129,7 @@ def fermi_edge(x, amplitude, center, kt, sigma):
     return amplitude * conv_temp / max(conv_temp)
 
 
-def convolve(data, kernel):
+def convolve(data, kernel, is_binding_energy=False):
     """
     Calculates the convolution of a data array with a kernel by using numpy convolve function.
     To suppress edge effects and generate a valid convolution on the full data range, the input dataset is extended
@@ -140,7 +140,9 @@ def convolve(data, kernel):
     data: array-like
         1D-array containing the data to convolve
     kernel: array-like
-        1D-array which defines the kernel used for convolution
+        1D-array which defines the kernel used for convolution. If binding energy scale is used, the kernel is inverted/flipped.
+    is_binding_energy: boolean
+        Boolean determining type of energy scale which determines the orientation of the kernel
 
     Returns
     ---------
@@ -151,7 +153,8 @@ def convolve(data, kernel):
     ---------
     numpy.convolve()
     """
-
+    if is_binding_energy:
+        kernel=kernel[::-1]
     min_num_pts = min(len(data), len(kernel))
     padding = np.ones(min_num_pts)
     padded_data = np.concatenate((padding * data[0], data, padding * data[-1]))
@@ -164,8 +167,7 @@ def fft_convolve(data, kernel, is_binding_energy=False):
     """
     Calculates the convolution of a data array with a kernel by using the convolution theorem and thereby
     transforming the time-consuming convolution operation into a multiplication of FFTs.
-    For the FFT and inverse FFT, numpy implementation (which is basically the implementation used in scipy)
-    of fft and ifft is used.
+    The convolution using this approach is done using the `scipy.signal.convolve()` function with the `method="fft"` attribute.
     To suppress edge effects and generate a valid convolution on the full data range, the input dataset is
     extended at the edges.
 
