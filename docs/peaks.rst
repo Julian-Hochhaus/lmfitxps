@@ -16,6 +16,8 @@ __________________________
 .. autoclass:: lmfitxps.models.FermiEdgeModel
     :members:
     :member-order: bysource
+    :show-inheritance:
+    :exclude-members: guess, __init__, _set_paramhints_prefix
 
 .. note::
    The class functions are inherited from the lmfit Model class. For details, please refer to their documentation at
@@ -29,6 +31,8 @@ _______________________________________
 .. autoclass:: lmfitxps.models.ConvGaussianDoniachSinglett
     :members:
     :member-order: bysource
+    :show-inheritance:
+    :exclude-members: guess, __init__, _set_paramhints_prefix
 
 .. note::
    The class functions are inherited from the lmfit Model class. For details, please refer to their documentation at
@@ -42,6 +46,8 @@ ______________________________________
 .. autoclass:: lmfitxps.models.ConvGaussianDoniachDublett
     :members:
     :member-order: bysource
+    :show-inheritance:
+    :exclude-members: guess, __init__, _set_paramhints_prefix
 
 .. note::
    The class functions are inherited from the lmfit Model class. For details, please refer to their documentation at
