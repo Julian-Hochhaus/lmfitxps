@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="src/logos/logo_large.png" alt="lmfitxps">
+  <img src="docs/src/logos/logo_large.png" alt="lmfitxps">
 </p>
 
 <p align="center">
