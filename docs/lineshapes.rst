@@ -16,6 +16,14 @@ Background model functions
 .. autofunction:: lmfitxps.backgrounds.slope
 .. autofunction:: lmfitxps.backgrounds.tougaard_closure
 
+Convolution Functions
+~~~~~~~~~~~~~~~~~~~~~
+
+.. autofunction:: lmfitxps.lineshapes.fft_convolve
+.. autofunction:: lmfitxps.lineshapes.convolve
+
+.. note::
+   The `fft_convolve` function is significantly faster—by more than an order of magnitude—because it utilizes the properties of convolution in the Fourier transform. As a result, it is employed for all convoluted models within the package.
 
 References
 ~~~~~~~~~~

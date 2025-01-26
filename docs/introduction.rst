@@ -65,7 +65,7 @@ In addition to these discussed models, ``lmfitxps`` provides all underlying func
 
 Installation
 ============
-.. index:: installation
+.. index:: installation, requirements
 
 Stable Version
 --------------
