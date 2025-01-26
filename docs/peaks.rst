@@ -29,9 +29,7 @@ __________________________
 _______________________________________
 
 .. autoclass:: lmfitxps.models.ConvGaussianDoniachSinglett
-    :members:
     :member-order: bysource
-    :show-inheritance:
     :exclude-members: guess, __init__, _set_paramhints_prefix
 
 .. note::
@@ -44,9 +42,7 @@ _______________________________________
 ______________________________________
 
 .. autoclass:: lmfitxps.models.ConvGaussianDoniachDublett
-    :members:
     :member-order: bysource
-    :show-inheritance:
     :exclude-members: guess, __init__, _set_paramhints_prefix
 
 .. note::
