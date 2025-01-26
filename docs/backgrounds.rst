@@ -10,9 +10,6 @@ Background Models
 _____________________
 
 .. autoclass:: lmfitxps.models.ShirleyBG
-    :members:
-    :member-order: bysource
-    :show-inheritance:
     :exclude-members: guess, __init__, _set_paramhints_prefix
 
 .. note::
