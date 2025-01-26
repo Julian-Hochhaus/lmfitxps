@@ -14,7 +14,9 @@ The models are thereby mostly based on the `lmfit lineshapes module <https://git
 __________________________
 
 .. autoclass:: lmfitxps.models.FermiEdgeModel
-
+    :exclude-members: guess, __init__, _set_paramhints_prefix
+    :noindex:
+    :noindexentry:
 
 .. note::
    The class functions are inherited from the lmfit Model class. For details, please refer to their documentation at
@@ -27,7 +29,7 @@ _______________________________________
 
 .. autoclass:: lmfitxps.models.ConvGaussianDoniachSinglett
     :exclude-members: guess, __init__, _set_paramhints_prefix
-
+    :noindex:
 .. note::
    The class functions are inherited from the lmfit Model class. For details, please refer to their documentation at
    `lmfit Model Class Methods <https://lmfit.github.io/lmfit-py/model.html#model-class-methods>`_.
@@ -38,7 +40,9 @@ _______________________________________
 ______________________________________
 
 .. autoclass:: lmfitxps.models.ConvGaussianDoniachDublett
-
+    :exclude-members: guess, __init__, _set_paramhints_prefix
+    :noindex:
+    :noindexentry:
 
 .. note::
    The class functions are inherited from the lmfit Model class. For details, please refer to their documentation at
