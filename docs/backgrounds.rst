@@ -11,7 +11,8 @@ _____________________
 
 .. autoclass:: lmfitxps.models.ShirleyBG
     :exclude-members: guess, __init__, _set_paramhints_prefix
-
+    :noindex:
+    :noindexentry:
 .. note::
    The class functions are inherited from the lmfit Model class. For details, please refer to their documentation at
    `lmfit Model Class Methods <https://lmfit.github.io/lmfit-py/model.html#model-class-methods>`_.
@@ -22,7 +23,9 @@ _____________________
 ______________________
 
 .. autoclass:: lmfitxps.models.TougaardBG
-    :members:
+    :exclude-members: guess, __init__, _set_paramhints_prefix
+    :noindex:
+    :noindexentry:
 
 .. note::
    The class functions are inherited from the lmfit Model class. For details, please refer to their documentation at
@@ -137,7 +140,9 @@ Nevertheless, when compared to an average background value of approximately :mat
 ___________________
 
 .. autoclass:: lmfitxps.models.SlopeBG
-    :members:
+    :exclude-members: guess, __init__, _set_paramhints_prefix
+    :noindex:
+    :noindexentry:
 
 .. note::
    The class functions are inherited from the lmfit Model class. For details, please refer to their documentation at
