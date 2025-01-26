@@ -2,37 +2,42 @@
 
 Background Models
 =================
-
-
-.. include:: note.rst
-
+.. index:: background; Tougaard, Shirley, Slope
 
 .. _ShirleyBG:
 
 :py:class:`ShirleyBG`
 _____________________
+
 .. autoclass:: lmfitxps.models.ShirleyBG
     :members:
-    :noindex:
     :member-order: bysource
     :show-inheritance:
 
+.. note::
+   The class functions are inherited from the lmfit Model class. For details, please refer to their documentation at
+   `lmfit Model Class Methods <https://lmfit.github.io/lmfit-py/model.html#model-class-methods>`_.
 
 .. _TougaardBG:
 
 :py:class:`TougaardBG`
 ______________________
+
 .. autoclass:: lmfitxps.models.TougaardBG
     :members:
-    :noindex:
     :member-order: bysource
     :show-inheritance:
+    :exclude-members: guess
 
+.. note::
+   The class functions are inherited from the lmfit Model class. For details, please refer to their documentation at
+   `lmfit Model Class Methods <https://lmfit.github.io/lmfit-py/model.html#model-class-methods>`_.
 
 .. _extend_parameter:
 
 The 'extend' parameter in :ref:`TougaardBG`
-------------------------------------------------
+-------------------------------------------
+.. index:: extend parameter; TougaardBG
 
 The challenge in calculating an approximation to the Tougaard background involves the following:
 
@@ -116,7 +121,11 @@ The following figure illustrates the difference between :math:`B_T(\text{extend}
    :width: 75%
    :alt: Comparison of backgrounds and residuals for different values for the extend parameter.
 
-Clear patterns emerge among the backgrounds with :math:`\text{extend} \neq 0`, showing a linear behaviour away from the peak. In contrast, the model with :math:`\text{extend} = 0` shows a distinct parabolic-like shape, depicted in the figure below. However, when compared to a mean background value of approximately :math:`I = 2700` counts, the discrepancies among various models remain confined within a 2% range.
+Clear patterns emerge among the backgrounds when :math:\text{extend} \neq 0, exhibiting a nearly linear behavior as they move away from the peak. In contrast, the model with :math:\text{extend} = 0 displays a distinct parabolic shape, as illustrated in the figure below.
+
+If the parabolic characteristic of the Tougaard background is too pronounced, the approximated Tougaard background with :math:\text{extend} = 0 often intersects the data short below the fitted peak signal. This behavior does not fulfill the intended function of approaching the measured background around 30-50 eV on the low-energy side beneath the peak, which accounts for previously mentioned shake-up electrons.
+
+Nevertheless, when compared to an average background value of approximately :math:I = 2700 counts, discrepancies among various models remain within a confined range of about 2%.
 
 .. figure:: src/plots/combined2_plot.png
    :width: 75%
@@ -134,10 +143,13 @@ ___________________
 
 .. autoclass:: lmfitxps.models.SlopeBG
     :members:
-    :noindex:
     :member-order: bysource
     :show-inheritance:
-.. _lmfit.model.Model: https://lmfit.github.io/lmfit-py/model.html#
+
+.. note::
+   The class functions are inherited from the lmfit Model class. For details, please refer to their documentation at
+   `lmfit Model Class Methods <https://lmfit.github.io/lmfit-py/model.html#model-class-methods>`_.
+
 
 References
 __________

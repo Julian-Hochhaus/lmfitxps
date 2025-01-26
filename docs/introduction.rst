@@ -65,6 +65,7 @@ In addition to these discussed models, ``lmfitxps`` provides all underlying func
 
 Installation
 ============
+.. index:: installation
 
 Stable Version
 --------------
@@ -95,6 +96,7 @@ To install the development version or contribute to ``lmfitxps``, please clone t
 
 General Workflow for Predefined Models
 ---------------------------------------
+.. index:: HowTo
 
 Using one of the predefined models in `lmfitxps` typically follows this schematic approach:
 
@@ -132,6 +134,7 @@ For additional details about the `ModelResult` class and its methods and attribu
 
 Usage Examples
 ==============
+.. index:: examples, usage examples
 
 FermiModel
 ----------

@@ -1,5 +1,6 @@
 Cite this project
 -----------------
+.. index:: citation, doi
 
 If ``lmfitxps`` has been significant in your research, and you would like to acknowledge the project in your academic publication, we suggest citing the software using Zenodo:
 

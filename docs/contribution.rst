@@ -1,5 +1,6 @@
 Contributing
 ------------
+.. index:: contributing
 
 We would love your help, either as ideas, documentation, or code. If you have a new algorithm or want to add or fix existing code, please do! Here's how you can get started:
 
@@ -20,5 +21,6 @@ If you need any additional help, please visit our `GitHub discussions page <http
 
 Code of Conduct
 ---------------
+.. index:: Code of Conduct
 
 lmfitxps is committed to fostering a welcoming community. Please have a look at our `Code of Conduct <https://github.com/Julian-Hochhaus/lmfitxps/blob/master/CODE_OF_CONDUCT.md>`_.

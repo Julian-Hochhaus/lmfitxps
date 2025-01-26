@@ -1,6 +1,6 @@
 Static backgrounds
 ==================
-.. include:: note.rst
+.. index:: backgrounds
 
 
 The naming of the following two background functions as "static backgrounds" might lead to some confusion. The functions :ref:`shirley_calculate` and :ref:`tougaard_calculate` are referred to as static simply because they aren't designed to be directly integrated into the fitting model itself.
