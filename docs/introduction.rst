@@ -172,7 +172,7 @@ ConvGaussianDoniachSinglett with ShirleyBG Model
 
 .. collapse:: To see source code, please expand:
 
-    .. literalinclude:: ../examples/example_convgaussiandoniachsinglett.py
+    .. literalinclude:: ../examples/Example_ConvGaussianDoniachSinglett.py
 
 
 ConvGaussianDoniachDublett with TougaardBG Model
