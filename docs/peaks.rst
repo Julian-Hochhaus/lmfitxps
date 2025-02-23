@@ -16,7 +16,6 @@ __________________________
 .. autoclass:: lmfitxps.models.FermiEdgeModel
     :exclude-members: guess, __init__, _set_paramhints_prefix
     :noindex:
-    :noindexentry:
 
 .. note::
    The class functions are inherited from the lmfit Model class. For details, please refer to their documentation at
@@ -42,7 +41,6 @@ ______________________________________
 .. autoclass:: lmfitxps.models.ConvGaussianDoniachDublett
     :exclude-members: guess, __init__, _set_paramhints_prefix
     :noindex:
-    :noindexentry:
 
 .. note::
    The class functions are inherited from the lmfit Model class. For details, please refer to their documentation at
