@@ -13,6 +13,9 @@
 
 
 
+
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2FJulian-Hochhaus%2Flmfitxps.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2FJulian-Hochhaus%2Flmfitxps?ref=badge_large)
+
 ## Introduction
 Welcome to lmfitxps, a small Python package designed as an extension for the popular lmfit package, specifically tailored for X-ray Photoelectron Spectroscopy (XPS) data analysis.
 
@@ -29,6 +32,7 @@ To install `lmfitxps`, simply use pip:
 
  ## How to cite
  [![DOI](https://zenodo.org/badge/642726930.svg)](https://zenodo.org/badge/latestdoi/642726930)
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2FJulian-Hochhaus%2Flmfitxps.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2FJulian-Hochhaus%2Flmfitxps?ref=badge_shield)
 
 
 ## List of Publications using lmfitxps
@@ -41,4 +45,3 @@ To install `lmfitxps`, simply use pip:
 - P. Schöngrundner [Search for crystalline SiO2 on the wet chemically treated 6H-SiC(0001) surface](https://doi.org/10.34726/HSS.2024.124590) TU Wien, Thesis (2024)  
 
 Publications that use [LG4X-V2](https://github.com/Julian-Hochhaus/LG4X-V2), a graphical user interface (GUI) for XPS/XAS analysis that heavily utilizes `lmfit` and `lmfitxps`, are also included.
-
