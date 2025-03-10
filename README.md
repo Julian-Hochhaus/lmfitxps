@@ -9,6 +9,7 @@
   <a href="https://static.pepy.tech/badge/lmfitxps"><img src="https://static.pepy.tech/badge/lmfitxps" alt="Downloads"></a>
   <a href="https://opensource.org/licenses/"><img src="https://img.shields.io/badge/license-MIT-blue" alt="License: MIT"></a>
   <a href="https://en.wikipedia.org/wiki/Free_and_open-source_software"><img src="https://img.shields.io/badge/FOSS-100%25-green.svg?style=flat" alt="FOSS: 100%"></a>
+  <a href="https://app.fossa.com/projects/git%2Bgithub.com%2FJulian-Hochhaus%2Flmfitxps?ref=badge_small" alt="FOSSA Status"><img src="https://app.fossa.com/api/projects/git%2Bgithub.com%2FJulian-Hochhaus%2Flmfitxps.svg?type=small"/></a>
 </p>
 
 
