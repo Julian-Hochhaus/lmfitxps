@@ -1,9 +1,9 @@
 import numpy as np
 import copy
 from scipy.integrate import cumulative_trapezoid
-__author__ = "Julian Andreas Hochhaus"
-__copyright__ = "Copyright 2023"
-__credits__ = ["Julian Andreas Hochhaus"]
+__author__ = "Julian Andreas Hochhaus, Florian Kraushofer"
+__copyright__ = "Copyright 2025"
+__credits__ = ["Julian Andreas Hochhaus", "Florian Kraushofer"]
 __license__ = "MIT"
 __version__ = "4.1.1"
 __maintainer__ = "Julian Andreas Hochhaus"
