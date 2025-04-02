@@ -288,7 +288,7 @@ def shirley_calculate(x, y, tol=1e-5, maxit=10, bounds=None):
 
     # couple x and y values for easier handling in the following;
     #  data will be modified in-place, but this keeps the input x,y safe.
-    data = np.array(x, y)
+    data = np.array((x, y))
 
     if not bounds:
         bounds = np.array((data[:, 0], data[:, -1])).T
