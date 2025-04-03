@@ -5,7 +5,7 @@ __author__ = "Julian Andreas Hochhaus, Florian Kraushofer"
 __copyright__ = "Copyright 2025"
 __credits__ = ["Julian Andreas Hochhaus", "Florian Kraushofer"]
 __license__ = "MIT"
-__version__ = "4.1.1"
+__version__ = "4.1.2"
 __maintainer__ = "Julian Andreas Hochhaus"
 __email__ = "julian.hochhaus@tu-dortmund.de"
 
