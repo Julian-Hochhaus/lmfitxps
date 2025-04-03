@@ -44,8 +44,8 @@ plugins:
 
 # Theme-specific settings
 aux_links:
-  "lmfit-additioal-models on GitHub":
-    - "https://github.com/Julian-Hochhaus/lmfit-additional-models"
+  "lmfitxps on GitHub":
+    - "https://github.com/Julian-Hochhaus/lmfitxps"
 
 nav_external_links:
   - title: See on Github
