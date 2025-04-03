@@ -32,7 +32,8 @@ extensions = [
     'sphinx_toolbox.collapse',
     'sphinx_copybutton',
     'sphinx.ext.napoleon',
-    'sphinx.ext.intersphinx',  # Add this line to enable intersphinx support
+    'sphinx.ext.intersphinx',
+    'sphinx_panels',
 ]
 
 napoleon_google_docstring = False
@@ -47,7 +48,6 @@ html_theme = 'sphinx_rtd_theme'
 html_logo = "src/logos/logo.png"
 html_theme_options = {
     'logo_only': True,
-    'display_version': True,
 }
 html_short_title = project  # Use project variable for consistency
 html_favicon = "src/logos/icon.ico"

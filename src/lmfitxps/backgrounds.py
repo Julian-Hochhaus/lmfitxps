@@ -1,8 +1,9 @@
 import numpy as np
 import copy
-__author__ = "Julian Andreas Hochhaus"
-__copyright__ = "Copyright 2023"
-__credits__ = ["Julian Andreas Hochhaus"]
+from scipy.integrate import cumulative_trapezoid
+__author__ = "Julian Andreas Hochhaus, Florian Kraushofer"
+__copyright__ = "Copyright 2025"
+__credits__ = ["Julian Andreas Hochhaus", "Florian Kraushofer"]
 __license__ = "MIT"
 __version__ = "4.1.1"
 __maintainer__ = "Julian Andreas Hochhaus"
@@ -213,7 +214,7 @@ def slope(y, k):
     return -k * bg
 
 
-def shirley_calculate(x, y, tol=1e-5, maxit=10):
+def shirley_calculate(x, y, tol=1e-5, maxit=10, bounds=None):
     """
     Calculates the Shirley background for a given set of x (energy) and y (intensity) data.
 
@@ -243,7 +244,7 @@ def shirley_calculate(x, y, tol=1e-5, maxit=10):
      .. math::
         :label: shirleyconvergence
 
-        \\left(B_{S, n}(E)-B_{S, n-1}(E)\\right)^2<tol
+        \\langle\\left(B_{S, n}(E)-B_{S, n-1}(E)\\right)^2\\rangle<tol
 
 
     Parameters:
@@ -263,6 +264,8 @@ def shirley_calculate(x, y, tol=1e-5, maxit=10):
         +-----------+---------------+--------------------------------------------------------------------------------------------------------------------------------+
         | maxit     | :obj:`int`    | Maximum number of iterations before calculation is interrupted. Defaults to 10.                                                |
         +-----------+---------------+--------------------------------------------------------------------------------------------------------------------------------+
+        | bounds    | :obj:`tuple`  | Either two x values or two (x,y) pairs. Determines the edges of the Shirley background. Background will be constant outside this range. If only x is passed, picks the y of closest data point. If nothing is passed, uses the edges of the data range.    |
+        +-----------+---------------+--------------------------------------------------------------------------------------------------------------------------------+
 
     Returns:
     --------
@@ -275,63 +278,89 @@ def shirley_calculate(x, y, tol=1e-5, maxit=10):
 
     """
 
-    n = len(y)
     # Sanity check: Do we actually have data to process here?
-    # print(any(x), any(y), (any(x) and any(y)))
     if not (any(x) and any(y)):
         print("One of the arrays x or y is empty. Returning zero background.")
-        return x * 0
+        return x * 0            # TODO: raise ValueError instead?
+    if not len(x) == len(y):
+        print("Length missmatch between x and y. Returning zero background")
+        return x * 0            # TODO: raise ValueError instead?
 
-    # Next ensure the energy values are *decreasing* in the array,
-    # if not, reverse them.
-    if x[0] < x[-1]:
+    # couple x and y values for easier handling in the following;
+    #  data will be modified in-place, but this keeps the input x,y safe.
+    data = np.array((x, y))
+
+    if not bounds:
+        bounds = np.array((data[:, 0], data[:, -1])).T
+    else:
+        bounds = np.array(bounds).T
+        if bounds.shape == (2,):
+            # bounds are only energies, don't have values yet.
+            # cut the range, then use closest data values.
+            data = data[:, (data[0] >= np.min(bounds)) &
+                           (data[0] <= np.max(bounds))]
+            bounds = np.array((data[:,0], data[:,-1])).T
+        else:
+            # if bounds are not at the ends of the data,
+            # consider only the inner parts of the data from here on
+            data = data[:, (data[0] >= np.min(bounds[0])) &
+                           (data[0] <= np.max(bounds[0]))]
+            # make sure that bounds are actually part of the x range: 
+            # keep their y values, put x on the closest existing point
+            bounds[0, 0] = data[0, 0]
+            bounds[0, 1] = data[0, -1]
+
+    # ensure that the 'left' value of the data is higher than the 'right'
+    # NOTE: This is insensitive to whether the energy axis is binding or
+    # kinetic, but WILL give unphysical results where the background goes
+    # 'up' without complaining if that's what's in the data!
+    if data[1, 0] < data[1, -1]:
         is_reversed = True
-        x = copy.deepcopy(x[::-1])
-        y = copy.deepcopy(y[::-1])
+        data = data[:,::-1]
     else:
         is_reversed = False
+    # make the bounds follow the same order as the data;
+    # i.e. if kinetic energy -> lower value first, otherwise higher first
+    if (np.sign(bounds[0, 0] - bounds[0, -1])
+            != np.sign(data[0, 0] - data[0, -1])):
+        bounds = bounds[:, ::-1]
 
-    yl = y[0]
-    yr = y[-1]
+    # Initial value of the background shape B. The total background S = bounds[1,1] + B,
+    # and B is initially zero
+    B = data[1] * 0
 
-    # Initial value of the background shape B. The total background S = yr + B,
-    # and B is equal to (yl - yr) below lmidx and initially zero above.
-    B = y * 0
-
-    Bnew = B.copy()
-
-    it = 0
-    while it < maxit:
+    for it in range(maxit):
         # Calculate new k = (yl - yr) / (int_(xl)^(xr) J(x') - yr - B(x') dx')
-        ksum = 0.0
-        for i in range(n - 1):
-            ksum += (x[i] - x[i + 1]) * 0.5 * (y[i] + y[i + 1] - 2 * yr - B[i] - B[i + 1])
-        k = (yl - yr) / ksum
-        # Calculate new B
-        for i in range(n):
-            ysum = 0.0
-            for j in range(i, n - 1):
-                ysum += (x[j] - x[j + 1]) * 0.5 * (y[j] + y[j + 1] - 2 * yr - B[j] - B[j + 1])
-            Bnew[i] = k * ysum
-        # If Bnew is close to B, exit.
-        # if norm(Bnew - B) < tol:
-        B = Bnew - B
-        # print(it, (B**2).sum(), tol**2)
-        if (B ** 2).sum() < tol ** 2:
-            B = Bnew.copy()
+        # background-subtracted y so far, and cumulative integral:
+        y_sub = data[1] - B - bounds[1, 1]
+        y_int = cumulative_trapezoid(y_sub[::-1], data[0, ::-1], initial=0)[::-1]
+        # Calculate new k = (yl - yr) / (integral of y over the whole range)
+        k = (bounds[1, 0] - bounds[1, 1]) / y_int[0]
+        # new B is simply the cumulative integral normalized by the new k
+        B_new = k*y_int
+        # If B_new is close to B, exit.
+        if np.sum((B - B_new)**2) / len(B) < tol:
+            B = np.copy(B_new)
             break
         else:
-            B = Bnew.copy()
-        it += 1
-
-    if it >= maxit:
-        print("Max iterations exceeded before convergence.")
-    if is_reversed:
-        # print("Shirley BG: tol (ini = ", tol, ") , iteration (max = ", maxit, "): ", it)
-        return (yr + B)[::-1]
+            B = np.copy(B_new)
     else:
-        # print("Shirley BG: tol (ini = ", tol, ") , iteration (max = ", maxit, "): ", it)
-        return yr + B
+        print("Max iterations exceeded before convergence.")
+    B += bounds[1, 1]
+    if is_reversed:
+        B = B[::-1]
+        data = data[:,::-1]
+
+    # check the original data range, fill up the missing parts
+    npx = np.array(x)
+    index_exists = np.where((npx >= np.min(data[0])) & 
+                            (npx <= np.max(data[0])))[0]
+    B_whole_range = np.concatenate((
+        np.full(index_exists[0], B[0]),
+        B,
+        np.full(len(npx) - index_exists[-1] - 1, B[-1])
+        ))
+    return B_whole_range
 
 
 def tougaard_calculate(x, y, tb=2866, tc=1643, tcd=1, td=1, maxit=100):
