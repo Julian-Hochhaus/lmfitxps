@@ -31,6 +31,7 @@ To install `lmfitxps`, simply use pip:
  ## How to cite
  [![DOI](https://zenodo.org/badge/642726930.svg)](https://zenodo.org/badge/latestdoi/642726930)
 
+Feel free to share your publication using lmfitxps in the [Discussion tab!](https://github.com/Julian-Hochhaus/lmfitxps/discussions/24)
 
 ## List of Publications using lmfitxps
 
