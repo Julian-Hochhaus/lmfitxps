@@ -3,4 +3,5 @@ lmfit>=1.1.0
 sphinx-copybutton==0.5.2
 sphinx-toolbox==3.5.0
 sphinx-panels
+sphinx<8
 
