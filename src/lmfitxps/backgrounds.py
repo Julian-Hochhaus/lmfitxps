@@ -358,7 +358,8 @@ def tougaard_calculate(x, y, tb=2866, tc=1643, tcd=1, td=1, maxit=100):
     Calculates the Tougaard background for a given set of x and y data. 
     The calculation is hereby based on the four-parameter loss function (4-PIESCS) as suggested by R.Hesse [1]_.
 
-    The implementation was inspired by the IGOR implementation of James Mudd [2]_.
+    The implementation was inspired by the IGOR procedures of James Mudd [2]_, 
+    and has been generalized for 4-PIESCS and rewritten in Python.
 
     The Tougaard background is calculated using:
 
